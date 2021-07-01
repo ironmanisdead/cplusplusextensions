@@ -15,7 +15,7 @@ std::vector&lt;double&gt;. You have to make a foreach function for converting it
 or a reusable lambda. Even though not difficult, it feels slightly weird that
 you as a programmer are responsible for making an automatic conversion
 
-###### This library has many benefits, but there is a catch:
+#### This library has many benefits, but there is a catch:
 CustomUtils::Vector does not support std::vector, and vice versa. Same with
 CustomUtils::String and CustomUtils::Array (although Array might be convertible implicitly.)
 This project is designed to have as little dependencies on the parent library as possible.
