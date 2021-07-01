@@ -3,6 +3,21 @@
 #include "headers/Utils.hpp"
 namespace CustomUtils {
 	void BinEnt::_rebalance() noexcept {}
+	bool BinEnt::rotate(bool direction) noexcept {
+		if (!isattach())
+			return false;
+		bool isright;
+		if (!root)
+			isright = (this == uParent()->right);
+		if (direction) {
+			BinEnt* A = left;
+			if (!A)
+				return false;
+			out parent = upwards;
+			BinEnt* T1 = A->left;
+			BinEnt* T2 = A->right;
+		}
+	}
 	BinEnt* BinTree::_detach(const void* key) noexcept {
 		Find<BinEnt*> result = _find(key);
 		if (result.found == 0) {
@@ -29,22 +44,26 @@ namespace CustomUtils {
 		else
 			uParent() = val->uParent();
 	}
-	void BinEnt::disownSelf(BinEnt* val) noexcept {
+	bool BinEnt::unParent(BinEnt* val) noexcept {
 		if (root) {
-			if (uTree()) {
+			if (uTree())
 				uTree()->root = val;
-				uTree() = nullptr;
-			}
-			return;
+			return true;
 		}
-		BinEnt*& parent = uParent();
+		BinEnt* parent = uParent();
 		if (parent) {
 			if (parent->left == this)
 				parent->left = val;
 			else
 				parent->right = val;
 		}
-		parent = nullptr;
+		return false;
+	}
+	void BinEnt::disownSelf(BinEnt* val) noexcept {
+		if (unParent(val))
+			uTree() = nullptr;
+		else
+			uParent() = nullptr;
 	}
 	bool BinEnt::detach() noexcept {
 		if (!isattach())

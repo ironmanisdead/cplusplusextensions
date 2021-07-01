@@ -24,6 +24,6 @@ This project is designed to have as little dependencies on the parent library as
 To install, simply run "<i>make install</i>", and to uninstall run "<i>make uninstall</i>"
 
 If all you want to do are tests, then by all means, fill up your clone of this project with
-as many .cpp files as you wish, just create the corresponding programs with "<i>make test</i>"
+as many .cpp files as you wish, just create the corresponding programs with "<i>make tests</i>"
 I currently have the project set up so it has to install inside /usr/local, but could fix that in
 the future.

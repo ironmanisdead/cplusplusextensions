@@ -36,6 +36,7 @@ namespace CustomUtils {
 			inline BinEnt*& uParent() noexcept {
 				return upwards.parent;
 			}
+			bool unParent(BinEnt*) noexcept;
 			void disownSelf(BinEnt*) noexcept;
 			inline void setParent(BinEnt* val) noexcept {
 				root = false;
@@ -58,9 +59,8 @@ namespace CustomUtils {
 		public:
 			BinEnt(const BinInfo* info, bool cent, out up, BinEnt* lef, BinEnt* rig) noexcept :
 				data(info), root(cent), upwards(up), left(lef), right(rig) {}
-			inline bool isroot() const noexcept {
-				return root;
-			}
+			bool rotate(bool) noexcept;
+			inline bool isroot() const noexcept { return root; }
 			inline bool isattach() const noexcept {
 				return root ? (bool)upwards.tree : (bool)upwards.parent;
 			}

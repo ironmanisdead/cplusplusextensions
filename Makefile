@@ -20,10 +20,10 @@ ifneq ($(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),)
  include $(RULES)
 endif
 
-.PHONY:test nodep nodown $(PHON)
+.PHONY:tests nodep nodown $(PHON)
 
 info:
-	$(error please select 'install', 'test', or 'uninstall')
+	$(error please select 'install', 'tests', or 'uninstall')
 
 install:
 	.extra/install
@@ -31,7 +31,7 @@ install:
 uninstall:
 	.extra/uninstall
 
-test: $(OBJECTS)
+tests: $(OBJECTS)
 
 nodep: #means make will not generate dependencies
 
@@ -47,7 +47,7 @@ unmake: .refresh #removes all test object files
 	$(if $(GENO),rm $(GENO))
 
 remake: unmake #remakes all test object files
-	MAKELEVEL=$(MAKELEVEL) make all
+	MAKELEVEL=$(MAKELEVEL) make tests
 
 scrape: .refresh #removes all test object files and also generated rules
 	$(if $(GENERATED),rm $(GENERATED))
@@ -57,4 +57,4 @@ clean: scrape
 
 reset: scrape
 	cd libs && make reset
-	MAKELEVEL= make nodown test
+	MAKELEVEL= make nodown tests
