@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ ! -L "headers" ]] && [[ ! -e "/usr/local/include/CustomUtils" ]]; then
+	mv headers /usr/local/include/CustomUtils
+	ln -s /usr/local/include/CustomUtils headers
+fi
+
+cd headers && make

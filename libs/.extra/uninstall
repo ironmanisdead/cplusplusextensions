@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+if [[ -e "/usr/local/include/CustomUtils" ]]; then
+	unlink headers || true
+	mv /usr/local/include/CustomUtils headers
+fi

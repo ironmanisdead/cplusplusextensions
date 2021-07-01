@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [[ ! -L "libs" ]] && [[ ! -e "/usr/local/lib64/libcustomutils" ]]; then
+	mv libs /usr/local/lib64/libcustomutils
+	ln -s /usr/local/lib64/libcustomutils libs
+	ln -sf libcustomutils/.shared.so /usr/local/lib64/libcustomutils.so
+fi
+
+cd libs && make install

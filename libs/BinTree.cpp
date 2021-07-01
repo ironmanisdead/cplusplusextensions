@@ -1,0 +1,301 @@
+#include "headers/BinTree.hpp"
+#include "headers/BinNode.hpp"
+#include "headers/Utils.hpp"
+namespace CustomUtils {
+	void BinEnt::_rebalance() noexcept {}
+	BinEnt* BinTree::_detach(const void* key) noexcept {
+		Find<BinEnt*> result = _find(key);
+		if (result.found == 0) {
+			result.value->detach();
+			return result.value;
+		}
+		return nullptr;
+	}
+	BinEnt* BinEnt::_root() noexcept {
+		for (BinEnt* capture = this; capture; capture = capture->uParent()) {
+			if (capture->root) {
+				if (capture->uTree())
+					return capture;
+				else
+					break;
+			}
+		}
+		return nullptr;
+	}
+	void BinEnt::setParentFrom(BinEnt* val) noexcept {
+		root = val->root;
+		if (root)
+			uTree() = val->uTree();
+		else
+			uParent() = val->uParent();
+	}
+	void BinEnt::disownSelf(BinEnt* val) noexcept {
+		if (root) {
+			if (uTree()) {
+				uTree()->root = val;
+				uTree() = nullptr;
+			}
+			return;
+		}
+		BinEnt*& parent = uParent();
+		if (parent) {
+			if (parent->left == this)
+				parent->left = val;
+			else
+				parent->right = val;
+		}
+		parent = nullptr;
+	}
+	bool BinEnt::detach() noexcept {
+		if (!isattach())
+			return false;
+		if (left && right) { //node has both children
+			BinEnt* next = right->_min();
+			next->left = left;
+			if (left)
+				left->setParent(next);
+			BinEnt* t1 = next->uParent();
+			if (t1 != this) {
+				t1->left = next->right;
+				if (next->right)
+					next->right->setParent(t1);
+				next->right = right;
+				if (right)
+					right->setParent(next);
+			}
+			next->setParentFrom(this);
+			disownSelf(next);
+			next->_rebalance();
+		} else if (left) { //node has left child
+			left->setParentFrom(this);
+			disownSelf(left);
+			left->_rebalance();
+		} else if (right) { //node has right child
+			right->setParentFrom(this);
+			disownSelf(right);
+			right->_rebalance();
+		} else { //node is a leaf
+			disownSelf(nullptr);
+			if (!root)
+				uParent()->_rebalance();
+		}
+		return true;
+	}
+	BinEnt* BinEnt::_min() noexcept {
+		BinEnt* current = this;
+		while (current->left)
+			current = current->left;
+		return current;
+	}
+	BinEnt* BinEnt::_max() noexcept {
+		BinEnt* current = this;
+		while (current->right)
+			current = current->right;
+		return current;
+	}
+	BinEnt* BinEnt::_next() noexcept {
+		if (right)
+			return right->_min();
+		BinEnt* current = this;
+		while (true) {
+			BinEnt* parent = current->_parent();
+			if (!parent)
+				return nullptr;
+			if (parent->left == current)
+				return parent;
+			current = parent;
+		}
+	}
+	BinEnt* BinEnt::_prev() noexcept {
+		if (left)
+			return left->_max();
+		BinEnt* current = this;
+		while (true) {
+			BinEnt* parent = current->_parent();
+			if (!parent)
+				return nullptr;
+			if (parent->right == current)
+				return parent;
+			current = parent;
+		}
+	}
+	void BinEnt::deleter() noexcept {
+		if (left) {
+			left->deleter();
+			delete left;
+		}
+		if (right) {
+			right->deleter();
+			delete right;
+		}
+	}
+	BinEntI BinTree::begin() noexcept {
+		if (root)
+			return root->_min();
+		else
+			return nullptr;
+	}
+	BinEntI BinTree::max() noexcept {
+		if (root)
+			return root->_max();
+		else
+			return nullptr;
+	}
+	BinEntC BinTree::begin() const noexcept {
+		if (root)
+			return root->_min();
+		else
+			return nullptr;
+	}
+	BinEntC BinTree::max() const noexcept {
+		if (root)
+			return root->_max();
+		else
+			return nullptr;
+	}
+	void BinEnt::reSelf(BinEnt* val) noexcept {
+		if ((root = val->root))
+			uTree() = val->uTree();
+		else
+			uParent() = val->uParent();
+		left = val->left;
+		right = val->right;
+	}
+	BinEnt* BinTree::_place(BinEnt* dest, BinEnt* src, stronk dir, bool pop) noexcept {
+		if (dir < 0) {
+			src->setParent(dest);
+			dest->_left() = src;
+		} else if (dir > 0) {
+			src->setParent(dest);
+			dest->_right() = src;
+		} else if (pop) {
+			src->reSelf(dest);
+			dest->disownSelf(src);
+			dest->setParent(nullptr);
+			return dest;
+		} else {
+			src->reSelf(dest);
+			src->_left() = dest->_left();
+			src->_right() = dest->_right();
+			dest->~BinEnt();
+			Utils::memcpy(dest, src, src->data->total);
+			return nullptr;
+		}
+		dest->_rebalance();
+		return nullptr;
+	}
+	BinEnt* BinTree::_attach(BinEnt* ins) {
+		if (ins->isattach())
+			return ins;
+		const void* key = ins->_key();
+		if (!root) {
+			root = ins;
+			ins->setParent(this);
+			return nullptr;
+		}
+		Find<BinEnt*> result = _find(key);
+		return _place(result.value, ins, result.found, true);
+	}
+	BinEnt* BinTree::attach(BinEnt* ins) {
+		if (ins->data != data)
+			return ins;
+		return _attach(ins);
+	}
+	bool BinTree::_add(BinEnt* ins, bool force) {
+		const void* key = ins->_key();
+		Utils::size siz = ins->data->total;
+		if (!root) {
+			root = Utils::downcast<BinEnt*>(::operator new(siz));
+			ins->setParent(this);
+			Utils::memcpy(root, ins, siz);
+			return true;
+		}
+		Find<BinEnt*> result = _find(key);
+		if (result.found == 0) {
+			if (force)
+				_place(result.value, ins, 0 <=> 0);
+			return false;
+		}
+		BinEnt* store = Utils::downcast<BinEnt*>(::operator new(siz));
+		Utils::memcpy(store, ins, siz);
+		_place(result.value, store, result.found);
+		return true;
+	}
+	Find<BinEnt*> BinTree::_find(const void* key) {
+		if (!root)
+			return { 0 <=> 1, nullptr };
+		BinEnt* current = root;
+		while (true) {
+			if (current->greater(key)) {
+				BinEnt* left = current->_left();
+				if (left)
+					current = left;
+				else
+					return { 0 <=> 1, current };
+			} else if (current->less(key)) {
+				BinEnt* right = current->_right();
+				if (right)
+					current = right;
+				else
+					return { 1 <=> 0, current };
+			} else
+				return { 0 <=> 0, current };
+		}
+	}
+	BinEnt* BinEnt::clone(BinEnt* up) const {
+		BinEnt* copy = _copy();
+		if (copy) {
+			copy->uParent() = up;
+			if (left)
+				copy->left = left->clone(copy);
+			if (right)
+				copy->right = right->clone(copy);
+		}
+		return copy;
+	}
+	BinEnt* BinEnt::clone(BinTree* top) const {
+		BinEnt* copy = _copy();
+		if (copy) {
+			try {
+				copy->setParent(top);
+				if (left)
+					copy->left = left->clone(copy);
+				if (right)
+					copy->right = right->clone(copy);
+			} catch (...) {
+				copy->deleter();
+				delete copy;
+				throw;
+			}
+		}
+		return copy;
+	}
+	BinEnt* BinEnt::clonemut(BinEnt* up) {
+		BinEnt* copy = _build();
+		if (copy) {
+			copy->uParent() = up;
+			if (left)
+				copy->left = left->clonemut(copy);
+			if (right)
+				copy->right = right->clonemut(copy);
+		}
+		return copy;
+	}
+	BinEnt* BinEnt::clonemut(BinTree* top) {
+		BinEnt* copy = _build();
+		if (copy) {
+			copy->setParent(top);
+			try {
+				if (left)
+					copy->left = left->clonemut(copy);
+				if (right)
+					copy->right = right->clonemut(copy);
+			} catch (...) {
+				copy->deleter();
+				delete copy;
+				throw;
+			}
+		}
+		return copy;
+	}
+}

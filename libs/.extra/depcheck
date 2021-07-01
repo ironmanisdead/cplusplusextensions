@@ -1,0 +1,17 @@
+#!/bin/bash
+shopt -s nullglob
+declare -- flag=false
+declare -- base
+for item in .*.mk; do
+	base="${item%'.mk'}"
+	base="${base#'.'}"
+	if [[ ! -e "${base}.cpp" ]]; then
+		echo "removing ${base}.cpp from dependencies" >&2
+		rm -f .${base}.mk .${base}.a.o .${base}.b.o
+		flag=true
+	fi
+done
+
+if $flag; then
+	rm -f .shared.so .static.a
+fi

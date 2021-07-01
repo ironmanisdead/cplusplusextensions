@@ -1,0 +1,58 @@
+#!/bin/bash
+set -e
+declare -- list="$(find -name "*.hpp" -and ! -name 'All.hpp' | sort)"
+if [[ -e "All.hpp" ]] && [[ -e ".dirhash" ]] && sha256sum --status -c .dirhash < <(echo "$list"); then
+	echo "up to date"
+	exit 0
+fi
+declare -- text
+if [[ ! -e "All.hpp" ]]; then
+	echo "generating dependencies..."
+	text=$'#ifndef __UTILS_ALL_HPP\n#define __UTILS_ALL_HPP 1'
+	for file in *.hpp; do
+		text+=$'\n'"#include \"$file\""
+	done
+	text+=$'\n#endif'
+	echo "$text" >All.hpp
+else
+	declare -- intro=""
+	declare -- ending=""
+	declare -- line
+	declare -- haslist=false
+	declare -i FD 
+	echo "updating file list..."
+	{
+		while read line <&"$FD"; do
+			if [[ "$line" =~ ^'#include "' ]]; then
+				haslist=true
+				break
+			elif [[ "$intro" == "" ]]; then
+				intro="$line"
+			else
+				intro+=$'\n'"$line"
+			fi
+		done
+		if ! $haslist; then
+			rm All.hpp
+			exec .extra/depcheck
+		fi
+		while read line <&"$FD"; do
+			if ! [[ "$line" =~ ^'#include "' ]]; then
+				ending="$line"
+				break
+			fi
+		done
+		while read line <&"$FD"; do
+			ending+=$'\n'"$line"
+		done
+	} {FD}<All.hpp
+	text="$intro"
+	for item in *.hpp; do
+		if [[ "$item" != "All.hpp" ]]; then
+			text+=$'\n'"#include \"$item\""
+		fi
+	done
+	text+=$'\n'"$ending"
+	echo "$text" >All.hpp
+fi
+echo "$list" | sha256sum >.dirhash
