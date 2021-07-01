@@ -20,10 +20,10 @@ ifneq ($(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),)
  include $(RULES)
 endif
 
-.PHONY:tests nodep nodown $(PHON)
+.PHONY:test nodep nodown $(PHON)
 
 info:
-	$(error please select 'install', 'tests', or 'uninstall')
+	$(error please select 'install', 'test', or 'uninstall')
 
 install:
 	.extra/install
@@ -31,7 +31,7 @@ install:
 uninstall:
 	.extra/uninstall
 
-tests: $(OBJECTS)
+test: $(OBJECTS)
 
 nodep: #means make will not generate dependencies
 
