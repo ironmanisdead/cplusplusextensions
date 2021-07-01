@@ -1,5 +1,5 @@
 include /usr/local/lib/make/util.mk
-PHON:=clean reset unmake remake .reset install uninstall
+PHON:=clean reset scrape unmake remake .reset install uninstall
 comma:=,
 sources=$(wildcard *.cpp)
 mk2:=$(wildcard .*.mk.2)
