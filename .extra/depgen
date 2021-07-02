@@ -11,7 +11,7 @@ declare -- rule2="$(cc -M "$1.cpp")"
 declare -- rule="$info"$'\n'"comma=,"
 rule+=$'\n'"installed:=\$(shell test -h \"libs\" && echo \"hey\")"$'\n'"${rule}"$'\n'"$rule2"
 rule+=$'\n\t'"\$(if \$(wildcard .$1.mk.2),rm .$1.mk.2,$0 $*)"
-rule+=$'\n\t'"gcc -std=c++2a -O3 -Wall -Wextra -o $1 $1.cpp -lstdc++ \
+rule+=$'\n\t'"gcc -std=c++2a -O3 -Wall -Wextra -o $1.o $1.cpp -lstdc++ \
 \$(if \$(installed),-lcustomutils,-Wl\$(comma)-z\$(comma)origin \$(shell pwd)/libs/.shared.so)"
 echo "this file should only exist during make, if it still exists afterwords, please remove it" >".$1.mk.2"
 echo "$rule" >".$1.mk"
