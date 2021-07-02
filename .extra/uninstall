@@ -7,5 +7,4 @@ if [[ -e /usr/local/lib64/libcustomutils ]]; then
 	unlink /usr/local/lib64/libcustomutils.so || true
 fi
 
-make scrape
 cd libs && make uninstall

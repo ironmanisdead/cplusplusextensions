@@ -23,7 +23,7 @@ endif
 .PHONY:tests nodep nodown $(PHON)
 
 info:
-	$(error please select 'install', 'tests', or 'uninstall')
+	$(error please select 'install', 'tests', 'uninstall', or a specific '.o' file that you wish to generate)
 
 install:
 	.extra/install
