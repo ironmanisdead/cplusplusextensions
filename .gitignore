@@ -1,5 +1,6 @@
-.*.o
+.*.[oa]
 .*.mk
+.*.so
 .*.mk.2
 libs/headers/All.hpp
 libs/headers/.dirhash
