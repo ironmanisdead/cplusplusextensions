@@ -7,7 +7,7 @@ int main() {
 	map.insert(2, 1);
 	map.insert(1, 2);
 	map.insert(3, 5);
-	BinNode<int, int>* root = map.getRoot();
+	auto* root = map.getRoot();
 	std::cout << root->getKey() << ' ' << root->getValue() << std::endl;
 	map.search(2)->rotate(true);
 	root = map.getRoot();
