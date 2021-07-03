@@ -52,6 +52,13 @@ namespace CustomUtils {
 		}
 		return nullptr;
 	}
+	BinEnt* BinTree::_search(const void* key) {
+		Find<BinEnt*> result = _find(key);
+		if (result.found == 0)
+			return result.value;
+		else
+			return nullptr;
+	}
 	void BinEnt::setParentFrom(BinEnt* val) noexcept {
 		root = val->root;
 		if (root)

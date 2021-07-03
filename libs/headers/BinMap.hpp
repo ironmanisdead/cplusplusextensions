@@ -69,11 +69,11 @@ namespace CustomUtils {
 			Node* detach(const K& key) noexcept(lessex) {
 				return downcast<Node*>(BinTree::_detach(&key));
 			}
-			NodeI getRoot() noexcept {
-				return NodeI(downcast<Node*>(root));
+			Node* getRoot() noexcept {
+				return downcast<Node*>(root);
 			}
-			NodeC getRoot() const noexcept {
-				return NodeC(downcast<const Node*>(root));
+			const Node* getRoot() const noexcept {
+				return downcast<const Node*>(root);
 			}
 			NodeI begin() noexcept {
 				BinEntI temp = BinTree::begin();
@@ -107,11 +107,11 @@ namespace CustomUtils {
 			const V* find(const K& key) const noexcept(lessex) {
 				return const_cast<BinMap*>(this)->find(key);
 			}
-			NodeI search(const K& key) noexcept(lessex) {
-				return downcast<NodeI&&>(_search(&key));
+			Node* search(const K& key) noexcept(lessex) {
+				return downcast<Node*>(_search(&key));
 			}
-			NodeC search(const K& key) const noexcept(lessex) {
-				return downcast<const NodeC&>(_search(&key));
+			const Node* search(const K& key) const noexcept(lessex) {
+				return downcast<const Node*>(_search(&key));
 			}
 		private:
 			template <class, class>

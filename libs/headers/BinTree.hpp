@@ -122,14 +122,20 @@ namespace CustomUtils {
 			BinEnt* _attach(BinEnt*);
 			bool _add(BinEnt*, bool = false);
 		public:
-			BinEnt* attach(BinEnt*);
-			inline BinEnt* attach(BinEntI& val) {
-				return attach(&*val);
-			}
 			inline BinTree(BinEnt* val, const BinInfo* info) noexcept :
 				data(info), root(val) {}
 			virtual BinTree* clone() = 0;
 			virtual BinTree* clone() const = 0;
+			BinEnt* attach(BinEnt*);
+			inline BinEnt* attach(BinEntI& val) {
+				return attach(&*val);
+			}
+			inline BinEnt* getRoot() noexcept {
+				return root;
+			}
+			inline const BinEnt* getRoot() const noexcept {
+				return root;
+			}
 			Find<BinEnt*> _find(const void*);
 			inline Find<const BinEnt*> _find(const void* key) const {
 				return const_cast<BinTree*>(this)->_find(key);
@@ -141,8 +147,8 @@ namespace CustomUtils {
 			inline const BinEntC end() const noexcept {
 				return nullptr;
 			}
-			BinEntI _search(const void*);
-			inline BinEntC _search(const void* key) const {
+			BinEnt* _search(const void*);
+			inline const BinEnt* _search(const void* key) const {
 				return const_cast<BinTree*>(this)->_search(key);
 			}
 			BinEnt* _detach(const void*) noexcept;

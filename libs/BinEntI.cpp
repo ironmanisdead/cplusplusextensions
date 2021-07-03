@@ -8,13 +8,6 @@ namespace CustomUtils {
 		delete current;
 		current = nullptr;
 	}
-	BinEntI BinTree::_search(const void* key) {
-		Find<BinEnt*> result = _find(key);
-		if (result.found == 0)
-			return result.value;
-		else
-			return nullptr;
-	}
 	BinEntI& BinEntI::operator ++() noexcept {
 		if (current)
 			current = current->_next();
