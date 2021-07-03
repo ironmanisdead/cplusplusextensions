@@ -336,12 +336,14 @@ namespace CustomUtils {
 				using add_reference = switch_if<is_reference<T>, T, const T&>;
 			template <class T, class U>
 			static constexpr T upcast(U&& val) noexcept {
-				static_assert(is_pointer_convertible<U, T>, "cannot upcast types");
+				static_assert(is_pointer_convertible<U, T>
+						|| is_convertible<U, T>, "cannot upcast types");
 				return RECAST(T, val);
 			}
 			template <class T, class U>
 			static constexpr T downcast(U&& val) noexcept {
-				static_assert(is_pointer_convertible<T, U>, "cannot downcast types");
+				static_assert(is_pointer_convertible<T, U>
+						|| is_convertible<T, U>, "cannot downcast types");
 				return RECAST(T, val);
 			}
 			template <class T, class R = T>
