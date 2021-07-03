@@ -11,12 +11,8 @@ namespace CustomUtils {
 		auto time = system_clock::now().time_since_epoch();
 		return duration_cast<milliseconds>(time).count();
 	}
-	static void* static_srand(volatile void*) noexcept {
-		std::srand(Utils::epoch());
-		return nullptr;
-	}
 	int Utils::rand() noexcept {
-		static volatile void* behave = static_srand(behave);
+		std::srand(Utils::epoch());
 		return std::rand();
 	}
 	void Utils::memcpy(void* dest, const void* src, size len) noexcept {
