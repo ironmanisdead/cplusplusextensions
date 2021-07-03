@@ -44,14 +44,14 @@ namespace CustomUtils {
 			Function() noexcept : caller(nullptr) {}
 			Function(const Function& val) {
 				if (val.caller) {
-					caller = RECAST(Proxy*, ::operator new(size = val.size));
+					caller = downcast<Proxy*>(::operator new(size = val.size));
 					val.caller->copy(caller);
 				} else
 					caller = nullptr;
 			}
 			Function(Function&& val) {
 				if (val.caller) {
-					caller = RECAST(Proxy*, ::operator new(size = val.caller->size()));
+					caller = downcast<Proxy*>(::operator new(size = val.caller->size()));
 					val.caller->move(caller);
 				} else
 					caller = nullptr;
@@ -64,10 +64,10 @@ namespace CustomUtils {
 				else if constexpr (Utils::is_same<raw, Function<Ret(Args...)>>) {
 					if (val.caller) {
 						if constexpr (Utils::is_lvalue_reference<T>) {
-							caller = RECAST(Proxy*, ::operator new(size = val.size));
+							caller = downcast<Proxy*>(::operator new(size = val.size));
 							val.caller->copy(caller);
 						} else {
-							caller = RECAST(Proxy*, ::operator new(size = val.caller->size()));
+							caller = downcast<Proxy*>(::operator new(size = val.caller->size()));
 							val.caller->move(caller);
 						}
 					} else

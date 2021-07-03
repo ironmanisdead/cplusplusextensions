@@ -7,7 +7,7 @@ namespace CustomUtils {
 	UVector::~UVector() { finalize(); }
 	const char* UVector::id() noexcept { return typeinfo->text->id; }
 	void UVector::allocate(Utils::size siz) {
-		raw = RECAST(char*, (::operator new(siz)));
+		raw = Utils::downcast<char*>(::operator new(siz));
 		trulen = siz;
 		len = 0;
 	}
@@ -86,7 +86,7 @@ namespace CustomUtils {
 		while (ntru < n1)
 			ntru *= 2;
 		Utils::size elem = typeinfo->data->elem;
-		char* temp = RECAST(char*, ::operator new(ntru + elem));
+		char* temp = Utils::downcast<char*>(::operator new(ntru + elem));
 		Utils::memcpy(temp, raw, len * elem);
 		raw = temp;
 		trulen = ntru + elem;

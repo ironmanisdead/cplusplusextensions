@@ -25,30 +25,30 @@ namespace CustomUtils {
 				return *this;
 			}
 			BinNodeC& operator ++(int) noexcept {
-				const Node* prev = RECAST(const Node*, current);
+				const Node* prev = Utils::downcast<const Node*>(current);
 				BinEntC::operator++();
 				return prev;
 			}
 			BinNodeC& operator --(int) noexcept {
-				const Node* prev = RECAST(const Node*, current);
+				const Node* prev = Utils::downcast<const Node*>(current);
 				BinEntC::operator--();
 				return prev;
 			}
 			BinNodeC next() const noexcept {
 				if (current)
-					return RECAST(const Node*, current->_next());
+					return Utils::downcast<const Node*>(current->_next());
 				return nullptr;
 			}
 			BinNodeC prev() const noexcept {
 				if (current)
-					return RECAST(const Node*, current->_prev());
+					return Utils::downcast<const Node*>(current->_prev());
 				return nullptr;
 			}
 			const Node* operator ->() const noexcept {
-				return RECAST(const Node*, current);
+				return Utils::downcast<const Node*>(current);
 			}
 			const Node& operator *() const noexcept {
-				return RECAST(const Node&, *current);
+				return *Utils::downcast<const Node*>(current);
 			}
 	};
 	template <class K, class V>
@@ -83,46 +83,46 @@ namespace CustomUtils {
 				return *this;
 			}
 			BinNodeI operator ++(int) noexcept {
-				Node* prev = RECAST(Node*, current);
+				Node* prev = Utils::downcast<Node*>(current);
 				BinEntI::operator++();
 				return prev;
 			}
 			BinNodeI operator --(int) noexcept {
-				Node* prev = RECAST(Node*, current);
+				Node* prev = Utils::downcast<Node*>(current);
 				BinEntI::operator--();
 				return prev;
 			}
 			BinNodeI next() noexcept {
 				if (current)
-					return RECAST(Node*, current->_next());
+					return Utils::downcast<Node*>(current->_next());
 				return nullptr;
 			}
 			BinNodeI prev() noexcept {
 				if (current)
-					return RECAST(Node*, current->_prev());
+					return Utils::downcast<Node*>(current->_prev());
 				return nullptr;
 			}
 			BinNodeC<K, V> next() const noexcept {
 				if (current)
-					return RECAST(const Node*, current->_next());
+					return Utils::downcast<const Node*>(current->_next());
 				return nullptr;
 			}
 			BinNodeC<K, V> prev() const noexcept {
 				if (current)
-					return RECAST(const Node*, current->_prev());
+					return Utils::downcast<const Node*>(current->_prev());
 				return nullptr;
 			}
 			Node* operator ->() noexcept {
-				return RECAST(Node*, current);
+				return Utils::downcast<Node*>(current);
 			}
 			const Node* operator ->() const noexcept {
-				return RECAST(const Node*, current);
+				return Utils::downcast<const Node*>(current);
 			}
 			Node& operator *() noexcept {
-				return RECAST(Node&, *current);
+				return *Utils::downcast<Node*>(current);
 			}
 			const Node& operator *() const noexcept {
-				return RECAST(const Node&, *current);
+				return *Utils::downcast<const Node*>(current);
 			}
 	};
 	template <class K, class V>

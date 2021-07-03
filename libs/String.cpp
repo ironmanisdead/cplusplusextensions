@@ -18,7 +18,7 @@ namespace CustomUtils {
 		finalize();
 		if (n1 == 0)
 			return;
-		char* temp = RECAST(char*, (::operator new(n1)));
+		char* temp = Utils::downcast<char*>(::operator new(n1));
 		buffer = temp;
 		trulen = n1;
 		len = 0;
@@ -33,7 +33,7 @@ namespace CustomUtils {
 		Utils::size ntru = trulen;
 		while (ntru < n1)
 			ntru *= 2;
-		char* temp = RECAST(char*, (::operator new(ntru)));
+		char* temp = Utils::downcast<char*>(::operator new(ntru));
 		Utils::memcpy(temp, buffer, len);
 		buffer = temp;
 		trulen = ntru;

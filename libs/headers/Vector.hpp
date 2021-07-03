@@ -26,10 +26,10 @@ namespace CustomUtils {
 				place(len, alloc);
 			}
 			T& operator[](Utils::size n) {
-				return RECAST(T&, raw[sizeof(T) * n]);
+				return *downcast<T*>(&raw[sizeof(T) * n]);
 			}
 			const T& operator[](Utils::size n) const {
-				return RECAST(const T&, raw[sizeof(T) * n]);
+				return *downcast<const T*>(&raw[sizeof(T) * n]);
 			}
 			friend class String;
 	};

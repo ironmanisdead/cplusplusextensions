@@ -338,12 +338,16 @@ namespace CustomUtils {
 			static constexpr T upcast(U&& val) noexcept {
 				static_assert(is_pointer_convertible<U, T>
 						|| is_convertible<U, T>, "cannot upcast types");
+				static_assert(is_pointer<T> || is_reference<T>,
+						"cannot recast if type is neither pointer nor reference");
 				return RECAST(T, val);
 			}
 			template <class T, class U>
 			static constexpr T downcast(U&& val) noexcept {
 				static_assert(is_pointer_convertible<T, U>
 						|| is_convertible<T, U>, "cannot downcast types");
+				static_assert(is_pointer<T> || is_reference<T>,
+						"cannot recast if type is neither pointer nor reference");
 				return RECAST(T, val);
 			}
 			template <class T, class R = T>

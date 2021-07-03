@@ -20,14 +20,14 @@ namespace CustomUtils {
 		return std::rand();
 	}
 	void Utils::memcpy(void* dest, const void* src, size len) noexcept {
-		char* cdest = RECAST(char*, dest);
-		const char* csrc = RECAST(const char*, src);
+		char* cdest = downcast<char*>(dest);
+		const char* csrc = downcast<const char*>(src);
 		for (size i = 0; i < len; i++)
 			cdest[i] = csrc[i];
 	}
 	void Utils::memmove(void* dest, const void* src, size len) noexcept {
-		char* cdest = RECAST(char*, dest);
-		const char* csrc = RECAST(const char*, src);
+		char* cdest = downcast<char*>(dest);
+		const char* csrc = downcast<const char*>(src);
 		if (cdest < csrc)
 			memcpy(dest, src, len);
 		else
