@@ -2,12 +2,12 @@
 set -e
 
 if [[ -d /usr/local/lib64/libcustomutils ]]; then
-	if [[ -h "libs" ]]; then
+	if [[ -L "libs" ]]; then
 		echo "unlinking libs" >&2
-		unlink libs || true
-	elif [[ -d "libs" ]]
+		unlink libs
+	else
 		echo "removing libs" >&2
-		rm -r libs || true
+		rm -r libs
 	fi
 	echo "moving library directory to current" >&2
 	mv /usr/local/lib64/libcustomutils libs

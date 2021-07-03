@@ -2,8 +2,13 @@
 set -e
 
 if [[ -e "/usr/local/include/CustomUtils" ]]; then
-	echo "unlinking headers" >&2
-	unlink headers || true
+	if [[ -L "headers" ]]; then
+		echo "unlinking headers" >&2
+		unlink headers
+	else
+		echo "removing headers" >&2
+		rm -r headers
+	fi
 	echo "moving headers back to source directory" >&2
 	mv /usr/local/include/CustomUtils headers
 fi
