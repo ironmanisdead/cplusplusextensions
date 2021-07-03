@@ -3,7 +3,7 @@
 #include "headers/Utils.hpp"
 namespace CustomUtils {
 	void BinEnt::_rebalance() noexcept {}
-	bool BinEnt::rotate(bool direction) noexcept { //TODO: complete function
+	bool BinEnt::rotate(bool direction) noexcept { //TODO: complete rotate
 		if (!isattach())
 			return false;
 		bool isright;
