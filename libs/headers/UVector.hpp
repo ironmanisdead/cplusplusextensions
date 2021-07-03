@@ -4,6 +4,7 @@
 #include <type_traits>
 #include "GString.hpp"
 #include <stdexcept>
+//TODO: finish Vector
 namespace CustomUtils {
 	template <class>
 		class Vector;
