@@ -1,11 +1,15 @@
 #!/bin/bash
-set -e -v
+set -e
 
 if [[ -e /usr/local/lib64/libcustomutils ]]; then
+	echo "unlinking libs" >&2
 	unlink libs || true
+	echo "moving library directory to current" >&2
 	mv /usr/local/lib64/libcustomutils libs
+	echo "unlinking -lcustomutils from lib64" >&2
 	unlink /usr/local/lib64/libcustomutils.so || true
+	echo "removing test objects, as they might be linked with -lcustomutils" >&2
+	rm -f *.o
 fi
 
-rm *.o
 cd libs && make uninstall
