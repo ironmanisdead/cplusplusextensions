@@ -5,9 +5,11 @@ namespace CustomUtils {
 	void BinEnt::_rebalance() noexcept {}
 	bool BinEnt::rotate(bool direction) noexcept {
 		if (!isattach())
-			return false;
+			return false; //cannot rotate node that isn't on a tree
 		if (direction) { //right rotation
 			BinEnt* A = left;
+			if (!A)
+				return false; //cannot rotate left if nothing's right
 			A->setParentFrom(this);
 			unParent(A);
 			setParent(A);
@@ -18,6 +20,8 @@ namespace CustomUtils {
 				T2->setParent(this);
 		} else { //left rotation
 			BinEnt* B = right;
+			if (!B)
+				return false; //cannot rotate right if nothing's left
 			B->setParentFrom(this);
 			unParent(B);
 			setParent(B);
