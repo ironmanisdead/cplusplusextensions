@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -e -v
 
 if [[ -e /usr/local/lib64/libcustomutils ]]; then
 	unlink libs || true
@@ -7,4 +7,5 @@ if [[ -e /usr/local/lib64/libcustomutils ]]; then
 	unlink /usr/local/lib64/libcustomutils.so || true
 fi
 
+rm *.o
 cd libs && make uninstall
