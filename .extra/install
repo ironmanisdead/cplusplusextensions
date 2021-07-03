@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [[ -d "libs" ]] && [[ ! -e "/usr/local/lib64/libcustomutils" ]]; then
 	echo "moving libs to /usr/local/lib64" >&2
@@ -7,8 +8,8 @@ if [[ -d "libs" ]] && [[ ! -e "/usr/local/lib64/libcustomutils" ]]; then
 	ln -s /usr/local/lib64/libcustomutils libs
 	echo "makeing libcustomutils linkable as -lcustomutils" >&2
 	ln -sf libcustomutils/.shared.so /usr/local/lib64/libcustomutils.so
+	echo "running subinstall" >&2
+	cd libs && make install
 else
 	echo "could not install libcustomutils, already installed" >&2
 fi
-
-cd libs && make install
