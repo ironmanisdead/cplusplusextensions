@@ -12,7 +12,11 @@ namespace CustomUtils {
 		return duration_cast<milliseconds>(time).count();
 	}
 	int Utils::rand() noexcept {
-		std::srand(Utils::epoch());
+		static bool set = false;
+		if (!set) {
+			std::srand(Utils::epoch());
+			set = true;
+		}
 		return std::rand();
 	}
 	void Utils::memcpy(void* dest, const void* src, size len) noexcept {

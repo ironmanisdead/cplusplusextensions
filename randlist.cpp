@@ -4,18 +4,13 @@
 #include <iostream>
 using namespace CustomUtils;
 int main() {
-	using clock = std::chrono::system_clock;
-	auto moment =
-		std::chrono::duration_cast<std::chrono::milliseconds>(
-				clock::now().time_since_epoch());
-	std::srand(moment.count());
 	BinMap<int, int> map;
 	for (int i = 0; i < 20; i++) {
 		int key;
 		do {
-			key = std::rand() % 30;
+			key = Utils::rand() % 30;
 		} while (map.find(key));
-		int val = std::rand() % 50;
+		int val = Utils::rand() % 50;
 		map.insert(key, val);
 		std::cout << key << ' ' << val << std::endl;
 	}
