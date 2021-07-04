@@ -12,6 +12,6 @@ declare -- rule="$info"$'\n'"comma=,"
 rule+=$'\n'"installed:=\$(shell test -f \"\$(installabs)\"/lib64/libcustomutils.so && echo \"true\")"$'\n'"${rule}"$'\n'"$rule2"
 rule+=$'\n\t'"\$(if \$(wildcard .$1.mk.2),rm .$1.mk.2,$0 $*)"
 rule+=$'\n\t'"gcc -std=c++2a -O3 -Wall -Wextra -o $1.o $1.cpp -lstdc++ \
-\$(if \$(installed),-Wl\$(comma)-rpath\$(comma)\"\$(installabs)/lib64\" -lcustomutils,\$(shell pwd)/libs/.shared.so)"
+\$(if \$(installed),-Wl\$(comma)-rpath=\"\$(installabs)/lib64\" -lcustomutils,\"\$(shell pwd)/libs/.shared.so\")"
 echo "this file should only exist during make, if it still exists afterwords, please remove it" >".$1.mk.2"
 echo "$rule" >".$1.mk"

@@ -1,6 +1,7 @@
-installdir:=/usr/local/lib64
-installabs:=$(abspath $(installdir))
 .DEFAULT_GOAL:=info
+not=$(if $(1),,true)
+installdir:=/usr/local
+installabs:=$(abspath $(installdir))
 PHON:=info remake unmake scrape clean reset .refresh install uninstall
 SOURCES:=$(wildcard *.cpp)
 DOTMK:=$(wildcard .*.mk)

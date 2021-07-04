@@ -1,4 +1,5 @@
 PHON:=clean reset scrape unmake remake .reset install uninstall
+not=$(if $(1),,true)
 comma:=,
 sources=$(wildcard *.cpp)
 mk2:=$(wildcard .*.mk.2)
