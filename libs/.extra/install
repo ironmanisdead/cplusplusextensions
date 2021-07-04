@@ -9,4 +9,4 @@ fi
 echo "making include directory" >&2
 mkdir -p "${installdir}/include/CustomUtils"
 echo "installing header files" >&2
-cp -t "${installdir}/include/CustomUtils" headers/*.hpp
+cp -u -t "${installdir}/include/CustomUtils" headers/*.hpp

@@ -25,5 +25,4 @@ To install, simply run "<i>make install</i>", and to uninstall run "<i>make unin
 
 If all you want to do are tests, then by all means, fill up your clone of this project with
 as many .cpp files as you wish, just create the corresponding programs with "<i>make tests</i>"
-I currently have the project set up so it has to install inside /usr/local, but could fix that in
-the future.
+The project installation directory can be modified by setting installdir in the make parameter list
