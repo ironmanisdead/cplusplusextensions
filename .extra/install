@@ -4,7 +4,7 @@ echo "running subinstalls" >&2
 (cd libs && make install)
 
 echo "creating /lib64 inside install directory" >&2
-mkdir -p "$installdir"/lib64
+mkdir -p "$installabs"/lib64
 echo "creating -lcustomutils inside install /lib64" >&2
-cp -u libs/.shared.so "$installdir"/lib64/libcustomutils.so
-cp -u libs/.static.a "$installdir"/lib64/libcustomutils.a
+cp -u libs/.shared.so "$installabs"/lib64/libcustomutils.so
+cp -u libs/.static.a "$installabs"/lib64/libcustomutils.a

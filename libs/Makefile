@@ -1,4 +1,3 @@
-include /usr/local/lib/make/util.mk
 PHON:=clean reset scrape unmake remake .reset install uninstall
 comma:=,
 sources=$(wildcard *.cpp)

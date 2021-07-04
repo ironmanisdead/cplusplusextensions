@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-if [[ -d "${installdir}/include/CustomUtils" ]]; then
+if [[ -d "${installabs}/include/CustomUtils" ]]; then
 	echo "removing previous header installation" >&2
-	rm -r "${installdir}/include/CustomUtils"
+	rm -r "${installabs}/include/CustomUtils"
 fi
 
 echo "making include directory" >&2
-mkdir -p "${installdir}/include/CustomUtils"
+mkdir -p -v "${installabs}/include/CustomUtils"
 echo "installing header files" >&2
-cp -u -t "${installdir}/include/CustomUtils" headers/*.hpp
+cp -u -t "${installabs}/include/CustomUtils" headers/*.hpp
