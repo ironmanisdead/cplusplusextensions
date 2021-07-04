@@ -1,6 +1,25 @@
 #!/bin/bash
 
-if [[ ! -L "headers" ]] && [[ ! -e "/usr/local/include/CustomUtils" ]]; then
+declare -- yn
+if [[ ! -L "headers" ]]; then
+	if [[ -e "/usr/local/include/CustomUtils" ]]; then
+		echo -n "headers are already installed, override them? (y/n):" >&2
+		read -n 1 yn
+		echo
+		case $yn in
+			"y")
+				echo "overriding headers"
+				rm -r "/usr/local/include/CustomUtils"
+				;;
+			"n")
+				echo "exiting..."
+				exit 1
+				;;
+			*)
+				echo "didn't recognize that"
+				exit 2
+		esac
+	fi
 	mv headers /usr/local/include/CustomUtils
 	ln -s /usr/local/include/CustomUtils headers
 fi

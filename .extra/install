@@ -1,7 +1,25 @@
 #!/bin/bash
 set -e
 
-if [[ -d "libs" ]] && [[ ! -e "/usr/local/lib64/libcustomutils" ]]; then
+if [[ -d "libs" ]]; then
+	if [[ -e "/usr/local/lib64/libcustomutils" ]]; then
+		echo -n "existing installation found, override it? (y/n):" >&2
+		read -n 1 yn
+		echo
+		case $yn in
+			"y")
+				echo "removing installation" >&2
+				rm -r /usr/local/lib64/libcustomutils
+				;;
+			"n")
+				echo "exiting" >&2
+				exit 1
+				;;
+			*)
+				echo "didn't recognize that"
+				exit 2
+		esac
+	fi
 	echo "moving libs to /usr/local/lib64" >&2
 	mv libs /usr/local/lib64/libcustomutils
 	echo "linking /usr/local/lib64/libcustomutils back to current directory" >&2
