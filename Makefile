@@ -1,8 +1,8 @@
-.DEFAULT_GOAL:=info
+.DEFAULT_GOAL:=install
 not=$(if $(1),,true)
 installdir:=/usr/local
 installabs:=$(abspath $(installdir))
-PHON:=info remake unmake scrape clean reset .refresh install uninstall
+PHON:=help remake unmake scrape clean reset .refresh install uninstall
 SOURCES:=$(wildcard *.cpp)
 DOTMK:=$(wildcard .*.mk)
 DOTMK2:=$(wildcard .*.mk.2)
@@ -23,8 +23,8 @@ endif
 
 .PHONY:tests nodep nodown $(PHON)
 
-info:
-	$(error please select 'install', 'tests', 'uninstall', or a specific '.o' file that you wish to generate)
+help:
+	$(info please select 'install', 'tests', 'uninstall', or a specific '.o' file that you wish to generate)
 
 install:
 	installabs="$(installabs)" .extra/install
