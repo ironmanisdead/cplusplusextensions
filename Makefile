@@ -1,5 +1,6 @@
 include /usr/local/lib/make/util.mk
 
+installdir:=/usr/local/lib64
 .DEFAULT_GOAL:=info
 PHON:=info remake unmake scrape clean reset .refresh install uninstall
 SOURCES:=$(wildcard *.cpp)
@@ -26,10 +27,10 @@ info:
 	$(error please select 'install', 'tests', 'uninstall', or a specific '.o' file that you wish to generate)
 
 install:
-	.extra/install
+	installdir="$(installdir)" .extra/install
 
 uninstall:
-	.extra/uninstall
+	installdir="$(installdir)" .extra/uninstall
 
 tests: $(OBJECTS)
 

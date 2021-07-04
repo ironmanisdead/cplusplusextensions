@@ -10,6 +10,7 @@ EOF
 declare -- rule2="$(cc -M "$1.cpp")"
 declare -- rule="$info"$'\n'"comma=,"
 rule+=$'\n'"installed:=\$(shell test -L \"libs\" && echo \"hey\")"$'\n'"${rule}"$'\n'"$rule2"
+rule+=$'\n\t'"echo \$(installdir)"
 rule+=$'\n\t'"\$(if \$(wildcard .$1.mk.2),rm .$1.mk.2,$0 $*)"
 rule+=$'\n\t'"gcc -std=c++2a -O3 -Wall -Wextra -o $1.o $1.cpp -lstdc++ \
 \$(if \$(installed),-lcustomutils,\$(shell pwd)/libs/.shared.so)"
