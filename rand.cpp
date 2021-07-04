@@ -4,6 +4,11 @@
 int main() {
 	std::srand(1);
 	std::cout << std::rand() << std::endl;
-	std::srand(1);
+	bool al;
+	std::cin >> std::boolalpha;
+	std::cin >> al;
+	std::cout << al << std::endl;
+	if (al)
+		std::srand(1);
 	std::cout << std::rand() << std::endl;
 }
