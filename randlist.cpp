@@ -1,6 +1,4 @@
 #include "libs/headers/BinMap.hpp"
-#include <chrono>
-#include <cstdlib>
 #include <iostream>
 using namespace CustomUtils;
 int main() {

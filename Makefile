@@ -1,4 +1,4 @@
-.DEFAULT_GOAL:=install
+.DEFAULT_GOAL:=help
 not=$(if $(1),,true)
 installdir:=/usr/local
 installabs:=$(abspath $(installdir))
