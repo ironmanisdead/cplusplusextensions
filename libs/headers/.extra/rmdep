@@ -8,7 +8,6 @@ for included in "${installabs}"/include/CustomUtils/*.hpp; do
 	fi
 	item="${included#"${installabs}/include/CustomUtils/"}"
 	if [[ ! -f "$item" ]]; then
-		echo "removing ${included}"
-		rm "$included"
+		rm -v "$included"
 	fi
 done
