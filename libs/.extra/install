@@ -2,8 +2,7 @@
 set -e
 
 if [[ -d "${installabs}/include/CustomUtils" ]]; then
-	echo "removing previous header installation" >&2
-	rm -r "${installabs}/include/CustomUtils"
+	(cd headers && .extra/rmdep)
 fi
 
 echo "making include directory" >&2

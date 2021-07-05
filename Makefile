@@ -2,6 +2,9 @@
 not=$(if $(1),,true)
 installdir:=/usr/local
 installabs:=$(abspath $(installdir))
+ifneq ($(findstring /$(shell pwd),/$(installabs)),)
+ $(error cannot install libcustomutils inside source directory)
+endif
 PHON:=help remake unmake scrape clean reset .refresh install uninstall
 SOURCES:=$(wildcard *.cpp)
 DOTMK:=$(wildcard .*.mk)

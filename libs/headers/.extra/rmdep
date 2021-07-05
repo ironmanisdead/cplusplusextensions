@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+declare -- item included
+for included in "${installabs}"/include/CustomUtils/*.hpp; do
+	if [[ ! -f "${included}" ]]; then
+		continue
+	fi
+	item="${included#"${installabs}/include/CustomUtils/"}"
+	if [[ ! -f "$item" ]]; then
+		echo "removing ${included}"
+		rm "$included"
+	fi
+done
