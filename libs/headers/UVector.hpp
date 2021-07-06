@@ -4,7 +4,6 @@
 #include <type_traits>
 #include "GString.hpp"
 #include <stdexcept>
-//TODO: finish Vector
 namespace CustomUtils {
 	template <class>
 		class Vector;
@@ -55,6 +54,7 @@ namespace CustomUtils {
 			void place(Utils::size, const char*) noexcept;
 			void remove(Utils::size, Utils::size = 1);
 		public:
+			UVector& operator =(const UVector&);
 			inline Utils::size getlen() const noexcept {
 				if (trulen > 0)
 					return len;

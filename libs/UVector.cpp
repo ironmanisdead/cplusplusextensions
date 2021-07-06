@@ -1,6 +1,5 @@
 #include "headers/UVector.hpp"
 #include <stdexcept>
-//TODO: finish Vectors
 namespace CustomUtils {
 	UVector::UVector(const FullType* const type)
 		noexcept : typeinfo(type), trulen(0), len(0) {}
@@ -12,6 +11,9 @@ namespace CustomUtils {
 		len = 0;
 	}
 	void UVector::save(UVector& val) noexcept { 
+		finalize();
+		raw = val.raw;
+		len = val.len;
 		trulen = val.trulen;
 		val.trulen = 0;
 	}
@@ -65,6 +67,10 @@ namespace CustomUtils {
 			throw;
 		}
 		len = target;
+	}
+	UVector& UVector::operator =(const UVector& val) {
+		copy(val);
+		return *this;
 	}
 	void UVector::finalize() noexcept {
 		if (trulen > 0) {
