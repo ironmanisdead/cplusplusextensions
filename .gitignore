@@ -1,0 +1,8 @@
+*.[oa]
+*.mk
+*.so
+*.mk.2
+/libs/headers/All.hpp
+/libs/headers/.dirhash
+#next line is discardable in your own forks
+/.gitcred
