@@ -7,7 +7,13 @@ IFS= read -d '' info <<'EOF'
 #this file is automatically created and modified,
 #please do not modify or delete it yourself.
 EOF
-declare -- rule2="$(cc -M "$1.cpp")"
+declare -- rule2
+if test -f "${installabs}/lib64/libcustomutils.so"; then
+	rule2="$(cc -I "${installabs}/include/" -M "$1.cpp")" || exit $?
+else
+	rule2="$(cc -I "$(pwd)/libs/include/" -M "$1.cpp")" || exit $?
+fi
+rule2="$(cc -I "libs/include/" -M "$1.cpp")" || exit $?
 declare -- rule="$info"$'\n'"pwd:=\$(shell pwd)"
 rule+=$'\n'"winstall=-I \"\$(installabs)/include/\" -L \"\$(installabs)/lib64/\" -Wl,-rpath,\"\$(installabs)/lib64/\" -Wl,-lcustomutils"
 rule+=$'\n'"ninstall=-I \"\$(pwd)/libs/include/\" -L \"\$(pwd)/libs/\" -Wl,-rpath,'\$\$ORIGIN/libs/' -Wl,-l:.shared.so"
