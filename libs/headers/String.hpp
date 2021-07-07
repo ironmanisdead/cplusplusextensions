@@ -1,17 +1,20 @@
 #pragma once
 #include "Utils.hpp"
+#include ".hidden/StringView-part.hpp"
+#include "StringEdit.hpp"
 namespace CustomUtils {
 	class StringView;
 	class String;
 	template <class>
 		class Vector;
 	template <class T>
-		void stringput(T&, const String*);
+		void viewput(T&, const StringView*);
+	template <class T>
+		void viewput(T&, const StringEdit*);
 	class String {
 		private:
 			Utils::size trulen;
-			Utils::size len;
-			char* buffer;
+			StringEdit view;
 			void allocate(Utils::size);
 			void resize(Utils::size);
 			void finalize() noexcept;
@@ -49,23 +52,23 @@ namespace CustomUtils {
 			}
 		public:
 			String() noexcept;
-			inline String(const String& val) : trulen(0), len(0) {
+			inline String(const String& val) : trulen(0), view(nullptr, 0) {
 				byval(val);
 			}
-			inline String(String&& val) noexcept : trulen(0), len(0) {
+			inline String(String&& val) noexcept : trulen(0), view(nullptr, 0) {
 				byval(Utils::forward<String>(val));
 			}
 			template <class T, class... V, bool isn = (sizeof...(V) == 0)>
 				String(T&& val, const V&... rest) noexcept(isn && Utils::is_same<T, String>);
 			constexpr Utils::size getlen() const noexcept {
 				if (trulen > 0)
-					return len;
+					return view.len;
 				else
 					return 0;
 			}
 			constexpr const char* data() const noexcept {
 				if (trulen > 0)
-					return buffer;
+					return view.buffer;
 				else
 					return nullptr;
 			}
@@ -103,11 +106,12 @@ namespace CustomUtils {
 			Utils::strongcmp_t operator <=>(const T& val) const noexcept {
 				using ray_m = Utils::array_prop<T>;
 				using ray_r = Utils::array_util<T>;
-				if constexpr (ray_m::value)
-					return valcmp(StringView(val, ray_m::len));
-				else if constexpr (ray_r::value)
-					return valcmp(StringView(val, ray_m::len));
-				else
+				Utils::size siz = ray_m::value ? ray_m::len : (ray_r::value ? ray_r::len : 0);
+				if constexpr (ray_m::value) {
+					return valcmp(StringView(val, val[siz-1] ? siz : siz - 1));
+				} else if constexpr (ray_r::value) {
+					return valcmp(StringView(val, val[siz-1] ? siz : siz - 1));
+				} else
 					return valcmp(val);
 			}
 			template <class T, class... V>
@@ -117,32 +121,26 @@ namespace CustomUtils {
 			}
 			constexpr operator const char*() const noexcept {
 				if (trulen > 0)
-					return buffer;
+					return view.buffer;
 				else
 					return nullptr;
 			}
 			~String();
 			template <class T>
-			friend T& operator <<(T& os, const String& val) {
-				stringput(os, &val);
-				return os;
-			}
+			friend T& operator <<(T& os, const String& val);
 			template <class T>
-			friend T& operator <<(T& os, const String* val) {
-				stringput(os, val);
-				return os;
-			}
+				friend T& operator <<(T& os, const String* val);
 			template <class T>
-			friend void stringput(T&, const String*);
+				friend void stringput(T&, const String*);
 			friend class Vector<char>;
 	};
 }
-#include "GString.hpp"
+#include ".hidden/GString-part.hpp"
 namespace CustomUtils {
 	template <bool reset, class T, class... V>
 	void String::adder(const T& val, const V&... rest) noexcept(!reset) {
 		if constexpr (reset)
-			resize(len + GString::strlen(val) + (GString::strlen(rest) + ... + 1));
+			resize(view.len + GString::strlen(val) + (GString::strlen(rest) + ... + 1));
 		using ray_m = Utils::array_prop<T>;
 		using ray_r = Utils::array_util<T>;
 		if constexpr (ray_m::value)
@@ -156,7 +154,7 @@ namespace CustomUtils {
 	}
 	template <class T, class... V, bool isn>
 	String::String(T&& val, const V&... rest) noexcept(isn && Utils::is_same<T, String>) :
-	 trulen(0), len(0) {
+	 trulen(0), view(nullptr, 0) {
 		if constexpr (isn) {
 			setup(Utils::forward<T>(val));
 		} else {
@@ -172,5 +170,15 @@ namespace CustomUtils {
 				byval<false>(val);
 			adder<false>(rest...);
 		}
+	}
+	template <class T>
+	T& operator <<(T& os, const String& val) {
+		viewput(os, &val.view);
+		return os;
+	}
+	template <class T>
+	T& operator <<(T& os, const String* val) {
+		viewput(os, val ? &val->view : nullptr);
+		return os;
 	}
 }

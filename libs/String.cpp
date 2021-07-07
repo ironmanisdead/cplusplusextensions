@@ -4,12 +4,12 @@
 #include <iostream>
 #define BOOL_EXTERN(fun, ...) template fun<true>(__VA_ARGS__); template fun<false>(__VA_ARGS__)
 namespace CustomUtils {
-	String::String() noexcept : trulen(0), len(0) {}
+	String::String() noexcept : trulen(0), view(nullptr, 0) {}
 	void String::finalize() noexcept {
 		if (trulen > 0)
-			::operator delete(buffer);
+			::operator delete(view.buffer);
 		trulen = 0;
-		len = 0;
+		view.len = 0;
 	}
 	String::~String() {
 		finalize();
@@ -19,9 +19,9 @@ namespace CustomUtils {
 		if (n1 == 0)
 			return;
 		char* temp = Utils::downcast<char*>(::operator new(n1));
-		buffer = temp;
+		view.buffer = temp;
 		trulen = n1;
-		len = 0;
+		view.len = 0;
 	}
 	void String::resize(Utils::size n1) {
 		if (trulen == 0)
@@ -34,11 +34,11 @@ namespace CustomUtils {
 		while (ntru < n1)
 			ntru *= 2;
 		char* temp = Utils::downcast<char*>(::operator new(ntru));
-		Utils::memcpy(temp, buffer, len);
-		::operator delete(buffer);
-		buffer = temp;
+		Utils::memcpy(temp, view.buffer, view.len);
+		::operator delete(view.buffer);
+		view.buffer = temp;
 		trulen = ntru;
-		buffer[len] = '\0';
+		view.buffer[view.len] = '\0';
 	}
 	template <bool reset>
 	void String::byray(const char* val, Utils::size siz) noexcept(!reset) {
@@ -52,15 +52,15 @@ namespace CustomUtils {
 		}
 		if constexpr (reset)
 			resize(ntru);
-		len = nlen;
-		Utils::memcpy(buffer, val, siz);
-		buffer[len] = '\0';
+		view.len = nlen;
+		Utils::memcpy(view.buffer, val, siz);
+		view.buffer[view.len] = '\0';
 	}
 	void String::byval(String&& val) noexcept {
 		finalize();
-		len = val.len;
+		view.len = val.view.len;
 		trulen = val.trulen;
-		buffer = val.buffer;
+		view.buffer = val.view.buffer;
 		val.trulen = 0;
 	}
 	template <bool reset>
@@ -69,10 +69,10 @@ namespace CustomUtils {
 			return finalize();
 		}
 		if constexpr (reset)
-			resize(val.len + 1);
-		Utils::memcpy(buffer, val.buffer, val.len);
-		len = val.len;
-		buffer[len] = '\0';
+			resize(val.view.len + 1);
+		Utils::memcpy(view.buffer, val.view.buffer, val.view.len);
+		view.len = val.view.len;
+		view.buffer[view.len] = '\0';
 	}
 	template <bool reset>
 	void String::byval(const char* val) noexcept(!reset) {
@@ -85,8 +85,8 @@ namespace CustomUtils {
 		Utils::size siz = GString::strlen(val);
 		if constexpr (reset)
 			resize(siz + 1);
-		Utils::memcpy(buffer, val, trulen);
-		len = siz;
+		Utils::memcpy(view.buffer, val, trulen);
+		view.len = siz;
 	}
 	template <bool reset>
 	void String::byval(Utils::size str) noexcept(!reset) {
@@ -106,54 +106,59 @@ namespace CustomUtils {
 			nlen = siz - 1;
 		else
 			nlen = siz;
-		Utils::memcpy(&buffer[len], val, siz);
-		len += nlen;
-		buffer[len] = '\0';
+		Utils::memcpy(&view.buffer[view.len], val, siz);
+		view.len += nlen;
+		view.buffer[view.len] = '\0';
 	}
 	void String::addval(const char* val) noexcept {
 		Utils::size siz = GString::strlen(val);
-		Utils::memcpy(&buffer[len], val, siz);
-		len += siz;
+		Utils::memcpy(&view.buffer[view.len], val, siz);
+		view.len += siz;
 	}
 	void String::addval(const String& val) noexcept {
 		if (val.trulen > 0) {
-			Utils::memcpy(&buffer[len], val.buffer, val.len);
-			len += val.len;
+			Utils::memcpy(&view.buffer[view.len], val.view.buffer, val.view.len);
+			view.len += val.view.len;
 		}
 	}
 	void String::addval(Utils::size str) noexcept {
-		buffer[len] = '0';
+		view.buffer[view.len] = '0';
 		Utils::size siz = GString::strlen(str);
 		for (Utils::size i = 0; i < siz; i++) {
-			buffer[len + siz - i] = (str % 10);
+			view.buffer[view.len + siz - i] = (str % 10);
 			str /= 10;
 		}
-		len += siz;
+		view.len += siz;
 	}
 	void String::addval(signed str) noexcept {
 		if (str < 0) {
-			buffer[len++] = '-';
+			view.buffer[view.len++] = '-';
 			str = -str;
 		}
-		buffer[len] = '0';
+		view.buffer[view.len] = '0';
 		Utils::size siz = GString::strlen(str);
 		for (Utils::size i = 1; i <= siz; i++) {
-			buffer[len + siz - i] = (str % 10) + '0';
+			view.buffer[view.len + siz - i] = (str % 10) + '0';
 			str /= 10;
 		}
-		len += siz;
+		view.len += siz;
 	}
 	Utils::strongcmp_t String::operator <=>(const String& val) const noexcept {
 		if ((trulen == 0) || (val.trulen == 0))
 			return (trulen <=> val.trulen);
-		return (StringView(buffer, len) <=> StringView(val.buffer, val.len));
+		return (StringView(view.buffer, view.len) <=> StringView(val.view.buffer, val.view.len));
 	}
 	Utils::strongcmp_t String::valcmp(const StringView& val) const noexcept {
 		return StringView(*this) <=> val;
 	}
 	template <>
-	void stringput(std::ostream& os, const String* val) {
-		if (val && (val->trulen > 0))
+	void viewput(std::ostream& os, const StringView* val) {
+		if (val && (val->buffer))
+			return static_cast<void>(os.write(val->buffer, val->len));
+	}
+	template <>
+	void viewput(std::ostream& os, const StringEdit* val) {
+		if (val && (val->buffer))
 			return static_cast<void>(os.write(val->buffer, val->len));
 	}
 	BOOL_EXTERN(void String::byval, const String&);

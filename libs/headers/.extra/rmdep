@@ -11,3 +11,12 @@ for included in "${installabs}"/include/CustomUtils/*.hpp; do
 		rm -v "$included"
 	fi
 done
+for included in "${installabs}"/include/CustomUtils/.hidden/*.hpp; do
+	if [[ ! -f "${included}" ]]; then
+		continue
+	fi
+	item="${included#"${installabs}/include/CustomUtils/"}"
+	if [[ ! -f "$item" ]]; then
+		rm -v "$included"
+	fi
+done
