@@ -7,6 +7,8 @@
 namespace CustomUtils {
 	template <class>
 		class Vector;
+	template <class T>
+		void vecput(T&, const Vector<char>*);
 	class UVector {
 		public:
 			const char* id() noexcept;
@@ -38,7 +40,6 @@ namespace CustomUtils {
 				const TypeText* text;
 			};
 			const FullType* const typeinfo;
-			UVector() noexcept;
 			UVector(const FullType*) noexcept;
 			[[noreturn]] void copy_error();
 			Utils::size trulen;
@@ -50,6 +51,7 @@ namespace CustomUtils {
 			void copy(const UVector&, void (*)(void*, const void*));
 			void allocate(Utils::size);
 			void finalize() noexcept;
+			void deinit() noexcept;
 			void resize(Utils::size);
 			void place(Utils::size, const char*) noexcept;
 			void remove(Utils::size, Utils::size = 1);
@@ -61,5 +63,7 @@ namespace CustomUtils {
 				else
 					return 0;
 			}
+			template <class V>
+				friend void vecput(V&, const Vector<char>*);
 	};
 }

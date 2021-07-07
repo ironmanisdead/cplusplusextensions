@@ -3,7 +3,7 @@
 #include <type_traits>
 namespace CustomUtils {
 	template <class T>
-		void arrayfeed(T&, const char*, Utils::size);
+		void arrayput(T&, const char*, Utils::size);
 	template <class T, Utils::size N>
 	class Array : Utils {
 		public:
@@ -66,7 +66,7 @@ namespace CustomUtils {
 			template <class V>
 				friend enable_it<is_same<remove_cv<T>, char>, V&>
 					operator <<(V& os, const Array& val) {
-						arrayfeed(os, val.data, N);
+						arrayput(os, val.data, N);
 						return os;
 					}
 	};

@@ -3,8 +3,10 @@
 namespace CustomUtils {
 	class StringView;
 	class String;
+	template <class>
+		class Vector;
 	template <class T>
-		void stringput(T&, const String&);
+		void stringput(T&, const String*);
 	class String {
 		private:
 			Utils::size trulen;
@@ -122,17 +124,17 @@ namespace CustomUtils {
 			~String();
 			template <class T>
 			friend T& operator <<(T& os, const String& val) {
-				stringput(os, val);
+				stringput(os, &val);
 				return os;
 			}
 			template <class T>
 			friend T& operator <<(T& os, const String* val) {
-				if (val)
-					stringput(os, *val);
+				stringput(os, val);
 				return os;
 			}
 			template <class T>
-			friend void stringput(T&, const String&);
+			friend void stringput(T&, const String*);
+			friend class Vector<char>;
 	};
 }
 #include "GString.hpp"

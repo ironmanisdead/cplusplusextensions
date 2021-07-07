@@ -1,13 +1,39 @@
 #pragma once
 #include "UVector.hpp"
+#include "String.hpp"
 namespace CustomUtils {
 	class String;
+	template <class>
+		class Vector;
 	template <class T>
 	class Vector : public UVector {
 		private:
 			#include ".hidden/Vector-info.hpp"
+			static constexpr bool self_char = Utils::is_same<T, char>;
+			void create(Utils::enable_it<self_char, String&&> val) noexcept;
+			void create(Utils::enable_it<self_char, const String&> val);
+			template <class V>
+			void create(const Vector<V>& val) {
+				UVector::copy(val, &Utils::wrap_construct);
+			}
+			void create(Vector&& val) noexcept { UVector::save(val); }
+			void create(const UVector& val) { UVector::copy(val); }
+			void create(UVector&& val) { UVector::save(val); }
 		public:
 			Vector() noexcept : UVector(&_typeinfo) { trulen = 0; }
+			Vector(const Vector& val) : UVector(&_typeinfo) { create(val); }
+			Vector(Vector&& val) noexcept : UVector(&_typeinfo) { save(val); }
+			template <class V, typename... L, bool sin_arg = (sizeof...(L) == 0),
+			 bool str_cons = sin_arg && Utils::is_same<V, String>>
+			Vector(V&& ini, L&&... rest)
+			noexcept(str_cons || Utils::is_same<V, Vector>) : UVector(&_typeinfo) {
+				if constexpr (Utils::is_same<Utils::raw_type<V>, Vector> && sin_arg)
+					create(Utils::forward<V>(ini));
+				else if constexpr (Utils::is_same<V, UVector> && sin_arg)
+					create(Utils::forward<V>(ini));
+				else if constexpr (Utils::is_same<T, char>)
+					create(String(Utils::forward<V>(ini), Utils::forward<L>(rest)...));
+			}
 			template <class... Ts>
 			void insert(Utils::size n1, Ts&&... vals) {
 				if (n1 > len)
@@ -51,6 +77,16 @@ namespace CustomUtils {
 			}
 			const T& operator[](Utils::size n) const {
 				return *downcast<const T*>(&raw[sizeof(T) * n]);
+			}
+			template <class V>
+			friend V& operator <<(V& os, const Vector<char>& vec) {
+				vecput(os, &vec);
+				return os;
+			}
+			template <class V>
+			friend V& operator <<(V& os, const Vector<char>* vec) {
+				vecput(os, vec);
+				return os;
 			}
 			friend class String;
 	};

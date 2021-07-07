@@ -151,9 +151,9 @@ namespace CustomUtils {
 		return StringView(*this) <=> val;
 	}
 	template <>
-	void stringput(std::ostream& os, const String& val) {
-		if (val.trulen > 0)
-			return static_cast<void>(os.write(val.buffer, val.len));
+	void stringput(std::ostream& os, const String* val) {
+		if (val && (val->trulen > 0))
+			return static_cast<void>(os.write(val->buffer, val->len));
 	}
 	BOOL_EXTERN(void String::byval, const String&);
 	BOOL_EXTERN(void String::byval, const char*);

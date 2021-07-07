@@ -10,6 +10,15 @@ namespace CustomUtils {
 		trulen = siz;
 		len = 0;
 	}
+	void UVector::deinit() noexcept {
+		if (trulen > 0) {
+			void (&del)(void*) = typeinfo->data->deleter;
+			Utils::size elem = typeinfo->data->elem;
+			for (Utils::size i = 0; i < len; i++)
+				del(&raw[i * elem]);
+			len = 0;
+		}
+	}
 	void UVector::save(UVector& val) noexcept { 
 		finalize();
 		raw = val.raw;
@@ -26,8 +35,8 @@ namespace CustomUtils {
 		Utils::size target = val.len;
 		Utils::size ot = val.typeinfo->data->elem;
 		Utils::size cur = typeinfo->data->elem;
-		finalize();
-		allocate((target + 1) * cur);
+		deinit();
+		resize((target + 1) * cur);
 		for (Utils::size idx = 0; idx < target; idx++)
 			mover(&raw[idx * cur], &val.raw[idx * ot]);
 		len = target;
@@ -40,8 +49,8 @@ namespace CustomUtils {
 		}
 		Utils::size target = val.len;
 		Utils::size cur = typeinfo->data->elem;
-		finalize();
-		allocate((target + 1) * cur);
+		deinit();
+		resize((target + 1) * cur);
 		for (Utils::size idx = 0; idx < target; idx++)
 			typeinfo->data->copier(&raw[idx * cur], &val.raw[idx * cur]);
 		len = target;
@@ -55,15 +64,15 @@ namespace CustomUtils {
 		Utils::size target = val.len;
 		Utils::size ot = val.typeinfo->data->elem;
 		Utils::size cur = typeinfo->data->elem;
-		finalize();
-		allocate((target + 1) * cur);
+		deinit();
+		resize((target + 1) * cur);
 		Utils::size idx;
 		try {
 			for (idx = 0; idx < target; idx++)
 				mobilize(&raw[idx * cur], &val.raw[idx * ot]);
 		} catch (...) {
 			len = idx - 1;
-			finalize();
+			deinit();
 			throw;
 		}
 		len = target;
@@ -74,13 +83,9 @@ namespace CustomUtils {
 	}
 	void UVector::finalize() noexcept {
 		if (trulen > 0) {
-			void (&del)(void*) = typeinfo->data->deleter;
-			Utils::size elem = typeinfo->data->elem;
-			for (Utils::size i = 0; i < len; i++)
-				del(&raw[i * elem]);
+			deinit();
 			::operator delete (raw);
 			trulen = 0;
-			len = 0;
 		}
 	}
 	void UVector::resize(Utils::size n1) {
@@ -121,5 +126,26 @@ namespace CustomUtils {
 		Utils::memcpy(&raw[(n1 + 1) * elem], &raw[n1 * elem], rem);
 		Utils::memcpy(&raw[n1 * elem], val, elem);
 		len++;
+	}
+}
+#include "headers/Vector.hpp"
+#include <iostream>
+namespace CustomUtils {
+	template <>
+	void Vector<char>::create(String&& val) noexcept {
+		len = val.len;
+		trulen = val.trulen;
+		raw = val.buffer;
+		val.trulen = 0;
+	}
+	template <>
+	void Vector<char>::create(const String& val) {
+		allocate(val.len + 1);
+		Utils::memcpy(raw, val.buffer, len = val.len);
+	}
+	template <>
+	void vecput(std::ostream& os, const Vector<char>* val) {
+		if (val && (val->trulen > 0))
+			return static_cast<void>(os.write(val->raw, val->len));
 	}
 }
