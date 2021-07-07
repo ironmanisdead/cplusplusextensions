@@ -26,8 +26,14 @@ static constexpr void (*possess)(void*, void*) = [] () {
 	else
 		return nullptr;
 } ();
+static constexpr void (*destruct)(void*) noexcept = [] () {
+	if constexpr (std::is_trivially_destructible<T>::value)
+		return nullptr;
+	else
+		return &Utils::wrap_destruct<T, true>;
+} ();
 static constexpr TypeData _typeuse =
-	{ sizeof(T), Utils::wrap_destruct<T, true>, copy, pheonix, assign, possess };
+	{ sizeof(T), destruct, copy, pheonix, assign, possess };
 static constexpr Array _type = GString::typestr<T>;
 static constexpr Array _vectype = GString::raycat("Vector<", _type.data, ">");
 static constexpr auto _coperr_imp = [] () {

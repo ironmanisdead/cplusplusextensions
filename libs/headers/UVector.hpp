@@ -29,7 +29,7 @@ namespace CustomUtils {
 			};
 			struct TypeData {
 				Utils::size elem;
-				void (&deleter)(void*) noexcept;
+				void (*deleter)(void*) noexcept;
 				void (*copier)(void*, const void*);
 				void (*pheonix)(void*, void*);
 				void (*assigner)(void*, const void*);

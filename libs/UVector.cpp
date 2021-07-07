@@ -12,10 +12,12 @@ namespace CustomUtils {
 	}
 	void UVector::deinit() noexcept {
 		if (trulen > 0) {
-			void (&del)(void*) = typeinfo->data->deleter;
-			Utils::size elem = typeinfo->data->elem;
-			for (Utils::size i = 0; i < len; i++)
-				del(&raw[i * elem]);
+			void (*del)(void*) = typeinfo->data->deleter;
+			if (del) {
+				Utils::size elem = typeinfo->data->elem;
+				for (Utils::size i = 0; i < len; i++)
+					del(&raw[i * elem]);
+			}
 			len = 0;
 		}
 	}
@@ -99,6 +101,7 @@ namespace CustomUtils {
 		Utils::size elem = typeinfo->data->elem;
 		char* temp = Utils::downcast<char*>(::operator new(ntru + elem));
 		Utils::memcpy(temp, raw, len * elem);
+		::operator delete(raw);
 		raw = temp;
 		trulen = ntru + elem;
 	}
@@ -112,12 +115,13 @@ namespace CustomUtils {
 			throw std::runtime_error(
 					String(vecid, " error: ", n1 + n2 - 1,
 						" is out of bounds for Vector of length ", len));
-		void (&del)(void*) = typeinfo->data->deleter;
+		void (*del)(void*) = typeinfo->data->deleter;
 		Utils::size elem = typeinfo->data->elem;
 		Utils::size start = elem * n1;
 		Utils::size fin = start + (elem * n2);
-		for (Utils::size n = start; n <= fin; n += elem)
-			del(&raw[n]);
+		if (del)
+			for (Utils::size n = start; n <= fin; n += elem)
+				del(&raw[n]);
 		Utils::memmove(&raw[start], &raw[fin], len - (n1 + n2));
 	}
 	void UVector::place(Utils::size n1, const char* val) noexcept {

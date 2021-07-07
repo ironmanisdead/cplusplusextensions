@@ -35,6 +35,7 @@ namespace CustomUtils {
 			ntru *= 2;
 		char* temp = Utils::downcast<char*>(::operator new(ntru));
 		Utils::memcpy(temp, buffer, len);
+		::operator delete(buffer);
 		buffer = temp;
 		trulen = ntru;
 		buffer[len] = '\0';
