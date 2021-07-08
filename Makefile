@@ -5,7 +5,7 @@ installabs:=$(abspath $(installdir))
 ifneq ($(findstring /$(shell pwd),/$(installabs)),)
  $(error cannot install libcustomutils inside source directory)
 endif
-PHON:=help remake unmake scrape clean reset .refresh install uninstall
+PHON:=help remake unmake scrape clean reset .refresh install uninstall deps
 SOURCES:=$(wildcard *.cpp)
 DOTMK:=$(wildcard .*.mk)
 DOTMK2:=$(wildcard .*.mk.2)
@@ -25,6 +25,9 @@ ifneq ($(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),)
 endif
 
 .PHONY:tests nodep nodown $(PHON)
+
+deps: .refresh
+	make nodep $(RULES)
 
 help:
 	$(info please select 'install', 'tests', 'uninstall', or a specific '.o' file that you wish to generate)
