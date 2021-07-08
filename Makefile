@@ -1,4 +1,7 @@
 .DEFAULT_GOAL:=help
+null:=
+space:=\ 
+slash:=\$(null)
 not=$(if $(1),,true)
 installdir:=/usr/local
 installabs:=$(abspath $(installdir))
@@ -33,10 +36,10 @@ help:
 	$(info please select 'install', 'tests', 'uninstall', or a specific '.o' file that you wish to generate)
 
 install:
-	installabs="$(installabs)" .extra/install
+	installabs="$(subst ",$(slash)",$(subst $(slash),\$(slash),$(installabs)))" .extra/install
 
 uninstall:
-	installabs="$(installabs)" .extra/uninstall
+	installabs="$(subst ",$(slash)",$(subst $(slash),\$(slash),$(installabs)))" .extra/uninstall
 
 tests: $(OBJECTS)
 
@@ -48,13 +51,14 @@ nodown: #means make will not descend into subdirectories to remake things
 	$(if $(DOTMK2),rm $(DOTMK2))
 
 .%.mk: %.cpp
-	.extra/depgen $*
+	installabs="$(subst ",$(slash)",$(subst $(slash),\$(slash),$(installabs)))" .extra/depgen $*
 
 unmake: .refresh #removes all test object files
 	$(if $(GENO),rm $(GENO))
 
 remake: unmake #remakes all test object files
-	MAKELEVEL=$(MAKELEVEL) make tests
+	MAKELEVEL=$(MAKELEVEL) make\
+		  installabs="$(subst ",$(slash)",$(subst $(slash),\$(slash),$(installabs)))" tests
 
 scrape: .refresh #removes all test object files and also generated rules
 	$(if $(GENERATED),rm $(GENERATED))
@@ -63,5 +67,7 @@ clean: scrape
 	cd libs && make clean
 
 reset: scrape
-	cd libs && make reset
-	MAKELEVEL= make nodown tests
+	cd libs && make \
+		installabs="$(subst ",$(slash)",$(subst $(slash),\$(slash),$(installabs)))" reset
+	MAKELEVEL= make \
+		   installabs="$(subst ",$(slash)",$(subst $(slash),\$(slash),$(installabs)))" nodown tests
