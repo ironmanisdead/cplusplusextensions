@@ -1,0 +1,21 @@
+#ifndef __UTILS_ALL_HPP
+#define __UTILS_ALL_HPP 1
+#include "Array.hpp"
+#include "BinEntI.hpp"
+#include "BinMap.hpp"
+#include "BinNode.hpp"
+#include "BinNodeI.hpp"
+#include "BinTree.hpp"
+#include "Find.hpp"
+#include "Function.hpp"
+#include "GString.hpp"
+#include "List.hpp"
+#include "Macros.hpp"
+#include "String.hpp"
+#include "StringEdit.hpp"
+#include "StringView.hpp"
+#include "Tuple.hpp"
+#include "UVector.hpp"
+#include "Utils.hpp"
+#include "Vector.hpp"
+#endif

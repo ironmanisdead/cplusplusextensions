@@ -1,0 +1,63 @@
+#!/bin/bash
+function genname() {
+	local -n genname_ref=$1
+	declare -i genname_is_usable=1
+	declare -- reason
+	case "$2" in
+		*$'\n'*)
+			genname_is_usable=0
+			reason='newlines'
+			;;
+		*$'\t'*)
+			genname_is_usable=0
+			reason='tabs'
+			;;
+		*$' '*)
+			genname_is_usable=0
+			reason='spaces'
+			;;
+	esac
+	if [[ "$genname_is_usable" == 0 ]]; then
+		echo "genname() cannot escape $reason for Make" >&2
+		echo "error string: $2" >&2
+		return 1
+	fi
+	genname_ref="${2//'$'/'$$'}"
+	genname_ref="${genname_ref//'('/'$('}"
+	genname_ref="${genname_ref//')'/'$)'}"
+	genname_ref="${genname_ref//'$('/'$(open)'}"
+	genname_ref="${genname_ref//'$)'/'$(close)'}"
+	genname_ref="${genname_ref//'\'/'$(slash)'}"
+	genname_ref="${genname_ref//','/'$(comma)'}"
+	genname_ref="${genname_ref//':'/'$(colon)'}"
+	genname_ref="${genname_ref//'#'/'\#'}"
+}
+function genwild() {
+	local -n genname_ref=$1
+	genname_ref="${2//'*'/'\*'}"
+}
+function genshname() {
+	local -n genname_ref=$1
+	genname_ref="${2//'$(slash)'/'$(slash)$(slash)'}"
+	genname_ref="${genname_ref//'$$'/'$(slash)$$'}"
+	genname_ref="${genname_ref//'"'/'$(slash)"'}"
+	genname_ref="${genname_ref//\'/'$(slash)'\'}"
+	genname_ref="${genname_ref//'$(space)'/'$(slash)\ '}"
+	genname_ref="${genname_ref//'&'/'\&'}"
+	local text='$(slash)\#'
+	genname_ref="${genname_ref//'\#'/"$text"}"
+	genname_ref="${genname_ref//'$(open)'/'$(slash)$(open)'}"
+	genname_ref="${genname_ref//'$(close)'/'$(slash)$(close)'}"
+}
+function compound_call() {
+	if [[ "$#" -lt 2 ]]; then
+		echo "compound_call() needs at least a reference and a value to start processing" >&2
+		return 1
+	fi
+	declare -n compounder_ref=$1
+	compounder_ref="$2"
+	shift 2
+	for item in "$@"; do
+		"$item" compounder_ref "$compounder_ref"
+	done
+}

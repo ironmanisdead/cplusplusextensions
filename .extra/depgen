@@ -1,36 +1,20 @@
 #!/bin/bash
-declare -- name="${1//'*'/'\*'}"
-name="${name//'$'/'$$'}"
-name="${name//'('/'$('}"
-name="${name//')'/'$)'}"
-name="${name//'$('/'$(open)'}"
-name="${name//'$)'/'$(close)'}"
-name="${name//'\'/'$(slash)'}"
-name="${name//' '/'\ '}"
-declare -- shname="${name//'$(slash)'/'$(slash)$(slash)'}"
-shname="${shname/'$$'/'$(slash)$$'}"
-shname="${shname//'"'/'$(slash)"'}"
-shname="${shname//\'/'$(slash)'\'}"
-shname="${shname//'$(open)'/'$(slash)$(open)'}"
-shname="${shname//'$(close)'/'$(slash)$(close)'}"
-declare -- path="${installabs//'*'/'\*'}"
-path="${path//'$'/'$$'}"
-path="${path//'('/'$('}"
-path="${path//')'/'$)'}"
-path="${path//'$('/'$(open)'}"
-path="${path//'$)'/'$(close)'}"
-path="${path//'\'/'$(slash)'}"
-path="${path//' '/'\ '}"
-declare -- shpath="${path//'$(slash)'/'$(slash)$(slash)'}"
-shpath="${shpath//'$$'/'$(slash)$$'}"
-shpath="${shpath//'"'/'$(slash)"'}"
-shpath="${shpath//'$(open)'/'$(slash)$(open)'}"
-shpath="${shpath//'$(close)'/'$(slash)$(close)'}"
-shpath="${shpath//\'/'$(slash)'\'}"
+set -e
+source .extra/namegen
+declare -- name wild shname
+genname name "$1"
+genwild wild "$name"
+genshname shname "$wild"
+declare -- path wpath shpath
+genname path "${installabs}"
+genwild wpath "$path"
+genshname shpath "$wpath"
+set +e
 IFS= read -d '' info <<'EOF'
 #this file is automatically created and modified,
 #please do not modify or delete it yourself.
 EOF
+set -e
 declare -- ruledep trail
 if test -f "${installabs}/lib64/libcustomutils.so"; then
 	ruledep="$(cc -I "${installabs}/include/" -M "$1.cpp")" || exit $?
@@ -39,11 +23,12 @@ else
 	ruledep="$(cc -I "$(pwd)/libs/include/" -M "$1.cpp")" || exit $?
 	trail=$'-I "$$(pwd)/libs/include/" -L "$$(pwd)/libs/" -Wl,-rpath,\'$$ORIGIN/libs/\' -Wl,-l:.shared.so'
 fi
-ruledep="$(cc -I "libs/include/" -M "$name.cpp")" || exit $?
-declare -- rule="$info"$'\nnull:=\nspace:=\\ \nslash:=\\$(null)\nopen:=(\nclose:=)'
-rule+=$'\n'"$ruledep"
-rule+=$'\n\t'"\$(if \$(wildcard .$name.mk.2),rm .$shname.mk.2,$0 $*)"
+ruledep="${ruledep/"$1.o"/"$name.o"}"
+ruledep="${ruledep/"$1.cpp"/"$name.cpp"}"
+declare -- rule="$info"$'\n'"$ruledep"
+rule+=$'\n\t'"\$(if \$(wildcard $wild.mk.2),,$0 $shname)"
 rule+=$'\n\t'"gcc -std=c++2a -O3 -Wall -Wextra -o $shname.o $shname.cpp -lstdc++ -Wl,--disable-new-dtags $trail"
-echo 'this file should only exist during make, if it still exists afterwords, \
-please remove it, or run "make .refresh"' >".$1.mk.2"
+echo "generating $1.mk.2"
+touch "$1.mk.2"
+.extra/proc/goup "$1.mk.2"
 echo "$rule" >".$1.mk"

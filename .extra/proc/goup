@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+declare -i num=$$
+num=$(ps -o ppid= $num)
+num=$(ps -o ppid= $num)
+.extra/proc/kildel $num $1 & disown

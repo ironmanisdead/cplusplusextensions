@@ -1,0 +1,13 @@
+#!/bin/bash
+source .extra/namegen
+declare -- list
+declare -- temp
+for item in $1; do
+	if [[ -z "$list" ]]; then
+		genname list "$item"
+	else
+		genname temp "$item"
+		list+=" $temp"
+	fi
+done
+echo "$list"
