@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
+shopt -s dotglob
 
 if [[ -d "${installabs}/include/CustomUtils" ]]; then
 	echo "removing headers"
-	rm -r "${installabs}/include/CustomUtils"
+	rm -r -f "${installabs}"/include/CustomUtils/*
+	rmdir -v "${installdir}/include/CustomUtils"
 fi

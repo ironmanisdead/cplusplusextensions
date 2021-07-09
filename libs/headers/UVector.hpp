@@ -63,6 +63,8 @@ namespace CustomUtils {
 				else
 					return 0;
 			}
+			inline Utils::size fullen() const noexcept { return trulen; }
+			void reallocate(Utils::size);
 			template <class V>
 				friend void vecput(V&, const Vector<char>*);
 	};

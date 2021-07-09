@@ -3,8 +3,8 @@ set -e
 echo "running subinstalls" >&2
 (cd libs && make install)
 
-echo "creating /lib64 inside install directory" >&2
-mkdir -p "$installabs"/lib64
-echo "creating -lcustomutils inside install /lib64" >&2
-cp -u libs/.shared.so "$installabs"/lib64/libcustomutils.so
-cp -u libs/.static.a "$installabs"/lib64/libcustomutils.a
+echo "ensuring ${installdir}/lib64 exists" >&2
+mkdir -p -v "$installabs"/lib64
+echo "creating -lcustomutils inside ${installdir}/lib64" >&2
+cp -u -v libs/.shared.so "$installabs"/lib64/libcustomutils.so
+cp -u -v libs/.static.a "$installabs"/lib64/libcustomutils.a

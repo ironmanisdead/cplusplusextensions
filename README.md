@@ -5,7 +5,7 @@ PREREQUISITES:
 A machine that runs Unix or Linux
 bash (version 4.4 or higher, however I have not tested with lower versions)
 gcc 10 or higher
-make (this is how it installs)
+make (must be capable of supporting global export statements)
 
 ## Objective and reasoning:
 In C++ there is several different tools at your disposal, but some things,
@@ -23,7 +23,10 @@ This project is designed to have as little dependencies on the parent library as
 
 ## Installation, Uninstallation, and test files:
 To install, simply run "<i>make install</i>", and to uninstall run "<i>make uninstall</i>"
+reinstallation is simple, as uninstalls aren't typically required. 
+Just download an updated version, and run "<i>make install</i>" like during initial installation
 
 If all you want to do are tests, then by all means, fill up your clone of this project with
 as many .cpp files as you wish, just create the corresponding programs with "<i>make tests</i>"
-The project installation directory can be modified by setting <b>installdir</b> in the make parameter list
+The project installation directory can be modified by setting <b>installdir</b> in the make parameter list,
+or the environmental variable
