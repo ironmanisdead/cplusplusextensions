@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 declare -i num=$$
-num=$(ps -o ppid= $num)
-num=$(ps -o ppid= $num)
+while [[ "$(ps -p $num -o comm=)" != "make" ]]; do
+	num=$(ps -o ppid= $num)
+done
 .extra/proc/kildel $num $1 & disown
