@@ -7,21 +7,27 @@ namespace CustomUtils {
 	class String;
 	template <class>
 		class Vector;
-	class GString : Utils {
-		private:
-			static constexpr size _strlen(const char* str) noexcept {
+	namespace GString {
+			using size = Utils::size;
+			template <auto... vals>
+				using list = Utils::list<vals...>;
+			template <class T, size N>
+				using array = Utils::array<T, N>;
+			template <size N>
+				using queue = Utils::queue<N>;
+			constexpr size _strlen(const char* str) noexcept {
 				for (size i = 0; true; i++)
 					if (str[i] == '\0')
 						return i;
 			}
-			static constexpr size _strlen(Utils::size str) noexcept {
-				Utils::size len = 1;
+			constexpr size _strlen(size str) noexcept {
+				size len = 1;
 				while ((str /= 10) > 0)
 					len++;
 				return len;
 			}
-			static constexpr size _strlen(signed str) noexcept {
-				Utils::size len = 1;
+			constexpr size _strlen(signed str) noexcept {
+				size len = 1;
 				if (str < 0) {
 					str = -str;
 					len = 2;
@@ -30,16 +36,15 @@ namespace CustomUtils {
 					len++;
 				return len;
 			}
-			static size _strlen(const String&) noexcept;
-			static size _strlen(const Vector<char>&) noexcept;
-		public:
-			static const String& demangle(const char*);
+			size _strlen(const String&) noexcept;
+			size _strlen(const Vector<char>&) noexcept;
+			const String& demangle(const char*);
 			template <class T>
-			static const String& runtype(const T&);
+			const String& runtype(const T&);
 			template <class T>
-			static constexpr size strlen(T&& str) noexcept {
-				using ray_t = array_prop<T>;
-				using ray_r = array_util<T>;
+			constexpr size strlen(T&& str) noexcept {
+				using ray_t = Utils::array_prop<T>;
+				using ray_r = Utils::array_util<T>;
 				if constexpr (ray_t::value)
 					return ray_t::len;
 				else if constexpr (ray_r::value)
@@ -47,7 +52,7 @@ namespace CustomUtils {
 				else
 					return _strlen(str);
 			}
-			static constexpr auto find(const char* str, const char* cmp) {
+			constexpr auto find(const char* str, const char* cmp) {
 				const size len1 = strlen(str);
 				const size len2 = strlen(cmp);
 				if (len2 > len1)
@@ -73,7 +78,7 @@ namespace CustomUtils {
 				}
 				return Tuple { pos, len2, found };
 			}
-			static constexpr auto rfind(const char* str, const char* cmp) {
+			constexpr auto rfind(const char* str, const char* cmp) {
 				const size len1 = strlen(str);
 				const size len2 = strlen(cmp);
 				if (len2 > len1)
@@ -95,23 +100,22 @@ namespace CustomUtils {
 				}
 				return Tuple { idx, len2, found };
 			}
-		private:
-			[[noreturn]] static void overflow(size, size);
+			[[noreturn]] void _overflow(size, size);
 			template <size n, char... str>
-				struct numberify : numberify<n / 10, (n % 10) + '0', str...> {};
+				struct _numberify : _numberify<n / 10, (n % 10) + '0', str...> {};
 			template <char... str>
-				struct numberify<0, str...> {
+				struct _numberify<0, str...> {
 					static constexpr size len = sizeof...(str) + 1;
 					static constexpr const char value[len] = { str..., '\0' };
 				};
 			template <size n1, size n2, size... l1, size... l2>
-				static constexpr Array<char, (l1, ...) + (l2, ...) + 2>
-				concatter(const char (&val1)[n1], const char (&val2)[n2], list<l1...>, list<l2...>) noexcept {
+				constexpr Array<char, (l1, ...) + (l2, ...) + 2>
+				_concatter(const char (&val1)[n1], const char (&val2)[n2], list<l1...>, list<l2...>) noexcept {
 					return Array { { val1[l1]..., val2[l2]... } };
 				}
 			template <size n1, size n2, char... items, size raylen = n1 + n2 - 1>
-				static constexpr Array<char, raylen>
-				string_cat(const char (&val1)[n1], const char (&val2)[n2], list<items...>) noexcept {
+				constexpr Array<char, raylen>
+				_string_cat(const char (&val1)[n1], const char (&val2)[n2], list<items...>) noexcept {
 					char result[raylen] = { items... };
 					size idx = 0;
 					for (idx = 0; idx < n1; idx++)
@@ -128,8 +132,8 @@ namespace CustomUtils {
 					//
 					return Array { result };
 				}
-			static constexpr size s_len = sizeof(numberify<(Utils::size)0 - (Utils::size)1>::value);
-			static constexpr auto _getint(const char* src, const char* cmp, const char* suf) noexcept {
+			constexpr size _s_len = sizeof(_numberify<(size)0 - (size)1>::value);
+			constexpr auto _getint(const char* src, const char* cmp, const char* suf) noexcept {
 				Tuple start = find(src, cmp);
 				Tuple end = rfind(src, suf);
 				size init = start.get<0>() + start.get<1>();
@@ -138,7 +142,7 @@ namespace CustomUtils {
 			}
 		#if defined(_CUSTOMUTILS_recognized)
 			template <class T>
-				static constexpr auto _gettype() {
+				constexpr auto _gettype() {
 					#if defined(__clang__)
 					 constexpr const char prefix[] = "[T = ";
 					#elif defined(__GNUC__)
@@ -160,33 +164,31 @@ namespace CustomUtils {
 						ray[idx] = name[idx + beg];
 					return ray;
 				}
-		public:
 			template <class T>
-				static constexpr auto typestr = _gettype<T>();
+				constexpr auto typestr = _gettype<T>();
 		#endif
-		public:
-			static constexpr Array<char, s_len> numstr(size num) noexcept {
+			constexpr Array<char, _s_len> numstr(size num) noexcept {
 				size len = 0;
 				for (size idx = num; idx > 0; len++)
 					idx /= 10;
-				Array<char, s_len> result;
+				Array<char, _s_len> result;
 				size idx = len;
 				for (size cop = num; cop > 0; cop /= 10)
 					result[--idx] = (cop % 10) + '0';
 				return result;
 			}
 			template <size n>
-				static constexpr auto& stringify = numberify<n / 10, (n % 10) + '0'>::value;
+				constexpr auto& stringify = _numberify<n / 10, (n % 10) + '0'>::value;
 			template <size n1, size n2, size... nums>
-				static constexpr Array<char, sum(n1, n2, nums...)> 
+				constexpr Array<char, Utils::sum(n1, n2, nums...)> 
 				concat(const char (&val1)[n1], const char (&val2)[n2], const array<char, nums>&... args) noexcept {
 					if constexpr (sizeof...(nums) > 0)
 						return concat(val1, concat(val2, args...).data);
 					else
-						return concatter(val1, val2, queue<n1> {}, queue<n2> {});
+						return _concatter(val1, val2, queue<n1> {}, queue<n2> {});
 				}
-			template <size n1, size n2, size... nums, size raylen = (sum(n1, n2, nums...) - sizeof...(nums) - 1)>
-				static constexpr Array<char, raylen>
+			template <size n1, size n2, size... nums, size raylen = (Utils::sum(n1, n2, nums...) - sizeof...(nums) - 1)>
+				constexpr Array<char, raylen>
 				raycat(const char (&val1)[n1], const char (&val2)[n2], const array<char, nums>&... args) noexcept {
 					if constexpr (sizeof...(nums) > 0)
 						return raycat(val1, raycat(val2, args...).data);
@@ -195,10 +197,10 @@ namespace CustomUtils {
 					else if constexpr (n2 < 2)
 						return Array { val1 };
 					else
-						return concatter(val1, val2, queue<n1-1> {}, queue<n2> {});
+						return _concatter(val1, val2, queue<n1-1> {}, queue<n2> {});
 				}
-			template <size n1, size n2, size... nums, size raylen = (sum(n1, n2, nums...) - sizeof...(nums) - 1)>
-				static constexpr Array<char, raylen>
+			template <size n1, size n2, size... nums, size raylen = (Utils::sum(n1, n2, nums...) - sizeof...(nums) - 1)>
+				constexpr Array<char, raylen>
 				strcat(const char (&val1)[n1], const char (&val2)[n2], const array<char, nums>&... args) noexcept {
 					if constexpr (sizeof...(nums) > 0)
 						return strcat(val1, strcat(val2, args...).data);
@@ -207,7 +209,41 @@ namespace CustomUtils {
 					else if constexpr (n2 < 2)
 						return Array { val1 };
 					else
-						return string_cat(val1, val2, fill_set<'\0', raylen> {});
+						return _string_cat(val1, val2, Utils::fill_set<'\0', raylen> {});
 				}
+			constexpr char esc = '\x1b';
+			namespace codes {
+				enum {
+					reset_all,
+					//main font settings
+					bold, faint,
+					reset_intensity = 22,
+					italics = 3,
+					reset_italics = 23,
+					underline = 4,
+					reset_underline = 24,
+					blink_slow = 5, blink_fast,
+					reset_blink = 25,
+					strikethrough = 9,
+					reset_strikethrough = 29,
+					reset_font = 10,
+					//foreground colors
+					fg_black = 20, fg_red,
+					fg_green, fg_yellow,
+					fg_blue, fg_magenta,
+					fg_cyan, fg_white,
+					fg_reset = 39,
+					//background colors
+					bg_black, bg_red,
+					bg_green, bg_yellow,
+					bg_blue, bg_magenta,
+					bg_cyan, bg_white,
+					bg_reset = 49
+				};
+			};
+			constexpr const char _escstr[] = "\x1b[";
+			constexpr const char _escend[] = "m";
+			template <char code>
+				constexpr auto escape = raycat(_escstr, stringify<code>, _escend);
 	};
 }
