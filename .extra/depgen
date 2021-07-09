@@ -26,7 +26,7 @@ fi
 ruledep="${ruledep/"$1.o"/"$name.o"}"
 ruledep="${ruledep/"$1.cpp"/"$name.cpp"}"
 declare -- rule="$info"$'\n'"$ruledep"
-rule+=$'\n\t'"\$(if \$(wildcard $wild.mk.2),,$0 $shname)"
+rule+=$'\n\t'"\$(if \$(findstring $wild.mk.2,\$(wildcard *.mk.2)),,$0 $shname)"
 rule+=$'\n\t'"gcc -std=c++2a -O3 -Wall -Wextra -o $shname.o $shname.cpp -lstdc++ -Wl,--disable-new-dtags $trail"
 echo "generating $1.mk.2"
 touch "$1.mk.2"

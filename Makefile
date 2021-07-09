@@ -1,5 +1,4 @@
 .DEFAULT_GOAL:=help
-.SECONDEXPANSION:
 null:=
 slash:=\$(null)
 open:=(
@@ -7,6 +6,7 @@ close:=)
 comma:=,
 semi:=;
 colon:=:
+amper:=&
 not=$(if $(1),,true)
 installdir:=/usr/local
 installabs:=$(abspath $(installdir))
