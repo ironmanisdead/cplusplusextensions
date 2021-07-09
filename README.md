@@ -3,8 +3,8 @@ A new take on c++ extensions with extra flexibility
 
 PREREQUISITES:
 A machine that runs Unix or Linux
-bash (version 4.4 or higher)
-gcc 8 or higher (gcc 9 or greater preferred but definitely not nessecary)
+bash (version 4.4 or higher, however I have not tested with lower versions)
+gcc 10 or higher
 make (this is how it installs)
 
 ## Objective and reasoning:
