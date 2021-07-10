@@ -30,3 +30,6 @@ If all you want to do are tests, then by all means, fill up your clone of this p
 as many .cpp files as you wish, just create the corresponding programs with "<i>make tests</i>"
 The project installation directory can be modified by setting <b>installdir</b> in the make parameter list,
 or the environmental variable
+##Notice:
+This project is constantly subject to large changes all the time, so updating it may break your own tests.
+I will change this notice once the project is more stable, but right now it isn't
