@@ -212,38 +212,45 @@ namespace CustomUtils {
 						return _string_cat(val1, val2, Utils::fill_set<'\0', raylen> {});
 				}
 			constexpr char esc = '\x1b';
+#pragma push_macro("ESCAPE")
+#define ESCAPE(name, code) constexpr const char name[] = "\x1b[" #code "m"
 			namespace codes {
-				enum {
-					reset_all,
-					//main font settings
-					bold, faint,
-					reset_intensity = 22,
-					italics = 3,
-					reset_italics = 23,
-					underline = 4,
-					reset_underline = 24,
-					blink_slow = 5, blink_fast,
-					reset_blink = 25,
-					strikethrough = 9,
-					reset_strikethrough = 29,
-					reset_font = 10,
-					//foreground colors
-					fg_black = 20, fg_red,
-					fg_green, fg_yellow,
-					fg_blue, fg_magenta,
-					fg_cyan, fg_white,
-					fg_reset = 39,
-					//background colors
-					bg_black, bg_red,
-					bg_green, bg_yellow,
-					bg_blue, bg_magenta,
-					bg_cyan, bg_white,
-					bg_reset = 49
-				};
+				ESCAPE(text_reset, 0);
+				//main font settings
+				ESCAPE(bold, 1);
+				ESCAPE(faint, 2);
+				ESCAPE(intensity_reset, 22);
+				ESCAPE(italics, 3);
+				ESCAPE(italics_reset, 23);
+				ESCAPE(underline, 4);
+				ESCAPE(underline_reset, 24);
+				ESCAPE(blink_slow, 5);
+				ESCAPE(blink_fast, 6);
+				ESCAPE(blink_reset, 25);
+				ESCAPE(strike, 9);
+				ESCAPE(strike_reset, 29);
+				ESCAPE(font_reset, 10);
+				//foreground colors
+				ESCAPE(fg_black, 30);
+				ESCAPE(fg_red, 31);
+				ESCAPE(fg_green, 32);
+				ESCAPE(fg_yellow, 33);
+				ESCAPE(fg_blue, 34);
+				ESCAPE(fd_magenta, 35);
+				ESCAPE(fg_cyan, 36);
+				ESCAPE(fg_white, 37);
+				ESCAPE(fg_reset, 39);
+				//background colors
+				ESCAPE(bg_black, 40);
+				ESCAPE(bg_red, 41);
+				ESCAPE(bg_green, 42);
+				ESCAPE(bg_yellow, 43);
+				ESCAPE(bg_blue, 44);
+				ESCAPE(bd_magenta, 45);
+				ESCAPE(bg_cyan, 46);
+				ESCAPE(bg_white, 47);
+				ESCAPE(bg_reset, 49);
 			};
-			constexpr const char _escstr[] = "\x1b[";
-			constexpr const char _escend[] = "m";
-			template <char code>
-				constexpr auto escape = raycat(_escstr, stringify<code>, _escend);
+#pragma pop_macro("ESCAPE")
 	};
 }
