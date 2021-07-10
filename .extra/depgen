@@ -5,7 +5,6 @@ declare -- name wild
 genname name "$targetfile"
 genwild wild "$name"
 if [[ ! -f "$targetfile.cpp" ]]; then
-	echo hey >&2
 	rm .extra/list.mk
 	exit 1
 fi
