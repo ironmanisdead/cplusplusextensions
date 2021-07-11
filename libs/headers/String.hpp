@@ -8,8 +8,6 @@ namespace CustomUtils {
 		class Vector;
 	template <class T>
 		void viewput(T&, const StringView*);
-	template <class T>
-		void viewput(T&, const StringView*);
 	class String {
 		private:
 			Utils::size trulen;
