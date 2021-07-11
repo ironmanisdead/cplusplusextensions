@@ -215,10 +215,14 @@ namespace CustomUtils {
 				struct dereference_all : identity<T> {};
 			template <class T>
 				struct dereference_all<T*> : dereference_all<T> {};
-			template <bool dir, class T, class V>
-				struct alt_if : identity<V> {};
-			template <class T, class V>
-				struct alt_if<true, T, V> : identity<T> {};
+			template <bool dir, class T, class F>
+				struct alt_if : identity<F> {};
+			template <class T, class F>
+				struct alt_if<true, T, F> : identity<T> {};
+			template <bool dir, auto T, auto F>
+				struct alt_v : literal_constant<F> {};
+			template <auto T, auto F>
+				struct alt_v<true, T, F> : literal_constant<T> {};
 			template <auto base, size idx, auto... items>
 				struct genfull : genfull<base, idx-1, items..., base> {};
 			template <auto base, auto... items>
@@ -319,8 +323,11 @@ namespace CustomUtils {
 				using strip_pointer = typename dereference_all<raw_type<T>>::type;
 			template <bool enable, class T = void>
 				using enable_it = typename enable_if<enable, T>::type;
-			template <bool dir, class T, class V = void>
-				using switch_if = typename alt_if<dir, T, V>::type;
+			template <bool dir, class T, class F = void>
+				using switch_if = typename alt_if<dir, T, F>::type;
+			template <bool dir, auto T, auto F = nullptr>
+				static constexpr typename 
+					alt_v<dir, T, F>::type switch_v = alt_v<dir, T, F>::value;
 			template <size num>
 				using queue = typename genqueue<num>::type;
 			template <size num>

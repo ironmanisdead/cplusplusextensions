@@ -2,7 +2,6 @@
 #include "../Utils.hpp"
 #include "../Array.hpp"
 #include "../Tuple.hpp"
-#include <typeinfo>
 namespace CustomUtils {
 	class String;
 	template <class>
@@ -252,5 +251,43 @@ namespace CustomUtils {
 				ESCAPE(bg_reset, 49);
 			};
 #pragma pop_macro("ESCAPE")
+			using uchar = unsigned char;
+			constexpr auto gen_color(bool isfg, uchar col) noexcept {
+				Array<char, 5> code;
+				uchar colcop = col;
+				short len = _strlen(Utils::size(col));
+				for (short i = 1; i <= len; i++) {
+					code[len - i] = (colcop % 10) + '0';
+					colcop /= 10;
+				}
+				code[len] = 'm';
+				auto result = strcat("\x1b[48;5;", code.data);
+				if (isfg)
+					result[2] = '3';
+				return result;
+			}
+			constexpr auto truecolor(bool isfg, uchar r, uchar g, uchar b) noexcept {
+				auto fillcode = 
+					[] (auto& ray, uchar col) {
+						uchar colcop = col;
+						short len = _strlen(Utils::size(col));
+						for (short i = 1; i <= len; i++) {
+							ray[len - i] = (colcop % 10) + '0';
+							colcop /= 10;
+						}
+						ray[len] = ';';
+						return len;
+					};
+				Array<char, 5> rcode, gcode, bcode;
+				fillcode(rcode, r);
+				fillcode(gcode, g);
+				short len = fillcode(bcode, b);
+				bcode[len] = 'm';
+				auto result = strcat("\x1b[48;2;",
+						rcode.data, gcode.data, bcode.data);
+				if (isfg)
+					result[2] = '3';
+				return result;
+			}
 	};
 }

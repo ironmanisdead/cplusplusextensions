@@ -71,7 +71,5 @@ clean: scrape
 	cd libs && make clean
 
 reset: scrape
-	cd libs && make $\
-		installabs="$(subst ','$(slash)'',$(installabs))" reset
-	MAKELEVEL= make $\
-		   installabs="$(subst ','$(slash)'',$(installabs))" nodown tests
+	cd libs && make reset
+	MAKELEVEL= make nodown tests
