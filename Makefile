@@ -1,4 +1,4 @@
-.DEFAULT_GOAL:=help
+.DEFAULT_GOAL:=libs
 null:=
 slash:=\$(null)
 open:=(
@@ -23,7 +23,7 @@ ifneq ($(findstring /$(shell pwd),/$(installabs)),)
  $(error cannot install libcustomutils inside source directory)
 endif
 
-PHON:=help remake unmake scrape clean reset install uninstall deps
+PHON:=libs remake unmake scrape clean reset install uninstall deps
 SOURCES:=$(wildcard *.cpp)
 RULES:=$(patsubst %.cpp,.%.mk,$(SOURCES))
 OBJECTS:=$(patsubst %.cpp,%.o,$(SOURCES))
@@ -40,8 +40,8 @@ endif
 
 .PHONY:tests nodep nodown $(PHON)
 
-help:
-	$(info please select 'install', 'tests', 'uninstall', or a specific '.o' file that you wish to generate)
+libs:
+	cd libs && make
 
 install:
 	.extra/install
