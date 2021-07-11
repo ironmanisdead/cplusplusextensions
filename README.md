@@ -35,7 +35,7 @@ or the environmental variables
 This project is constantly subject to large changes all the time, so updating it may break your own tests.
 I will change this notice once the project is more stable, but right now it isn't
 
-##Secondary Notice:
+## Secondary Notice:
 If you have downloaded and installed this under the "<i>main</i>" branch and are planning to update it,
 please run "<i>make uninstall</i>" before updating. The old "<i>main</i>" is now in "<i>deprecated</i>",
 should you need to uninstall
