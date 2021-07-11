@@ -2,8 +2,8 @@
 set -e
 shopt -s dotglob
 
-if [[ -d "${installabs}/include/CustomUtils" ]]; then
+if [[ -d "${installabs}/include/CPPExtensions" ]]; then
 	echo "removing headers"
-	rm -r -f "${installabs}"/include/CustomUtils/*
-	rmdir -v "${installdir}/include/CustomUtils"
+	rm -r -f "${installabs}"/include/CPPExtensions/*
+	rmdir -v "${installdir}/include/CPPExtensions"
 fi

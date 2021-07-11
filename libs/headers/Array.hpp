@@ -1,7 +1,7 @@
 #pragma once
 #include "Utils.hpp"
 #include <type_traits>
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class T>
 		void arrayput(T&, const char*, Utils::size);
 	template <class T, Utils::size N>

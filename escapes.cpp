@@ -1,7 +1,7 @@
-#include <CustomUtils/GString.hpp>
-#include <CustomUtils/String.hpp>
+#include <CPPExtensions/GString.hpp>
+#include <CPPExtensions/String.hpp>
 #include <iostream>
-using namespace CustomUtils;
+using namespace CPPExtensions;
 using namespace GString::codes;
 
 constexpr auto gencyan = GString::strcat(fg_black,

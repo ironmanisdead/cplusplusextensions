@@ -1,6 +1,6 @@
 #pragma once
 #include "BinEntI.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class K, class V>
 		class BinNodeI;
 	template <class K, class V>

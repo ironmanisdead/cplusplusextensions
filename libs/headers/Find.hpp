@@ -1,6 +1,6 @@
 #pragma once
 #include <compare>
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class T>
 	struct Find {
 		using stronk = decltype(0 <=> 0);

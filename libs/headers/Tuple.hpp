@@ -1,6 +1,6 @@
 #pragma once
 #include "Utils.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class, class...>
 		class Tuple;
 	//

@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <chrono>
-namespace CustomUtils {
+namespace CPPExtensions {
 	volatile void* Utils::ignore(volatile void*) noexcept {
 		return nullptr;
 	}

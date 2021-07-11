@@ -1,7 +1,7 @@
 #pragma once
 #include "Macros.hpp"
 #include <compare>
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class, decltype(sizeof 0)>
 		class Array;
 	class Utils {
@@ -393,5 +393,5 @@ namespace CustomUtils {
 	};
 }
 #ifndef UNCONST
- #define UNCONST(exp) const_cast<::CustomUtils::Utils::remove_cv<decltype(exp)>&&>(exp)
+ #define UNCONST(exp) const_cast<::CPPExtensions::Utils::remove_cv<decltype(exp)>&&>(exp)
 #endif

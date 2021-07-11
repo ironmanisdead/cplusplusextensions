@@ -1,7 +1,7 @@
 #include "headers/BinTree.hpp"
 #include "headers/BinNode.hpp"
 #include "headers/Utils.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	void BinEnt::_rebalance() noexcept {}
 	bool BinEnt::rotate(bool direction) noexcept {
 		if (!isattach())

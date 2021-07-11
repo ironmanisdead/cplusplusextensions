@@ -1,7 +1,7 @@
 #pragma once
 #include "Utils.hpp"
 #include "Find.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	struct BinInfo {
 		Utils::size keydist;
 		Utils::size valdist;
@@ -111,7 +111,7 @@ namespace CustomUtils {
 	};
 }
 #include "BinEntI.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	class BinTree {
 		private:
 			const BinInfo* const data;

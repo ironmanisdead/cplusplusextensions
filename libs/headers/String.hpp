@@ -1,7 +1,7 @@
 #pragma once
 #include "Utils.hpp"
 #include ".hide/StringView.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	class StringView;
 	class String;
 	template <class>
@@ -12,21 +12,23 @@ namespace CustomUtils {
 		private:
 			Utils::size trulen;
 			StringView view;
-			void allocate(Utils::size);
-			void resize(Utils::size);
+			bool allocate(Utils::size) noexcept;
+			bool resize(Utils::size) noexcept;
 			void finalize() noexcept;
+			template <bool reset>
+				using setby = Utils::switch_if<reset, bool, void>;
 			template <bool reset = true>
-				void byray(const char*, Utils::size) noexcept(!reset);
+				setby<reset> byray(const char*, Utils::size) noexcept;
 			template <bool reset = true>
-				void byval(const String&) noexcept(!reset);
+				setby<reset> byval(const String&) noexcept;
 			template <bool reset = true>
-				void byval(const char*) noexcept(!reset);
+				setby<reset> byval(const char*) noexcept;
 			template <bool reset = true>
-				void byval(Utils::size) noexcept(!reset);
+				setby<reset> byval(Utils::size) noexcept;
 			template <bool reset = true>
-				void byval(signed) noexcept(!reset);
+				setby<reset> byval(signed) noexcept;
 			template <bool reset = true>
-				void byval(const StringView&) noexcept(!reset);
+				setby<reset> byval(const StringView&) noexcept;
 			Utils::strongcmp_t valcmp(const StringView&) const noexcept;
 			void byval(String&&) noexcept;
 			void addray(const char*, Utils::size) noexcept;
@@ -35,9 +37,9 @@ namespace CustomUtils {
 			void addval(Utils::size) noexcept;
 			void addval(signed) noexcept;
 			template <bool reset = true, class T, class... Ts>
-			void adder(const T&, const Ts&...) noexcept(!reset);
+				setby<reset> adder(const T&, const Ts&...) noexcept;
 			template <class T>
-			void setup(T&& val) noexcept(Utils::is_same<T, String>) {
+			void setup(T&& val) noexcept {
 				using ray_m = Utils::array_prop<T>;
 				using ray_r = Utils::array_util<T>;
 				if constexpr (ray_m::value)
@@ -56,7 +58,7 @@ namespace CustomUtils {
 				byval(Utils::forward<String>(val));
 			}
 			template <class T, class... V, bool isn = (sizeof...(V) == 0)>
-				String(T&& val, const V&... rest) noexcept(isn && Utils::is_same<T, String>);
+				String(T&& val, const V&... rest) noexcept;
 			constexpr Utils::size getlen() const noexcept {
 				if (trulen > 0)
 					return view.len;
@@ -70,16 +72,16 @@ namespace CustomUtils {
 					return nullptr;
 			}
 			template <class T>
-			String operator +(const T& val) const {
+			String operator +(const T& val) const noexcept {
 				return String(*this, val);
 			}
 			template <class T>
-			String& operator +=(const T& val) {
+			String& operator +=(const T& val) noexcept {
 				adder(val);
 				return *this;
 			}
 			template <class T>
-			String& operator =(T&& val) noexcept(Utils::is_same<T, String>) {
+			String& operator =(T&& val) noexcept {
 				using ray_m = Utils::array_prop<T>;
 				using ray_r = Utils::array_util<T>;
 				if constexpr (ray_m::value)
@@ -90,7 +92,7 @@ namespace CustomUtils {
 					byval(Utils::forward<T>(val));
 				return *this;
 			}
-			String& operator =(const String& val) {
+			String& operator =(const String& val) noexcept {
 				byval(val);
 				return *this;
 			}
@@ -112,7 +114,7 @@ namespace CustomUtils {
 					return valcmp(val);
 			}
 			template <class T, class... V>
-			String& append(const T& val, const V&... rest) {
+			String& append(const T& val, const V&... rest) noexcept {
 				adder(val, rest...);
 				return *this;
 			}
@@ -131,11 +133,16 @@ namespace CustomUtils {
 	};
 }
 #include ".hide/GString.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <bool reset, class T, class... V>
-	void String::adder(const T& val, const V&... rest) noexcept(!reset) {
-		if constexpr (reset)
-			resize(view.len + GString::strlen(val) + (GString::strlen(rest) + ... + 1));
+	String::setby<reset> String::adder(const T& val, const V&... rest) noexcept {
+		if constexpr (reset) {
+			const bool has =
+				resize(view.len + GString::strlen(val) +
+						(GString::strlen(rest) + ... + 1));
+			if (!has)
+				return false;
+		}
 		using ray_m = Utils::array_prop<T>;
 		using ray_r = Utils::array_util<T>;
 		if constexpr (ray_m::value)
@@ -146,15 +153,18 @@ namespace CustomUtils {
 			addval(val);
 		if constexpr (sizeof...(V) > 0)
 			adder<false>(rest...);
+		if constexpr (reset)
+			return true;
 	}
 	template <class T, class... V, bool isn>
-	String::String(T&& val, const V&... rest) noexcept(isn && Utils::is_same<T, String>) :
+	String::String(T&& val, const V&... rest) noexcept :
 	 trulen(0), view(nullptr) {
-		if constexpr (isn) {
+		if constexpr (sizeof...(V) == 0) {
 			setup(Utils::forward<T>(val));
 		} else {
 			Utils::size total = GString::strlen(val) + (GString::strlen(rest) + ... + 1);
-			allocate(total);
+			if (!allocate(total))
+				return;
 			using ray_m = Utils::array_prop<T>;
 			using ray_r = Utils::array_util<T>;
 			if constexpr (ray_m::value)

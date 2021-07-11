@@ -1,4 +1,4 @@
-namespace CustomUtils {
+namespace CPPExtensions {
 	class ChainHead;
 	class ChainLink {
 		protected:

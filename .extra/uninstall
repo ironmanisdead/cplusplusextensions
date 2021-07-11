@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-if [[ -f "$installabs"/lib64/libcustomutils.a ]] || [[ -f "$installabs"/lib64/libcustomutils.so ]]; then
-	rm -f -v "$installabs"/lib64/libcustomutils.a "$installabs"/lib64/libcustomutils.so
-	echo "removing test objects, as they might be linked with -lcustomutils" >&2
+if [[ -f "$installabs"/lib64/libcppextensions.a ]] || [[ -f "$installabs"/lib64/libcppextensions.so ]]; then
+	rm -f -v "$installabs"/lib64/libcppextensions.a "$installabs"/lib64/libcppextensions.so
+	echo "removing test objects, as they might be linked with -lcppextensions" >&2
 	rm -f -v *.o
 fi
 

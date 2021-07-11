@@ -4,7 +4,7 @@
 #include <type_traits>
 #include "GString.hpp"
 #include <stdexcept>
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class>
 		class Vector;
 	template <class T>

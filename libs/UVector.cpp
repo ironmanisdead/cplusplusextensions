@@ -1,6 +1,6 @@
 #include "headers/UVector.hpp"
 #include <stdexcept>
-namespace CustomUtils {
+namespace CPPExtensions {
 	UVector::UVector(const FullType* const type)
 		noexcept : typeinfo(type), trulen(0), len(0) {}
 	UVector::~UVector() { finalize(); }
@@ -134,7 +134,7 @@ namespace CustomUtils {
 }
 #include "headers/Vector.hpp"
 #include <iostream>
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <>
 	void Vector<char>::create(String&& val) noexcept {
 		len = val.view.len;

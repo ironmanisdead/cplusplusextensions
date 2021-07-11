@@ -21,9 +21,9 @@ IFS= read -d '' info <<'EOF'
 EOF
 set -e
 declare -- ruledep trail
-if test -f "${installabs}/lib64/libcustomutils.so"; then
+if test -f "${installabs}/lib64/libcppextensions.so"; then
 	ruledep="$(cc -I "${installabs}/include/" -M "$targetfile.cpp")" || exit $?
-	trail="-I ${shpath}/include/ -L ${shpath}/lib64/ -Wl,-rpath,${shpath}/lib64/ -Wl,-lcustomutils"
+	trail="-I ${shpath}/include/ -L ${shpath}/lib64/ -Wl,-rpath,${shpath}/lib64/ -Wl,-lcppextensions"
 else
 	ruledep="$(cc -I "$(pwd)/libs/include/" -M "$targetfile.cpp")" || exit $?
 	trail=$'-I "$$(pwd)/libs/include/" -L "$$(pwd)/libs/" -Wl,-rpath,\'$$ORIGIN/libs/\' -Wl,-l:.shared.so'

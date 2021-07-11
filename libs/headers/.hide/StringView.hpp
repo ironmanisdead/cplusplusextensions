@@ -1,7 +1,7 @@
 #pragma once
 #include "../Utils.hpp"
 #include "../GString.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	class String;
 	template <class>
 		class Vector;
@@ -79,6 +79,16 @@ namespace CustomUtils {
 				return *this;
 			}
 			constexpr StringView& operator =(const String& val) noexcept;
+			constexpr void set(const char* val, Utils::size ln) noexcept {
+				buffer.modify = false;
+				buffer.view = val;
+				len = ln;
+			}
+			constexpr void set(char* val, Utils::size ln) noexcept {
+				buffer.modify = true;
+				buffer.edit = val;
+				len = ln;
+			}
 			constexpr Utils::strongcmp_t operator <=>(const StringView& val) const noexcept {
 				const char* see = read();
 				const char* valsee = val.read();

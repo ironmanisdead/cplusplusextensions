@@ -1,6 +1,6 @@
-#include <CustomUtils/BinMap.hpp>
+#include <CPPExtensions/BinMap.hpp>
 #include <iostream>
-using namespace CustomUtils;
+using namespace CPPExtensions;
 int main() {
 	BinMap<int, int> map;
 	std::cout << "unsorted list:" << std::endl;

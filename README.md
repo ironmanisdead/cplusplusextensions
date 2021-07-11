@@ -17,8 +17,8 @@ or a reusable lambda. Even though not difficult, it feels slightly weird that
 you as a programmer are responsible for making an automatic conversion
 
 #### This library has many benefits, but there is a catch:
-CustomUtils::Vector does not support std::vector, and vice versa. Same with
-CustomUtils::String and CustomUtils::Array (although Array might be convertible implicitly.)
+CPPExtensions::Vector does not support std::vector, and vice versa. Same with
+CPPExtensions::String and CPPExtensions::Array (although Array might be convertible implicitly.)
 This project is designed to have as little dependencies on the parent library as possible.
 
 ## Installation, Uninstallation, and test files:
@@ -34,3 +34,8 @@ or the environmental variables
 ## Notice:
 This project is constantly subject to large changes all the time, so updating it may break your own tests.
 I will change this notice once the project is more stable, but right now it isn't
+
+##Secondary Notice:
+If you have downloaded and installed this under the "<i>main</i>" branch and are planning to update it,
+please run "<i>make uninstall</i>" before updating. The old "<i>main</i>" is now in "<i>deprecated</i>",
+should you need to uninstall

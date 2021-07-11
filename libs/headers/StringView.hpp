@@ -1,7 +1,7 @@
 #pragma once
 #include ".hide/StringView.hpp"
 #include "String.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	constexpr StringView::StringView(const String& val) noexcept : len(0),
 	 buffer(false, {nullptr}) {
 		if (val.getlen() > 0) {

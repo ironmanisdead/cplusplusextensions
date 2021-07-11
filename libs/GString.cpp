@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <cxxabi.h>
-namespace CustomUtils {
+namespace CPPExtensions {
 	namespace GString {
 		[[noreturn]] void overflow(size len, size idx) {
 			throw std::overflow_error(String("Array of size ", len, " cannot hold string of size ", idx));

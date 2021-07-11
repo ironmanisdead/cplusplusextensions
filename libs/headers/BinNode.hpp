@@ -1,7 +1,7 @@
 #pragma once
 #include "BinTree.hpp"
 #include "Function.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class K, class V>
 	class BinNode final : public BinEnt, private Utils {
 		public:

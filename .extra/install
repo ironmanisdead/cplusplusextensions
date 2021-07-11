@@ -5,6 +5,6 @@ echo "running subinstalls" >&2
 
 echo "ensuring ${installdir}/lib64 exists" >&2
 mkdir -p -v "$installabs"/lib64
-echo "creating -lcustomutils inside ${installdir}/lib64" >&2
-cp -u -v libs/.shared.so "$installabs"/lib64/libcustomutils.so
-cp -u -v libs/.static.a "$installabs"/lib64/libcustomutils.a
+echo "creating -lcppextensions inside ${installdir}/lib64" >&2
+cp -u -v libs/.shared.so "$installabs"/lib64/libcppextensions.so
+cp -u -v libs/.static.a "$installabs"/lib64/libcppextensions.a

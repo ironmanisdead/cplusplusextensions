@@ -1,6 +1,6 @@
 #include "headers/BinEntI.hpp"
 #include "headers/BinTree.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	void BinEntI::erase() noexcept {
 		if (!current)
 			return;

@@ -1,6 +1,6 @@
 #pragma once
 #include "Macros.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	class BinEnt;
 	class BinTree;
 	class BinEntC;

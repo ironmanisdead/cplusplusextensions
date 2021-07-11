@@ -2,8 +2,9 @@
 #include "headers/GString.hpp"
 #include "headers/StringView.hpp"
 #include <iostream>
-#define BOOL_EXTERN(fun, ...) template fun<true>(__VA_ARGS__); template fun<false>(__VA_ARGS__)
-namespace CustomUtils {
+#define BOOL_EXTERN(fun, ...) template String::setby<true> fun<true>(__VA_ARGS__); \
+	template String::setby<false> fun<false>(__VA_ARGS__)
+namespace CPPExtensions {
 	String::String() noexcept : trulen(0), view(nullptr) {}
 	void String::finalize() noexcept {
 		if (trulen > 0)
@@ -14,34 +15,40 @@ namespace CustomUtils {
 	String::~String() {
 		finalize();
 	}
-	void String::allocate(Utils::size n1) {
+	bool String::allocate(Utils::size n1) noexcept {
 		finalize();
 		if (n1 == 0)
-			return;
-		char* temp = Utils::downcast<char*>(::operator new(n1));
+			return true;
+		char* temp = Utils::downcast<char*>(::operator new(n1, std::nothrow_t{}));
+		if (!temp)
+			return false;
 		view = temp;
 		trulen = n1;
 		view.len = 0;
+		return true;
 	}
-	void String::resize(Utils::size n1) {
+	bool String::resize(Utils::size n1) noexcept {
 		if (trulen == 0)
 			return allocate(n1);
 		else if (n1 == 0)
-			return finalize();
+			return finalize(), true;
 		else if (n1 < trulen)
-			return;
+			return true;
 		Utils::size ntru = trulen;
 		while (ntru < n1)
 			ntru *= 2;
-		char* temp = Utils::downcast<char*>(::operator new(ntru));
+		char* temp = Utils::downcast<char*>(::operator new (ntru, std::nothrow_t{}));
+		if (!temp)
+			return false;
 		Utils::memcpy(temp, view.read(), view.len);
 		::operator delete(view.edit());
 		view = temp;
 		trulen = ntru;
 		view.edit()[view.len] = '\0';
+		return true;
 	}
 	template <bool reset>
-	void String::byray(const char* val, Utils::size siz) noexcept(!reset) {
+	String::setby<reset> String::byray(const char* val, Utils::size siz) noexcept {
 		Utils::size ntru, nlen;
 		if (val[siz - 1] == '\0') {
 			nlen = siz - 1;
@@ -51,10 +58,13 @@ namespace CustomUtils {
 			ntru = siz + 1;
 		}
 		if constexpr (reset)
-			resize(ntru);
+			if (!resize(ntru))
+				return false;
 		view.len = nlen;
 		Utils::memcpy(view.edit(), val, siz);
 		view.edit()[view.len] = '\0';
+		if constexpr (reset)
+			return true;
 	}
 	void String::byval(String&& val) noexcept {
 		finalize();
@@ -62,41 +72,58 @@ namespace CustomUtils {
 		val.trulen = 0;
 	}
 	template <bool reset>
-	void String::byval(const String& val) noexcept(!reset) {
+	String::setby<reset> String::byval(const String& val) noexcept {
 		if (val.trulen == 0) {
-			return finalize();
+			finalize();
+			if constexpr (reset)
+				return true;
+			else
+				return;
 		}
 		if constexpr (reset)
-			resize(val.view.len + 1);
+			if (!resize(val.view.len + 1))
+				return false;
 		Utils::memcpy(view.edit(), val.view.read(), val.view.len);
 		view.len = val.view.len;
 		view.edit()[view.len] = '\0';
+		if constexpr (reset)
+			return true;
 	}
 	template <bool reset>
-	void String::byval(const char* val) noexcept(!reset) {
+	String::setby<reset> String::byval(const char* val) noexcept {
 		if (val == nullptr) {
+			finalize();
 			if constexpr (reset)
-				return finalize();
+				return true;
 			else
 				return;
 		}
 		Utils::size siz = GString::strlen(val);
 		if constexpr (reset)
-			resize(siz + 1);
+			if (!resize(siz + 1))
+				return false;
 		Utils::memcpy(view.edit(), val, trulen);
 		view.len = siz;
+		if constexpr (reset)
+			return true;
 	}
 	template <bool reset>
-	void String::byval(Utils::size str) noexcept(!reset) {
+	String::setby<reset> String::byval(Utils::size str) noexcept {
 		if constexpr (reset)
-			resize(GString::strlen(str) + 1);
+			if (!resize(GString::strlen(str) + 1))
+				return false;
 		addval(str);
+		if constexpr (reset)
+			return true;
 	}
 	template <bool reset>
-	void String::byval(signed str) noexcept(!reset) {
+	String::setby<reset> String::byval(signed str) noexcept {
 		if constexpr (reset)
-			resize(GString::strlen(str) + 1);
+			if (!resize(GString::strlen(str) + 1))
+				return false;
 		addval(str);
+		if constexpr (reset)
+			return true;
 	}
 	void String::addray(const char* val, Utils::size siz) noexcept {
 		Utils::size nlen;
@@ -154,9 +181,9 @@ namespace CustomUtils {
 		if (val && *val)
 			return static_cast<void>(os.write(val->read(), val->len));
 	}
-	BOOL_EXTERN(void String::byval, const String&);
-	BOOL_EXTERN(void String::byval, const char*);
-	BOOL_EXTERN(void String::byval, Utils::size);
-	BOOL_EXTERN(void String::byval, signed);
-	BOOL_EXTERN(void String::byray, const char*, Utils::size);
+	BOOL_EXTERN(String::byval, const String&);
+	BOOL_EXTERN(String::byval, const char*);
+	BOOL_EXTERN(String::byval, Utils::size);
+	BOOL_EXTERN(String::byval, signed);
+	BOOL_EXTERN(String::byray, const char*, Utils::size);
 }

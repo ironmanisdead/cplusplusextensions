@@ -2,7 +2,7 @@
 #include "../Utils.hpp"
 #include "../Array.hpp"
 #include "../Tuple.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	class String;
 	template <class>
 		class Vector;

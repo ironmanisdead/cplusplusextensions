@@ -2,20 +2,20 @@
 set -e
 
 declare -- item included
-for included in "${installabs}"/include/CustomUtils/*.hpp; do
+for included in "${installabs}"/include/CPPExtensions/*.hpp; do
 	if [[ ! -f "${included}" ]]; then
 		continue
 	fi
-	item="${included#"${installabs}/include/CustomUtils/"}"
+	item="${included#"${installabs}/include/CPPExtensions/"}"
 	if [[ ! -f "$item" ]]; then
 		rm -v "$included"
 	fi
 done
-for included in "${installabs}"/include/CustomUtils/.hide/*.hpp; do
+for included in "${installabs}"/include/CPPExtensions/.hide/*.hpp; do
 	if [[ ! -f "${included}" ]]; then
 		continue
 	fi
-	item="${included#"${installabs}/include/CustomUtils/"}"
+	item="${included#"${installabs}/include/CPPExtensions/"}"
 	if [[ ! -f "$item" ]]; then
 		rm -v "$included"
 	fi

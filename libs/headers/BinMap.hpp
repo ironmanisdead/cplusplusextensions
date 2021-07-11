@@ -2,7 +2,7 @@
 #include "BinNode.hpp"
 #include "BinNodeI.hpp"
 #include "String.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class K, class V>
 	class BinMap final : public BinTree, private Utils {
 		private:

@@ -20,7 +20,7 @@ export installdir
 export installabs
 export targetfile
 ifneq ($(findstring /$(shell pwd),/$(installabs)),)
- $(error cannot install libcustomutils inside source directory)
+ $(error cannot install libcppextensions inside source directory)
 endif
 
 PHON:=libs remake unmake scrape clean reset install uninstall deps

@@ -1,6 +1,6 @@
-#include <CustomUtils/Vector.hpp>
+#include <CPPExtensions/Vector.hpp>
 #include <iostream>
-using namespace CustomUtils;
+using namespace CPPExtensions;
 
 int main() noexcept {
 	Vector<char> arr = "hey";

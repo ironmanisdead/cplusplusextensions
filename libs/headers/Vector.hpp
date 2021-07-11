@@ -1,7 +1,7 @@
 #pragma once
 #include "UVector.hpp"
 #include "String.hpp"
-namespace CustomUtils {
+namespace CPPExtensions {
 	class String;
 	template <class>
 		class Vector;

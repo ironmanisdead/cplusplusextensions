@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-if [[ -d "${installabs}/include/CustomUtils" ]]; then
+if [[ -d "${installabs}/include/CPPExtensions" ]]; then
 	(cd headers && .extra/rmdep)
 fi
 
 echo "making include directory" >&2
-mkdir -p -v "${installabs}/include/CustomUtils/.hide"
+mkdir -p -v "${installabs}/include/CPPExtensions/.hide"
 echo "installing header files" >&2
-cp -u -t "${installabs}/include/CustomUtils" headers/*.hpp
-cp -u -t "${installabs}/include/CustomUtils/.hide" headers/.hide/*.hpp
+cp -u -t "${installabs}/include/CPPExtensions" headers/*.hpp
+cp -u -t "${installabs}/include/CPPExtensions/.hide" headers/.hide/*.hpp

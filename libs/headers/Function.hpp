@@ -2,7 +2,7 @@
 #include "Utils.hpp"
 #include "GString.hpp"
 #include <typeinfo>
-namespace CustomUtils {
+namespace CPPExtensions {
 	template <class>
 		class Function;
 	template <class Ret, class... Args>
