@@ -1,7 +1,6 @@
 #pragma once
 #include "Utils.hpp"
-#include ".hidden/StringView-part.hpp"
-#include "StringEdit.hpp"
+#include ".hide/StringView.hpp"
 namespace CustomUtils {
 	class StringView;
 	class String;
@@ -10,11 +9,11 @@ namespace CustomUtils {
 	template <class T>
 		void viewput(T&, const StringView*);
 	template <class T>
-		void viewput(T&, const StringEdit*);
+		void viewput(T&, const StringView*);
 	class String {
 		private:
 			Utils::size trulen;
-			StringEdit view;
+			StringView view;
 			void allocate(Utils::size);
 			void resize(Utils::size);
 			void finalize() noexcept;
@@ -52,10 +51,10 @@ namespace CustomUtils {
 			}
 		public:
 			String() noexcept;
-			inline String(const String& val) : trulen(0), view(nullptr, 0) {
+			inline String(const String& val) : trulen(0), view(nullptr) {
 				byval(val);
 			}
-			inline String(String&& val) noexcept : trulen(0), view(nullptr, 0) {
+			inline String(String&& val) noexcept : trulen(0), view(nullptr) {
 				byval(Utils::forward<String>(val));
 			}
 			template <class T, class... V, bool isn = (sizeof...(V) == 0)>
@@ -68,7 +67,7 @@ namespace CustomUtils {
 			}
 			constexpr const char* data() const noexcept {
 				if (trulen > 0)
-					return view.buffer;
+					return view.read();
 				else
 					return nullptr;
 			}
@@ -121,7 +120,7 @@ namespace CustomUtils {
 			}
 			constexpr operator const char*() const noexcept {
 				if (trulen > 0)
-					return view.buffer;
+					return view.read();
 				else
 					return nullptr;
 			}
@@ -135,7 +134,7 @@ namespace CustomUtils {
 			friend class Vector<char>;
 	};
 }
-#include ".hidden/GString-part.hpp"
+#include ".hide/GString.hpp"
 namespace CustomUtils {
 	template <bool reset, class T, class... V>
 	void String::adder(const T& val, const V&... rest) noexcept(!reset) {
@@ -154,7 +153,7 @@ namespace CustomUtils {
 	}
 	template <class T, class... V, bool isn>
 	String::String(T&& val, const V&... rest) noexcept(isn && Utils::is_same<T, String>) :
-	 trulen(0), view(nullptr, 0) {
+	 trulen(0), view(nullptr) {
 		if constexpr (isn) {
 			setup(Utils::forward<T>(val));
 		} else {

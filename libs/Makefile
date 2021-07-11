@@ -2,7 +2,7 @@ PHON:=clean reset scrape unmake remake .reset install uninstall
 not=$(if $(1),,true)
 comma:=,
 sources=$(wildcard *.cpp)
-mk2:=$(wildcard .*.mk.2)
+mk2:=$(wildcard *.mk.2)
 isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))
 ifneq ($(if $(MAKECMDGOALS),$(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),true),)
  no:=$(shell .extra/depcheck >&2)
@@ -17,9 +17,6 @@ endif
 .PHONY: all nodep nodown $(PHON)
 
 all: .shared.so .static.a
-
-.reset: #removes stray .mk.2 files
-	$(if $(mk2),rm $(mk2))
 
 nodep: #means makefile won't generate dependencies for objects
 

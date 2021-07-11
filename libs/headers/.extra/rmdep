@@ -11,7 +11,7 @@ for included in "${installabs}"/include/CustomUtils/*.hpp; do
 		rm -v "$included"
 	fi
 done
-for included in "${installabs}"/include/CustomUtils/.hidden/*.hpp; do
+for included in "${installabs}"/include/CustomUtils/.hide/*.hpp; do
 	if [[ ! -f "${included}" ]]; then
 		continue
 	fi

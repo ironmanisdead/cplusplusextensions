@@ -57,7 +57,7 @@ namespace CustomUtils {
 					caller = nullptr;
 			}
 			template <class T, class raw = Utils::raw_type<T>,
-				 bool null = Utils::is_same<raw, Utils::nullptr_t>>
+				 bool null = Utils::is_same<raw, Utils::nullpt>>
 			Function(T&& val) noexcept(null) {
 				if constexpr (null)
 					caller = nullptr;
@@ -96,7 +96,7 @@ namespace CustomUtils {
 				}
 			}
 			template <class T, class raw = Utils::raw_type<T>,
-			bool null = Utils::is_same<raw, Utils::nullptr_t>>
+			bool null = Utils::is_same<raw, Utils::nullpt>>
 			Function& operator =(T&& val) noexcept(null) {
 				if constexpr (null) {
 					if (caller) {

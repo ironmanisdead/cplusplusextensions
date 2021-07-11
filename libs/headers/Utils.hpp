@@ -33,9 +33,7 @@ namespace CustomUtils {
 			[[noreturn]] static void RunError(const char*);
 			[[noreturn]] static void RangeError(const char*);
 			template <class...>
-				using null_t = void;
-			template <auto...>
-				using null_v = void;
+				using none = void;
 			template <class T, class...>
 				using typerep_t = T;
 			template <class T, auto...>
@@ -46,9 +44,10 @@ namespace CustomUtils {
 				static constexpr decltype(V) valrep_v = V;
 			template <class T>
 				static add_rvalue_reference<T> declval() noexcept;
-			using nullptr_t = decltype(nullptr);
+			using nullpt = decltype(nullptr);
 			using strongcmp_t = decltype(0 <=> 0);
 			using weakcmp_t = decltype(0.0 <=> 0.0);
+			static constexpr auto null = nullptr;
 			template <class T, size N>
 				using array = T[N];
 			template <class T>
@@ -73,16 +72,16 @@ namespace CustomUtils {
 			template <class, class>
 				struct test_returnable : lie {};
 			template <class T>
-				struct test_returnable<null_t<T(*)()>, T> : truth {};
+				struct test_returnable<none<T(*)()>, T> : truth {};
 			template <class, class, class>
 				struct test_convertible : lie {};
 			template <class T, class F>
-				struct test_convertible<null_t<
+				struct test_convertible<none<
 					decltype(declval<void(&)(F)>()(declval<T>()))>, T, F> : truth {};
 			template <class, class, class...>
 				struct test_constructible : lie {};
 			template <class T, class... args>
-				struct test_constructible<null_t<decltype(T(declval<args>()...))>, T, args...> : truth {};
+				struct test_constructible<none<decltype(T(declval<args>()...))>, T, args...> : truth {};
 			template <class, class, class...>
 				struct test_noexcept_constructible : lie {};
 			template <class T, class... args>
@@ -92,7 +91,7 @@ namespace CustomUtils {
 			template <class, class, class>
 				struct test_assign : lie {};
 			template <class T, class V>
-				struct test_assign<null_t<decltype(declval<T>() = declval<V>())>, T, V> : truth {};
+				struct test_assign<none<decltype(declval<T>() = declval<V>())>, T, V> : truth {};
 			template <class, class, class>
 				struct test_noexcept_assign : lie {};
 			template <class T, class V>
@@ -175,7 +174,7 @@ namespace CustomUtils {
 			template <class, class, class...>
 				struct find_common : identity<void> {};
 			template <class T, class V>
-				struct find_common<null_t<decltype(true ? declval<T>() : declval<V>())>, T, V> :
+				struct find_common<none<decltype(true ? declval<T>() : declval<V>())>, T, V> :
 					identity<decltype(true ? declval<T>() : declval<V>())> {};
 			template <class T, class... V>
 				struct find_common<void, T, V...> :

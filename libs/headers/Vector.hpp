@@ -8,7 +8,7 @@ namespace CustomUtils {
 	template <class T>
 	class Vector : public UVector {
 		private:
-			#include ".hidden/Vector-info.hpp"
+			#include ".hide/Vector-info.hpp"
 			static constexpr bool self_char = Utils::is_same<T, char>;
 			void create(Utils::enable_it<self_char, String&&> val) noexcept;
 			void create(Utils::enable_it<self_char, const String&> val);

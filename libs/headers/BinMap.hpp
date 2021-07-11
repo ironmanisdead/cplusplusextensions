@@ -117,7 +117,7 @@ namespace CustomUtils {
 			template <class, class>
 				struct strlen_callable : lie {};
 			template <class G>
-				struct strlen_callable<null_t<
+				struct strlen_callable<none<
 				decltype(GString::strlen(declval<G>()))>, G> {};
 			template <class, class>
 				struct strlen_noexcept_callable : lie {};

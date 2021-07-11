@@ -139,13 +139,13 @@ namespace CustomUtils {
 	void Vector<char>::create(String&& val) noexcept {
 		len = val.view.len;
 		trulen = val.trulen;
-		raw = val.view.buffer;
+		raw = val.view.edit();
 		val.trulen = 0;
 	}
 	template <>
 	void Vector<char>::create(const String& val) {
 		allocate(val.view.len + 1);
-		Utils::memcpy(raw, val.view.buffer, len = val.view.len);
+		Utils::memcpy(raw, val.view.read(), len = val.view.len);
 	}
 	template <>
 	void vecput(std::ostream& os, const Vector<char>* val) {

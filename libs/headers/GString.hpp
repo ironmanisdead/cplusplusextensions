@@ -1,5 +1,5 @@
 #pragma once
-#include ".hidden/GString-part.hpp"
+#include ".hide/GString.hpp"
 #include "String.hpp"
 namespace CustomUtils {
 	namespace GString {

@@ -11,13 +11,13 @@ namespace CustomUtils {
 		private:
 			template <size... nums>
 				constexpr Array(const T (&val)[N], list<nums...>) noexcept : data { val[nums]... } {}
-			template <nullptr_t... filler, class... ts>
+			template <nullpt... filler, class... ts>
 				constexpr Array(list<filler...>, ts&&... args) noexcept(noexcept(T(forward<ts>(args)...))) :
 					data { (static_cast<void>(filler), T { forward<ts>(args)... })... } {}
 		public:
 			constexpr Array() noexcept : Array(fill_set<nullptr, N> {}) {}
 			template <class... ts>
-			constexpr Array(nullptr_t, ts&&... args) noexcept(noexcept(T(forward<ts>(args)...))) :
+			constexpr Array(nullpt, ts&&... args) noexcept(noexcept(T(forward<ts>(args)...))) :
 				Array(fill_set<nullptr, N> {}, forward<ts>(args)...) {}
 			constexpr Array(const T (&val)[N])
 				noexcept(noexcept(Array(val, queue<N> {}))) :

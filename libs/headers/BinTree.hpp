@@ -46,7 +46,7 @@ namespace CustomUtils {
 				root = true;
 				uTree() = val;
 			}
-			inline void setParent(Utils::nullptr_t) noexcept {
+			inline void setParent(Utils::nullpt) noexcept {
 				root = true;
 				uTree() = nullptr;
 			}

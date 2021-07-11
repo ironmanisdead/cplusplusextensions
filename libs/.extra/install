@@ -6,7 +6,7 @@ if [[ -d "${installabs}/include/CustomUtils" ]]; then
 fi
 
 echo "making include directory" >&2
-mkdir -p -v "${installabs}/include/CustomUtils/.hidden"
+mkdir -p -v "${installabs}/include/CustomUtils/.hide"
 echo "installing header files" >&2
 cp -u -t "${installabs}/include/CustomUtils" headers/*.hpp
-cp -u -t "${installabs}/include/CustomUtils/.hidden" headers/.hidden/*.hpp
+cp -u -t "${installabs}/include/CustomUtils/.hide" headers/.hide/*.hpp
