@@ -127,8 +127,6 @@ namespace CustomUtils {
 			friend T& operator <<(T& os, const String& val);
 			template <class T>
 				friend T& operator <<(T& os, const String* val);
-			template <class T>
-				friend void stringput(T&, const String*);
 			friend class Vector<char>;
 	};
 }
