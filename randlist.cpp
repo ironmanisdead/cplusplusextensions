@@ -3,6 +3,7 @@
 using namespace CustomUtils;
 int main() {
 	BinMap<int, int> map;
+	std::cout << "unsorted list:" << std::endl;
 	for (int i = 0; i < 20; i++) {
 		int key;
 		do
@@ -12,7 +13,7 @@ int main() {
 		map.insert(key, val);
 		std::cout << key << ' ' << val << std::endl;
 	}
-	std::cout << std::endl;
+	std::cout << "\nsorted list:" << std::endl;
 	for (auto& node : map)
 		std::cout << node.getKey() << ' ' << node.getValue() << std::endl;
 }
