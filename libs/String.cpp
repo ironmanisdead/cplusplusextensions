@@ -15,7 +15,7 @@ namespace CPPExtensions {
 	String::~String() {
 		finalize();
 	}
-	bool String::allocate(Utils::size n1) noexcept {
+	bool String::_allocate(Utils::size n1) noexcept {
 		finalize();
 		if (n1 == 0)
 			return true;
@@ -28,7 +28,7 @@ namespace CPPExtensions {
 	}
 	bool String::resize(Utils::size n1) noexcept {
 		if (trulen == 0)
-			return allocate(n1);
+			return _allocate(n1);
 		else if (n1 == 0)
 			return finalize(), true;
 		else if (n1 < trulen)
@@ -166,6 +166,24 @@ namespace CPPExtensions {
 			str /= 10;
 		}
 		view.len += siz;
+	}
+	void String::addval(char ch) noexcept { view.edit()[view.len++] = ch; }
+	bool String::allocate(Utils::size nsize) noexcept {
+		if (trulen == 0)
+			return _allocate(nsize);
+		else if (nsize == 0)
+			return finalize(), true;
+		else if (nsize < trulen)
+			return true;
+		char* temp = Utils::downcast<char*>(::operator new (nsize, std::nothrow_t{}));
+		if (!temp)
+			return false;
+		Utils::memcpy(temp, view.read(), view.len);
+		::operator delete(view.edit());
+		view.set(temp, view.len);
+		trulen = nsize;
+		view.edit()[view.len] = '\0';
+		return true;
 	}
 	Utils::strongcmp_t String::operator <=>(const String& val) const noexcept {
 		if ((trulen == 0) || (val.trulen == 0))

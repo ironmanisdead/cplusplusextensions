@@ -48,6 +48,8 @@ namespace CPPExtensions {
 					return ray_t::len;
 				else if constexpr (ray_r::value)
 					return ray_r::len;
+				else if (Utils::is_same<Utils::raw_type<T>, char>)
+					return 1;
 				else
 					return _strlen(str);
 			}

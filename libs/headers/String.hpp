@@ -12,7 +12,7 @@ namespace CPPExtensions {
 		private:
 			Utils::size trulen;
 			StringView view;
-			bool allocate(Utils::size) noexcept;
+			bool _allocate(Utils::size) noexcept;
 			bool resize(Utils::size) noexcept;
 			void finalize() noexcept;
 			template <bool reset>
@@ -36,6 +36,7 @@ namespace CPPExtensions {
 			void addval(const char*) noexcept;
 			void addval(Utils::size) noexcept;
 			void addval(signed) noexcept;
+			void addval(char) noexcept;
 			template <bool reset = true, class T, class... Ts>
 				setby<reset> adder(const T&, const Ts&...) noexcept;
 			template <class T>
@@ -124,6 +125,7 @@ namespace CPPExtensions {
 				else
 					return nullptr;
 			}
+			bool allocate(Utils::size) noexcept;
 			~String();
 			template <class T>
 			friend T& operator <<(T& os, const String& val);
@@ -163,7 +165,7 @@ namespace CPPExtensions {
 			setup(Utils::forward<T>(val));
 		} else {
 			Utils::size total = GString::strlen(val) + (GString::strlen(rest) + ... + 1);
-			if (!allocate(total))
+			if (!_allocate(total))
 				return;
 			using ray_m = Utils::array_prop<T>;
 			using ray_r = Utils::array_util<T>;
