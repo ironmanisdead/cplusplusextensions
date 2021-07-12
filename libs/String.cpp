@@ -22,9 +22,8 @@ namespace CPPExtensions {
 		char* temp = Utils::downcast<char*>(::operator new(n1, std::nothrow_t{}));
 		if (!temp)
 			return false;
-		view = temp;
+		view.set(temp, view.len);
 		trulen = n1;
-		view.len = 0;
 		return true;
 	}
 	bool String::resize(Utils::size n1) noexcept {
@@ -42,7 +41,7 @@ namespace CPPExtensions {
 			return false;
 		Utils::memcpy(temp, view.read(), view.len);
 		::operator delete(view.edit());
-		view = temp;
+		view.set(temp, view.len);
 		trulen = ntru;
 		view.edit()[view.len] = '\0';
 		return true;

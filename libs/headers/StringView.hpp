@@ -1,5 +1,5 @@
 #pragma once
-#include ".hide/StringView.hpp"
+#include ".part/StringView.hpp"
 #include "String.hpp"
 namespace CPPExtensions {
 	constexpr StringView::StringView(const String& val) noexcept : len(0),

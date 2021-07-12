@@ -1,6 +1,6 @@
 #pragma once
 #include "Utils.hpp"
-#include ".hide/StringView.hpp"
+#include ".part/StringView.hpp"
 namespace CPPExtensions {
 	class StringView;
 	class String;
@@ -132,7 +132,7 @@ namespace CPPExtensions {
 			friend class Vector<char>;
 	};
 }
-#include ".hide/GString.hpp"
+#include ".part/GString.hpp"
 namespace CPPExtensions {
 	template <bool reset, class T, class... V>
 	String::setby<reset> String::adder(const T& val, const V&... rest) noexcept {

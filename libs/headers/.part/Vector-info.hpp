@@ -16,13 +16,13 @@ static constexpr void (*pheonix)(void*, void*) = [] () {
 } ();
 static constexpr void (*assign)(void*, const void*) = [] () {
 	if constexpr (is_assign)
-		return &Utils::wrap_assign<T, const T&>;
+		return &Utils::wrap_assign<T&, const T&>;
 	else
 		return nullptr;
 } ();
 static constexpr void (*possess)(void*, void*) = [] () {
 	if constexpr (is_possess)
-		return &Utils::wrap_assign<T, T&&>;
+		return &Utils::wrap_assign<T&, T&&>;
 	else
 		return nullptr;
 } ();

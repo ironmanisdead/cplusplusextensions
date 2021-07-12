@@ -8,20 +8,20 @@ namespace CPPExtensions {
 	template <class T>
 	class Vector : public UVector {
 		private:
-			#include ".hide/Vector-info.hpp"
+			#include ".part/Vector-info.hpp"
 			static constexpr bool self_char = Utils::is_same<T, char>;
 			void create(Utils::enable_it<self_char, String&&> val) noexcept;
-			void create(Utils::enable_it<self_char, const String&> val);
+			[[nodiscard]] bool create(Utils::enable_it<self_char, const String&> val) noexcept;
 			template <class V>
-			void create(const Vector<V>& val) {
-				UVector::copy(val, &Utils::wrap_construct);
+			[[nodiscard]] bool create(const Vector<V>& val) noexcept {
+				return UVector::copy(val, &Utils::wrap_construct);
 			}
 			void create(Vector&& val) noexcept { UVector::save(val); }
-			void create(const UVector& val) { UVector::copy(val); }
-			void create(UVector&& val) { UVector::save(val); }
+			[[nodiscard]] bool create(const UVector& val) { return UVector::copy(val); }
+			bool create(UVector&& val) { return UVector::save(val); }
 		public:
 			Vector() noexcept : UVector(&_typeinfo) { trulen = 0; }
-			Vector(const Vector& val) : UVector(&_typeinfo) { create(val); }
+			Vector(const Vector& val) noexcept : UVector(&_typeinfo) { (void)create(val); }
 			Vector(Vector&& val) noexcept : UVector(&_typeinfo) { save(val); }
 			template <class V, typename... L, bool sin_arg = (sizeof...(L) == 0),
 			 bool str_cons = sin_arg && Utils::is_same<V, String>>
@@ -35,35 +35,39 @@ namespace CPPExtensions {
 					create(String(Utils::forward<V>(ini), Utils::forward<L>(rest)...));
 			}
 			template <class... Ts>
-			void insert(Utils::size n1, Ts&&... vals) {
+			bool insert(Utils::size n1, Ts&&... vals) noexcept {
 				if (n1 > len)
-					Utils::RunError("Vector not large enough");
+					return false;
 				char alloc[sizeof(T)];
-				resize( (len + 1) * sizeof(T) );
+				if (!resize( (len + 1) * sizeof(T) ))
+					return false;
 				new (alloc) T(Utils::forward<Ts>(vals)...);
 				place(n1, alloc);
+				return true;
 			}
 			template <class... Ts>
-			void append(Ts&&... vals) {
+			bool append(Ts&&... vals) noexcept {
 				char alloc[sizeof(T)];
-				resize( (len + 1) * sizeof(T) );
+				if (!resize( (len + 1) * sizeof(T) ))
+					return false;
 				new (alloc) T(Utils::forward<Ts>(vals)...);
 				place(len, alloc);
+				return true;
 			}
 			Vector& operator =(const UVector& val) {
 				static_assert(Utils::is_constructible<T, const T&>, "type has no copy constructor");
-				UVector::copy(val);
+				(void)UVector::copy(val);
 				return *this;
 			}
 			template <typename V>
 			Vector& operator =(const Vector<V>& val) {
 				static_assert(Utils::is_constructible<T, const V&>, "cannot convert types");
-				copy(val, &Utils::wrap_construct<T, const V&>);
+				(void)copy(val, &Utils::wrap_construct<T, const V&>);
 				return *this;
 			}
 			Vector& operator =(Vector&& val) noexcept {
 				static_assert(Utils::is_assignable<T&, T&&>, "type is not move-constructible");
-				save(val, &Utils::wrap_assign<T&, T&&>);
+				(void)save(val, &Utils::wrap_assign<T&, T&&>);
 				return *this;
 			}
 			template <typename Z>

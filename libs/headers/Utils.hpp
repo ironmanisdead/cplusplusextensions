@@ -1,6 +1,7 @@
 #pragma once
 #include "Macros.hpp"
 #include <compare>
+#include <new>
 namespace CPPExtensions {
 	template <class, decltype(sizeof 0)>
 		class Array;
@@ -381,13 +382,17 @@ namespace CPPExtensions {
 						T(forward<Y>(*reinterpret_cast<Z*>(src))));
 			}
 			template <class T, class Y, class Z = remove_reference<Y>>
-			static T* full_construct(switch_if<is_const<Z>, const void*, void*> src) {
-				return new (::operator new(sizeof(T))) T(*reinterpret_cast<Z*>(src));
+			static T* full_construct(switch_if<is_const<Z>, const void*, void*> src)
+			noexcept(noexcept(T(declval<Y>()))) {
+				void* store = downcast<T*>(::operator new(sizeof(T), std::nothrow_t {}));
+				if (store)
+					new (store) T(forward<Y>(*downcast<Z*>(src)));
+				return store;
 			}
-			template <class T, class Y, class Z = remove_reference<Y>>
+			template <class T, class Y, class U = remove_reference<T>, class Z = remove_reference<Y>>
 			static void wrap_assign(void* dest, switch_if<is_const<Z>, const void*, void*> src)
 			noexcept(noexcept(declval<T&>() = declval<Y>())) {
-				return static_cast<void>(*reinterpret_cast<T*>(dest) =
+				return static_cast<void>(forward<T>(*reinterpret_cast<U*>(dest)) =
 						forward<Y>(*reinterpret_cast<Z*>(src)));
 			}
 	};

@@ -1,5 +1,5 @@
 #pragma once
-#include ".hide/GString.hpp"
+#include ".part/GString.hpp"
 #include "String.hpp"
 #include <typeinfo>
 namespace CPPExtensions {
