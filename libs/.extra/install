@@ -6,7 +6,7 @@ if [[ -d "${installabs}/include/CPPExtensions" ]]; then
 fi
 
 echo "making include directory" >&2
-mkdir -p -v "${installabs}/include/CPPExtensions/.hide"
+mkdir -p -v "${installabs}/include/CPPExtensions/.part"
 echo "installing header files" >&2
 cp -u -t "${installabs}/include/CPPExtensions" headers/*.hpp
-cp -u -t "${installabs}/include/CPPExtensions/.hide" headers/.hide/*.hpp
+cp -u -t "${installabs}/include/CPPExtensions/.part" headers/.part/*.hpp
