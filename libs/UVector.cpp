@@ -99,6 +99,21 @@ namespace CPPExtensions {
 		len = target;
 		return true;
 	}
+	bool UVector::copy(const UVector& val, void (*const mobilize)(void*, const void*) noexcept) noexcept {
+		if (mobilize == nullptr)
+			return false;
+		Utils::size target = val.len;
+		Utils::size ot = val.typeinfo->data->elem;
+		Utils::size cur = typeinfo->data->elem;
+		deinit();
+		if (!resize((target + 1) * cur))
+			return false;
+		Utils::size idx;
+		for (idx = 0; idx < target; idx++)
+			mobilize(&raw[idx * cur], &val.raw[idx * ot]);
+		len = target;
+		return true;
+	}
 	UVector& UVector::operator =(const UVector& val) {
 		static_cast<void>(copy(val));
 		return *this;

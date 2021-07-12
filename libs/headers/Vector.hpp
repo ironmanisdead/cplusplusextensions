@@ -14,7 +14,7 @@ namespace CPPExtensions {
 			[[nodiscard]] bool create(Utils::enable_it<self_char, const String&> val) noexcept;
 			template <class V>
 			[[nodiscard]] bool create(const Vector<V>& val) noexcept {
-				return UVector::copy(val, &Utils::wrap_construct);
+				return UVector::copy(val, &Utils::wrap_construct<T, const V&>);
 			}
 			void create(Vector&& val) noexcept { UVector::save(val); }
 			[[nodiscard]] bool create(const UVector& val) { return UVector::copy(val); }
@@ -28,11 +28,11 @@ namespace CPPExtensions {
 			Vector(V&& ini, L&&... rest)
 			noexcept(str_cons || Utils::is_same<V, Vector>) : UVector(&_typeinfo) {
 				if constexpr (Utils::is_same<Utils::raw_type<V>, Vector> && sin_arg)
-					create(Utils::forward<V>(ini));
+					(void)create(Utils::forward<V>(ini));
 				else if constexpr (Utils::is_same<V, UVector> && sin_arg)
-					create(Utils::forward<V>(ini));
+					(void)create(Utils::forward<V>(ini));
 				else if constexpr (Utils::is_same<T, char>)
-					create(String(Utils::forward<V>(ini), Utils::forward<L>(rest)...));
+					(void)create(String(Utils::forward<V>(ini), Utils::forward<L>(rest)...));
 			}
 			template <class... Ts>
 			bool insert(Utils::size n1, Ts&&... vals) noexcept {
@@ -67,7 +67,7 @@ namespace CPPExtensions {
 			}
 			Vector& operator =(Vector&& val) noexcept {
 				static_assert(Utils::is_assignable<T&, T&&>, "type is not move-constructible");
-				(void)save(val, &Utils::wrap_assign<T&, T&&>);
+				(void)UVector::save(val, &Utils::wrap_assign<T&, T&&>);
 				return *this;
 			}
 			template <typename Z>
