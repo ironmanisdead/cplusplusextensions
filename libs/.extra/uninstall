@@ -5,5 +5,5 @@ shopt -s dotglob
 if [[ -d "${installabs}/include/CPPExtensions" ]]; then
 	echo "removing headers"
 	rm -r -f "${installabs}"/include/CPPExtensions/*
-	rmdir -v "${installdir}/include/CPPExtensions"
+	rmdir -v "${installabs}/include/CPPExtensions"
 fi
