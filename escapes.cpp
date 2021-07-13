@@ -8,10 +8,11 @@ constexpr auto gencyan = GString::strcat(fg_black,
 		GString::gen_color(false, 51).data);
 
 constexpr auto trublue = GString::truecolor(false, 40, 177, 249);
-static const char* addr = "https://github.com/ironmanisdead/cplusplusextensions";
+constexpr const char addr[] = "https://github.com/ironmanisdead/cplusplusextensions";
+constexpr const char display[] = "this is a link";
 
 int main() {
-	String link = GString::hyperlink(link, String(bg_blue, addr, text_reset));
+	String link = GString::hyperlink(addr, String(fg_blue, display, text_reset));
 	std::cout << bold << "this is bold" << text_reset << std::endl;
 	std::cout << italics << "this is in italics" << text_reset << std::endl;
 	std::cout << strike << "this is striked through" << text_reset << std::endl;
