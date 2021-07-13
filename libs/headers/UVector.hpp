@@ -44,6 +44,8 @@ namespace CPPExtensions {
 			Utils::size trulen;
 			Utils::size len;
 			char* raw;
+			bool allocerr;
+			bool errhold;
 			[[nodiscard]] bool save(UVector&) noexcept;
 			[[nodiscard]] bool save(UVector&, void (*)(void*, void*));
 			[[nodiscard]] bool save(UVector&, void (*)(void*, void*) noexcept) noexcept;

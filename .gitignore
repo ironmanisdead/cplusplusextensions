@@ -4,6 +4,7 @@
 *.mk.2
 /libs/headers/All.hpp
 /libs/headers/.dirhash
+/libs/include
 #next line is discardable in your own forks
 /.gitcred
 /.links

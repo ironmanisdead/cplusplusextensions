@@ -8,3 +8,12 @@ mkdir -p -v "$installabs"/lib64
 echo "creating -lcppextensions inside ${installdir}/lib64" >&2
 cp -u -v libs/.shared.so "$installabs"/lib64/libcppextensions.so
 cp -u -v libs/.static.a "$installabs"/lib64/libcppextensions.a
+ln -snfv "${installabs}/include" libs/include
+shopt -s nullglob
+declare -a files=(*.o)
+for file in "${files[@]}"; do
+	rm -f -v ".${file/'.o'/'.mk'}"
+done
+if ((${#files[@]})); then
+	MAKELEVEL=$((MAKELEVEL - 1)) make "${files[@]}"
+fi

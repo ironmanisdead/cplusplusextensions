@@ -6,7 +6,7 @@ mk2:=$(wildcard *.mk.2)
 isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))
 ifneq ($(if $(MAKECMDGOALS),$(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),true),)
  no:=$(shell .extra/depcheck >&2)
- no:=$(if $(filter-out 0,$(.SHALLSTATUS)),$(error depcheck failed))
+ no:=$(if $(filter-out 0,$(.SHELLSTATUS)),$(error depcheck failed))
  ifeq ($(filter-out nodown,$(MAKECMDGOALS)),)
   no:=$(shell cd headers && make >&2)
  endif

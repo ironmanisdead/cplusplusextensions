@@ -12,6 +12,7 @@ namespace CPPExtensions {
 		private:
 			Utils::size trulen;
 			StringView view;
+			bool errbit;
 			bool _allocate(Utils::size) noexcept;
 			bool resize(Utils::size) noexcept;
 			void finalize() noexcept;
@@ -52,10 +53,10 @@ namespace CPPExtensions {
 			}
 		public:
 			String() noexcept;
-			inline String(const String& val) : trulen(0), view(nullptr) {
+			inline String(const String& val) : trulen(0), view(nullptr), errbit(false) {
 				byval(val);
 			}
-			inline String(String&& val) noexcept : trulen(0), view(nullptr) {
+			inline String(String&& val) noexcept : trulen(0), view(nullptr), errbit(false) {
 				byval(Utils::forward<String>(val));
 			}
 			template <class T, class... V, bool isn = (sizeof...(V) == 0)>
@@ -66,6 +67,8 @@ namespace CPPExtensions {
 				else
 					return 0;
 			}
+			constexpr Utils::size gettlen() const noexcept { return trulen; }
+			constexpr bool haserr() const noexcept { return errbit; }
 			constexpr const char* data() const noexcept {
 				if (trulen > 0)
 					return view.read();
@@ -160,7 +163,7 @@ namespace CPPExtensions {
 	}
 	template <class T, class... V, bool isn>
 	String::String(T&& val, const V&... rest) noexcept :
-	 trulen(0), view(nullptr) {
+	 trulen(0), view(nullptr), errbit(false) {
 		if constexpr (sizeof...(V) == 0) {
 			setup(Utils::forward<T>(val));
 		} else {

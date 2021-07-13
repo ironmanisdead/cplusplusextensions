@@ -9,6 +9,7 @@ namespace CPPExtensions {
 	void String::finalize() noexcept {
 		if (trulen > 0)
 			::operator delete(view.edit());
+		errbit = false;
 		trulen = 0;
 		view.len = 0;
 	}
@@ -20,8 +21,9 @@ namespace CPPExtensions {
 		if (n1 == 0)
 			return true;
 		char* temp = Utils::downcast<char*>(::operator new(n1, std::nothrow_t{}));
-		if (!temp)
-			return false;
+		if (!temp) {
+			return !(errbit = true);
+		}
 		view.set(temp, view.len);
 		trulen = n1;
 		return true;
@@ -33,12 +35,13 @@ namespace CPPExtensions {
 			return finalize(), true;
 		else if (n1 < trulen)
 			return true;
+		errbit = false;
 		Utils::size ntru = trulen;
 		while (ntru < n1)
 			ntru *= 2;
 		char* temp = Utils::downcast<char*>(::operator new (ntru, std::nothrow_t{}));
 		if (!temp)
-			return false;
+			return !(errbit = true);
 		Utils::memcpy(temp, view.read(), view.len);
 		::operator delete(view.edit());
 		view.set(temp, view.len);
@@ -48,6 +51,7 @@ namespace CPPExtensions {
 	}
 	template <bool reset>
 	String::setby<reset> String::byray(const char* val, Utils::size siz) noexcept {
+		errbit = false;
 		Utils::size ntru, nlen;
 		if (val[siz - 1] == '\0') {
 			nlen = siz - 1;
@@ -169,6 +173,7 @@ namespace CPPExtensions {
 	}
 	void String::addval(char ch) noexcept { view.edit()[view.len++] = ch; }
 	bool String::allocate(Utils::size nsize) noexcept {
+		errbit = false;
 		if (trulen == 0)
 			return _allocate(nsize);
 		else if (nsize == 0)
@@ -177,7 +182,7 @@ namespace CPPExtensions {
 			return true;
 		char* temp = Utils::downcast<char*>(::operator new (nsize, std::nothrow_t{}));
 		if (!temp)
-			return false;
+			return !(errbit = true);
 		Utils::memcpy(temp, view.read(), view.len);
 		::operator delete(view.edit());
 		view.set(temp, view.len);

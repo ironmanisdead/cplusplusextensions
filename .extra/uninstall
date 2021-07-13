@@ -1,10 +1,22 @@
 #!/bin/bash
 set -e
 
-if [[ -f "$installabs"/lib64/libcppextensions.a ]] || [[ -f "$installabs"/lib64/libcppextensions.so ]]; then
-	rm -f -v "$installabs"/lib64/libcppextensions.a "$installabs"/lib64/libcppextensions.so
-	echo "removing test objects, as they might be linked with -lcppextensions" >&2
-	rm -f -v *.o
+if [[ -f "$installabs"/lib64/libcppextensions.a ]]; then
+	rm -v "$installabs"/lib64/libcppextensions.a
 fi
-
+shopt -s nullglob
+declare -a files
+if [[ -f "$installabs"/lib64/libcppextensions.so ]]; then
+	rm -v "$installabs"/lib64/libcppextensions.so
+	echo "removing pre-made rules as they would now be invalidated" >&2
+	files=(*.mk)
+	for file in "${files[@]}"; do
+		rm -v "./$file"
+	done
+fi
+files=(*.o)
+ln -snfv .include libs/include
 cd libs && make uninstall
+if ((${#files[@]})); then
+	make -- "${files[@]}"
+fi

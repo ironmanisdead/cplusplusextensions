@@ -5,7 +5,6 @@ declare -- name wild
 genname name "$targetfile"
 genwild wild "$name"
 if [[ ! -f "$targetfile.cpp" ]]; then
-	rm .extra/list.mk
 	exit 1
 fi
 declare -- shname
@@ -21,18 +20,19 @@ IFS= read -d '' info <<'EOF'
 EOF
 set -e
 declare -- ruledep trail
+ruledep="$(cc -I "./libs/include/" -M "$targetfile.cpp")" || exit $?
 if test -f "${installabs}/lib64/libcppextensions.so"; then
-	ruledep="$(cc -I "${installabs}/include/" -M "$targetfile.cpp")" || exit $?
+	make install
 	trail="-I ${shpath}/include/ -L ${shpath}/lib64/ -Wl,-rpath,${shpath}/lib64/ -Wl,-lcppextensions"
 else
-	ruledep="$(cc -I "libs/include/" -M "$targetfile.cpp")" || exit $?
-	trail=$'-I "$$(pwd)/libs/include/" -L "$$(pwd)/libs/" -Wl,-rpath,\'$$ORIGIN/libs/\' -Wl,-l:.shared.so'
+	trail=$'-I "libs/include/" -L "$$(pwd)/libs/" -Wl,-rpath,\'$$ORIGIN/libs/\' -Wl,-l:.shared.so'
 fi
 ruledep="${ruledep/"$targetfile.o"/"$name.o"}"
 ruledep="${ruledep/"$targetfile.cpp"/"$name.cpp"}"
 declare -- rule="$info"$'\n'"$ruledep"
-rule+=$'\n\t'"\$(if \$(findstring $name.mk.2,\$(wildcard *.mk.2)),,$0 $shname)"
-rule+=$'\n\t'"gcc -std=c++2a -O3 -Wall -Wextra -o $shname.o $shname.cpp -lstdc++ -Wl,--disable-new-dtags $trail"
+rule+=$'\n\t'"\$(shell test -f $shname.mk.2)"
+rule+=$'\n\t'"\$(if \$(filter-out 0,\$(.SHELLSTATUS)),$0)"
+rule+=$'\n\t'"\$(CC) -o $shname.o $shname.cpp \$(CFLAGS) $trail"
 echo "generating $targetfile.mk.2"
 touch "$targetfile.mk.2"
 .extra/proc/goup "$targetfile.mk.2"

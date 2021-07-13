@@ -8,17 +8,31 @@ semi:=;
 colon:=:
 not=$(if $(1),,true)
 targetfile=$*
-installdir?=
-installabs?=
-ifeq ($(installabs),)
- ifeq ($(installdir),)
+ifeq ($(origin installabs),undefined)
+ ifeq ($(origin installdir),undefined)
   installdir:=/usr/local
  endif
  installabs:=$(abspath $(installdir))
 endif
+ifeq ($(origin CC),default)
+ CC:=gcc
+endif
+ifeq ($(origin CFLAGS),undefined)
+ CFLAGS:=-std=c++2a -O3 -Wall -Wextra -lstdc++ -Wl,--disable-new-dtags
+endif
+ifeq ($(origin OFLAGS),undefined)
+ OFLAGS:=-std=c++2a -O3 -Wall -Wextra -lstdc++ -fPIC
+endif
+ifeq ($(origin REINSTALL_ON_CHANGE),undefined)
+ REINSTALL_ON_CHANGE:=true
+endif
 export installdir
 export installabs
 export targetfile
+export CC
+export CFLAGS
+export OFLAGS
+export REINSTALL_ON_CHANGE
 ifneq ($(findstring /$(shell pwd),/$(installabs)),)
  $(error cannot install libcppextensions inside source directory)
 endif
@@ -31,7 +45,7 @@ isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))
 ifneq ($(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),)
  no:=$(shell .extra/depcheck)
  no:=$(if $(filter-out 0,$(.SHELLSTATUS)),$(error depcheck failed with error $(.SHELLSTATUS)))
- ifeq ($(filter nodown,$(MAKECMDLIST)),)
+ ifeq ($(filter nodown,$(MAKECMDGOALS)),)
   no:=$(shell cd libs && make >&2)
  endif
  no:=$(if $(filter-out 0,$(.SHELLSTATUS)),$(error libraries could not be generated properly))
