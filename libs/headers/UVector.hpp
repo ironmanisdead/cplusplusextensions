@@ -44,8 +44,8 @@ namespace CPPExtensions {
 			Utils::size trulen;
 			Utils::size len;
 			char* raw;
-			bool allocerr;
-			bool errhold;
+			bool _allocerr;
+			bool _typeerr;
 			[[nodiscard]] bool save(UVector&) noexcept;
 			[[nodiscard]] bool save(UVector&, void (*)(void*, void*));
 			[[nodiscard]] bool save(UVector&, void (*)(void*, void*) noexcept) noexcept;
@@ -60,13 +60,15 @@ namespace CPPExtensions {
 			bool remove(Utils::size, Utils::size = 1) noexcept;
 		public:
 			UVector& operator =(const UVector&);
-			inline Utils::size getlen() const noexcept {
+			constexpr Utils::size getlen() const noexcept {
 				if (trulen > 0)
 					return len;
 				else
 					return 0;
 			}
-			inline Utils::size fullen() const noexcept { return trulen; }
+			constexpr Utils::size fullen() const noexcept { return trulen; }
+			constexpr bool hasTypeErr() const noexcept { return _typeerr; }
+			constexpr bool hasMemErr() const noexcept { return _allocerr; }
 			bool allocate(Utils::size) noexcept;
 			template <class V>
 				friend void vecput(V&, const Vector<char>*);

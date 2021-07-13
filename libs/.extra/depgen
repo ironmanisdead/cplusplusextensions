@@ -3,8 +3,8 @@ set -e
 declare -- rule
 rule="$(gcc -MM "$1")"
 declare -- base="${1%'.cpp'}"
-rule="${rule/"${base}.o"/".${base}.o"}"
-rule+=$'\n\t'"\$(if \$(wildcard ${base}.mk.2),,$0 $1)"
+rule="${rule/"${base}.o"/".${base}.o"} | headers"
+rule+=$'\n\t'"\$(if \$(wildcard ${base}.mk.2),,echo hey; $0 $1)"
 rule+=$'\n\t'"gcc -std=c++2a -o .${base}.o -O3 -Wall -Wextra -c -fPIC $1"
 touch "${base}.mk.2"
 .extra/proc/goup "${base}.mk.2"

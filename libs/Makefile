@@ -1,4 +1,5 @@
 PHON:=headers clean reset scrape unmake remake .reset install uninstall
+.DEFAULT_GOAL:=all
 not=$(if $(1),,true)
 comma:=,
 sources=$(wildcard *.cpp)
@@ -15,6 +16,7 @@ headers:
 .PHONY: all nodep nodown $(PHON)
 
 all: .shared.so .static.a
+	echo hey
 
 nodep: #means makefile won't generate dependencies for objects
 
@@ -31,6 +33,7 @@ uninstall:
 	.extra/depgen $^
 
 .shared.so: $(patsubst %.cpp,.%.o,$(sources))
+	echo $^
 	$(if $^,gcc -shared -Wl$(comma)-z$(comma)defs -o .shared.so $^ -lstdc++)
 
 .static.a: $(patsubst %.cpp,.%.o,$(sources))
