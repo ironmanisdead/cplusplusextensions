@@ -8,13 +8,14 @@ shopt -s nullglob
 declare -a files
 if [[ -f "$installabs"/lib64/libcppextensions.so ]]; then
 	rm -v "$installabs"/lib64/libcppextensions.so
-	files=(.*.mk)
+	declare -a rules=(.*.mk)
+	files=(*.o)
 	if ((${#files[@]})); then
-		echo "removing pre-made rules as they would now be invalidated"
+		echo "removing pre-made test rules and objects as they would now be invalidated"
+		rm -v -- "${rules[@]}"
 		rm -v -- "${files[@]}"
 	fi
 fi
-files=(*.o)
 ln -snfv .include libs/include
 (cd libs && make uninstall)
 if ((${#files[@]})); then

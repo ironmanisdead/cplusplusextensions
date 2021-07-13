@@ -1,5 +1,5 @@
 #!/bin/bash
 shopt -s nullglob
 for file in *.o; do
-	rm -v "$file"
+	rm -v -- "$file"
 done
