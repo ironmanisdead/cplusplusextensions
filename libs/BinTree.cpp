@@ -1,6 +1,7 @@
 #include "headers/BinTree.hpp"
 #include "headers/BinNode.hpp"
 #include "headers/Utils.hpp"
+#include <new>
 namespace CPPExtensions {
 	void BinEnt::_rebalance() noexcept {}
 	bool BinEnt::rotate(bool direction) noexcept {
@@ -246,7 +247,9 @@ namespace CPPExtensions {
 		const void* key = ins->_key();
 		Utils::size siz = ins->data->total;
 		if (!root) {
-			root = Utils::downcast<BinEnt*>(::operator new(siz));
+			root = Utils::downcast<BinEnt*>(::operator new(siz, std::nothrow_t {}));
+			if (!root)
+				return false;
 			ins->setParent(this);
 			Utils::memcpy(root, ins, siz);
 			return true;
@@ -257,7 +260,9 @@ namespace CPPExtensions {
 				_place(result.value, ins, 0 <=> 0);
 			return false;
 		}
-		BinEnt* store = Utils::downcast<BinEnt*>(::operator new(siz));
+		BinEnt* store = Utils::downcast<BinEnt*>(::operator new(siz, std::nothrow_t {}));
+		if (!store)
+			return false;
 		Utils::memcpy(store, ins, siz);
 		_place(result.value, store, result.found);
 		return true;

@@ -2,6 +2,7 @@
 #include "headers/GString.hpp"
 #include "headers/StringView.hpp"
 #include <iostream>
+#include <new>
 #define BOOL_EXTERN(fun, ...) template String::setby<true> fun<true>(__VA_ARGS__); \
 	template String::setby<false> fun<false>(__VA_ARGS__)
 namespace CPPExtensions {
