@@ -20,19 +20,19 @@ IFS= read -d '' info <<'EOF'
 EOF
 set -e
 declare -- ruledep trail
-ruledep="$(cc -I "./libs/include/" -M "$targetfile.cpp")" || exit $?
+ruledep="$(cc -I "libs/include/" -M "$targetfile.cpp")" || exit $?
 if test -f "${installabs}/lib64/libcppextensions.so"; then
-	make install
 	trail="-I ${shpath}/include/ -L ${shpath}/lib64/ -Wl,-rpath,${shpath}/lib64/ -Wl,-lcppextensions"
 else
 	trail=$'-I "libs/include/" -L "$$(pwd)/libs/" -Wl,-rpath,\'$$ORIGIN/libs/\' -Wl,-l:.shared.so'
 fi
 ruledep="${ruledep/"$targetfile.o"/"$name.o"}"
 ruledep="${ruledep/"$targetfile.cpp"/"$name.cpp"}"
+ruledep+=" | libs"
 declare -- rule="$info"$'\n'"$ruledep"
-rule+=$'\n\t'"\$(shell test -f $shname.mk.2)"
+rule+=$'\n\t'"\$(shell test -f ./$shname.mk.2)"
 rule+=$'\n\t'"\$(if \$(filter-out 0,\$(.SHELLSTATUS)),$0)"
-rule+=$'\n\t'"\$(CC) -o $shname.o $shname.cpp \$(CFLAGS) $trail"
+rule+=$'\n\t'"\$(CC) -o ./$shname.o ./$shname.cpp \$(CFLAGS) \$(LDFLAGS) \$(LDLIBS) $trail"
 echo "generating $targetfile.mk.2"
 touch "$targetfile.mk.2"
 .extra/proc/goup "$targetfile.mk.2"

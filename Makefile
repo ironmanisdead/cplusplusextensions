@@ -6,30 +6,40 @@ close:=)
 comma:=,
 semi:=;
 colon:=:
+hashtag:=$(subst \,,\#)
 not=$(if $(1),,true)
 targetfile=$*
-ifeq ($(origin installabs),undefined)
- ifeq ($(origin installdir),undefined)
+isundef=$(filter undefined default,$(origin $(1)))
+ifneq ($(call isundef,installabs),)
+ ifneq ($(call isundef,installdir),)
   installdir:=/usr/local
  endif
  installabs:=$(abspath $(installdir))
 endif
-ifeq ($(origin CC),default)
+ifneq ($(call isundef,CC),)
  CC:=gcc
 endif
-ifeq ($(origin CFLAGS),undefined)
- CFLAGS:=-std=c++2a -O3 -Wall -Wextra -lstdc++ -Wl,--disable-new-dtags
+ifneq ($(call isundef,LDFLAGS),)
+ LDFLAGS:=-Wl,--disable-new-dtags
 endif
-ifeq ($(origin OFLAGS),undefined)
- OFLAGS:=-std=c++2a -O3 -Wall -Wextra -lstdc++ -fPIC
+ifneq ($(call isundef,LDLIBS),)
+ LDLIBS:=-lstdc++
 endif
-ifeq ($(origin REINSTALL_ON_CHANGE),undefined)
+ifneq ($(call isundef,CFLAGS),)
+ CFLAGS:=-std=c++2a -O3 -Wall -Wextra
+endif
+ifneq ($(call isundef,OFLAGS),)
+ OFLAGS:=-fPIC
+endif
+ifneq ($(call isundef,REINSTALL_ON_CHANGE),)
  REINSTALL_ON_CHANGE:=true
 endif
 export installdir
 export installabs
 export targetfile
 export CC
+export LDFLAGS
+export LDLIBS
 export CFLAGS
 export OFLAGS
 export REINSTALL_ON_CHANGE
@@ -38,24 +48,19 @@ ifneq ($(findstring /$(shell pwd),/$(installabs)),)
 endif
 
 PHON:=libs remake unmake scrape clean reset install uninstall deps
+.PHONY:tests nodep nodown $(PHON)
 SOURCES:=$(wildcard *.cpp)
 RULES:=$(patsubst %.cpp,.%.mk,$(SOURCES))
 OBJECTS:=$(patsubst %.cpp,%.o,$(SOURCES))
 isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))
+
 ifneq ($(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),)
- no:=$(shell .extra/depcheck)
- no:=$(if $(filter-out 0,$(.SHELLSTATUS)),$(error depcheck failed with error $(.SHELLSTATUS)))
- ifeq ($(filter nodown,$(MAKECMDGOALS)),)
-  no:=$(shell cd libs && make >&2)
- endif
- no:=$(if $(filter-out 0,$(.SHELLSTATUS)),$(error libraries could not be generated properly))
  include $(RULES)
 endif
 
-.PHONY:tests nodep nodown $(PHON)
-
 libs:
-	cd libs && make
+	.extra/depcheck
+	$(if $(filter nodown,$(MAKECMDGOALS)),,cd libs && make)
 
 install:
 	.extra/install

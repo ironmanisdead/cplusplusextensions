@@ -2,18 +2,25 @@
 set -e
 echo "running subinstalls" >&2
 (cd libs && make install)
-
-echo "ensuring ${installdir}/lib64 exists" >&2
+declare -i indep=0
+test -f "$installabs/lib64/libcppextensions.so" || indep=1
+echo "ensuring ${installdir}/lib64 exists"
 mkdir -p -v "$installabs"/lib64
 echo "creating -lcppextensions inside ${installdir}/lib64" >&2
-cp -u -v libs/.shared.so "$installabs"/lib64/libcppextensions.so
-cp -u -v libs/.static.a "$installabs"/lib64/libcppextensions.a
+cp --preserve=timestamps -u -v -- libs/.shared.so "$installabs"/lib64/libcppextensions.so
+cp --preserve=timestamps -u -v -- libs/.static.a "$installabs"/lib64/libcppextensions.a
 ln -snfv "${installabs}/include" libs/include
 shopt -s nullglob
 declare -a files=(*.o)
-for file in "${files[@]}"; do
-	rm -f -v ".${file/'.o'/'.mk'}"
-done
-if ((${#files[@]})); then
-	MAKELEVEL=$((MAKELEVEL - 1)) make "${files[@]}"
+declare -a rules=(.*.mk)
+if ((indep)); then
+	if ((${#rules[@]})); then
+		echo "removing test .*.mk files, as installation modifies dependency sources"
+		rm -v -- "${rules[@]}"
+	fi
+	if ((${#files[@]})); then
+		echo "removing test *.o files, as installation modifies shared libary origin"
+		rm -v -- "${files[@]}"
+		MAKELEVEL=$((MAKELEVEL - 1)) make -- "${files[@]}"
+	fi
 fi

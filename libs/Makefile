@@ -1,18 +1,16 @@
-PHON:=clean reset scrape unmake remake .reset install uninstall
+PHON:=headers clean reset scrape unmake remake .reset install uninstall
 not=$(if $(1),,true)
 comma:=,
 sources=$(wildcard *.cpp)
 mk2:=$(wildcard *.mk.2)
 isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))
+
 ifneq ($(if $(MAKECMDGOALS),$(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),true),)
- no:=$(shell .extra/depcheck >&2)
- no:=$(if $(filter-out 0,$(.SHELLSTATUS)),$(error depcheck failed))
- ifeq ($(filter-out nodown,$(MAKECMDGOALS)),)
-  no:=$(shell cd headers && make >&2)
- endif
- no:=$(if $(filter-out 0,$(.SHELLSTATUS)),$(error All.hpp failed to generate))
  include $(patsubst %.cpp,.%.mk,$(wildcard *.cpp))
 endif
+headers:
+	.extra/depcheck
+	$(if $(filter-out nodown,$(MAKECMDGOALS)),,cd headers && make)
 
 .PHONY: all nodep nodown $(PHON)
 
@@ -22,7 +20,7 @@ nodep: #means makefile won't generate dependencies for objects
 
 nodown: #means makefile won't descend into another directory
 
-install:
+install: headers
 	.extra/install
 	MAKELEVEL=$(MAKELEVEL) make nodown all
 

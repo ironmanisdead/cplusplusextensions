@@ -2,4 +2,4 @@
 set -e
 shopt -s nullglob
 tail --pid=$1 -f /dev/null
-rm "$2"
+rm -- "$2"

@@ -30,7 +30,7 @@ function genname() {
 	genname_ref="${genname_ref//'\'/'$(slash)'}"
 	genname_ref="${genname_ref//','/'$(comma)'}"
 	genname_ref="${genname_ref//':'/'$(colon)'}"
-	genname_ref="${genname_ref//'#'/'\#'}"
+	genname_ref="${genname_ref//'#'/'$(hashtag)'}"
 }
 function genwild() {
 	local -n genname_ref=$1
@@ -43,9 +43,8 @@ function genshname() {
 	genname_ref="${genname_ref//'"'/'$(slash)"'}"
 	genname_ref="${genname_ref//\'/'$(slash)'\'}"
 	genname_ref="${genname_ref//'$(space)'/'$(slash)\ '}"
-	genname_ref="${genname_ref//'&'/'\&'}"
-	local text='$(slash)\#'
-	genname_ref="${genname_ref//'\#'/"$text"}"
+	genname_ref="${genname_ref//'&'/'$(slash)&'}"
+	genname_ref="${genname_ref//'$(hashtag)'/'$(slash)$(hashtag)'}"
 	genname_ref="${genname_ref//'$(open)'/'$(slash)$(open)'}"
 	genname_ref="${genname_ref//'$(close)'/'$(slash)$(close)'}"
 }

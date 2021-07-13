@@ -5,7 +5,6 @@ namespace CPPExtensions {
 	constexpr StringView::StringView(const String& val) noexcept : len(0),
 	 buffer(false, {nullptr}) {
 		if (val.getlen() > 0) {
-			buffer.modify = false;
 			len = val.getlen();
 			buffer.view = val.data();
 		}
