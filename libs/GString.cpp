@@ -22,6 +22,9 @@ namespace CPPExtensions {
 			}
 			return *nametype.find(view);
 		}
+		String hyperlink(const char* site, const char* display) noexcept {
+			return String("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");
+		}
 		Utils::size _strlen(const String& val) noexcept {
 			return val.getlen();
 		}

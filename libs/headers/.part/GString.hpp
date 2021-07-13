@@ -253,7 +253,7 @@ namespace CPPExtensions {
 				ESCAPE(bg_reset, 49);
 			};
 #pragma pop_macro("ESCAPE")
-			String hyperlink(const String&) noexcept;
+			String hyperlink(const char* site, const char* display) noexcept;
 			using uchar = unsigned char;
 			constexpr auto gen_color(bool isfg, uchar col) noexcept {
 				Array<char, 5> code;
