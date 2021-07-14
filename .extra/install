@@ -6,12 +6,11 @@ declare -i indep=0
 test -f "$installabs/lib64/libcppextensions.so" || indep=1
 echo "ensuring ${installdir}/lib64 exists"
 mkdir -p -v "$installabs"/lib64
-echo "creating -lcppextensions inside ${installdir}/lib64" >&2
+echo "creating -lcppextensions inside ${installdir}/lib64"
 cp --preserve=timestamps -u -v -- libs/.shared.so "$installabs"/lib64/libcppextensions.so
 cp --preserve=timestamps -u -v -- libs/.static.a "$installabs"/lib64/libcppextensions.a
 ln -snfv "${installabs}/include" libs/include
 shopt -s nullglob
-declare -a files=(*.o)
 declare -a rules=(.*.mk)
 if ((indep)); then
 	if ((${#rules[@]})); then
@@ -19,8 +18,12 @@ if ((indep)); then
 		rm -v -- "${rules[@]}"
 	fi
 	if ((${#files[@]})); then
-		echo "removing test *.o files, as installation modifies shared libary origin"
+		echo "removing test *.o files, as installation modifies shared libary origin";
 		rm -v -- "${files[@]}"
-		MAKELEVEL=$((MAKELEVEL - 1)) make -- "${files[@]}"
 	fi
+fi
+declare -a files=(*.o)
+if ((${#files[@]})); then
+	echo "re-making test *.o files, as the installation directory has been potentially updated"
+	MAKELEVEL=$((MAKELEVEL - 1)) make -- "${files[@]}"
 fi

@@ -7,7 +7,7 @@ namespace CPPExtensions {
 	template <class>
 		class Vector;
 	template <class T>
-		void viewput(T&, const StringView*);
+		void _viewput(T&, const StringView*);
 	class String {
 		private:
 			Utils::size trulen;
@@ -183,12 +183,12 @@ namespace CPPExtensions {
 	}
 	template <class T>
 	T& operator <<(T& os, const String& val) {
-		viewput(os, &val.view);
+		_viewput(os, &val.view);
 		return os;
 	}
 	template <class T>
 	T& operator <<(T& os, const String* val) {
-		viewput(os, val ? &val->view : nullptr);
+		_viewput(os, val ? &val->view : nullptr);
 		return os;
 	}
 }

@@ -19,7 +19,7 @@ namespace CPPExtensions {
 					const char* view;
 				};
 			} buffer;
-			static constexpr auto viewer =
+			constexpr static auto viewer =
 			[] (const Window& val) noexcept -> const char* {
 				if (val.modify)
 					return val.edit;
@@ -42,14 +42,9 @@ namespace CPPExtensions {
 			constexpr StringView(char* val, Utils::size ln) noexcept : len(ln),
 				  buffer(true, {.edit = {val}}) {}
 			constexpr StringView(const String& val) noexcept;
-			constexpr const char* read() const noexcept {
-				if (len > 0)
-					return viewer(buffer);
-				else
-					return nullptr;
-			}
+			constexpr const char* read() const noexcept { return viewer(buffer); }
 			constexpr char* edit() noexcept {
-				if (buffer.modify && (len > 0))
+				if (buffer.modify)
 					return buffer.edit;
 				else
 					return nullptr;

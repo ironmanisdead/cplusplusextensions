@@ -1,8 +1,8 @@
 #include "headers/String.hpp"
 #include "headers/GString.hpp"
 #include "headers/StringView.hpp"
-#include <iostream>
 #include <new>
+#include <iostream>
 #define BOOL_EXTERN(fun, ...) template String::setby<true> fun<true>(__VA_ARGS__); \
 	template String::setby<false> fun<false>(__VA_ARGS__)
 namespace CPPExtensions {
@@ -200,7 +200,7 @@ namespace CPPExtensions {
 		return StringView(*this) <=> val;
 	}
 	template <>
-	void viewput(std::ostream& os, const StringView* val) {
+	void _viewput(std::ostream& os, const StringView* val) {
 		if (val && *val)
 			return static_cast<void>(os.write(val->read(), val->len));
 	}

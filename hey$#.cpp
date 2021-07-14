@@ -3,5 +3,5 @@
 using namespace CPPExtensions;
 
 int main() {
-	std::cout << String("hey", " now") << std::endl;
+	std::cout << String(-10) << std::endl;
 }

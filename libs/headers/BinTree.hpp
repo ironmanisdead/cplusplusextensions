@@ -113,9 +113,12 @@ namespace CPPExtensions {
 #include "BinEntI.hpp"
 namespace CPPExtensions {
 	class BinTree {
+		public:
+			enum State { NO_ERROR, TYPE_ERROR, MEM_ERROR };
 		private:
 			const BinInfo* const data;
 		protected:
+			State _status;
 			BinEnt* root;
 			using stronk = Utils::strongcmp_t;
 			BinEnt* _place(BinEnt*, BinEnt*, stronk, bool = false) noexcept;

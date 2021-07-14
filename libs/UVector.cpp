@@ -3,17 +3,17 @@
 #include <new>
 namespace CPPExtensions {
 	UVector::UVector(const FullType* const type)
-		noexcept : typeinfo(type), trulen(0), len(0), _allocerr(false),
-			 _typeerr(false) {}
+		noexcept : typeinfo(type), _status(NO_ERROR), trulen(0), len(0) {}
 	UVector::~UVector() { finalize(); }
 	const char* UVector::id() noexcept { return typeinfo->text->id; }
 	bool UVector::_allocate(Utils::size siz) noexcept {
-		_typeerr = false;
-		_allocerr = false;
+		_status = NO_ERROR;
 		void* temp =
 			Utils::downcast<char*>(::operator new(siz, std::nothrow_t {}));
-		if (!temp)
-			return !(_allocerr = true);
+		if (!temp) {
+			_status = MEM_ERROR;
+			return false;
+		}
 		raw = (char*)temp;
 		trulen = siz;
 		len = 0;
@@ -31,23 +31,26 @@ namespace CPPExtensions {
 		}
 	}
 	bool UVector::save(UVector& val) noexcept { 
-		_typeerr = false;
-		_allocerr = false;
-		if (typeinfo != val.typeinfo)
-			return !(_typeerr = true);
+		_status = NO_ERROR;
+		if (typeinfo != val.typeinfo) {
+			_status = TYPE_ERROR;
+			return false;
+		}
 		finalize();
 		raw = val.raw;
 		len = val.len;
 		trulen = val.trulen;
-		_allocerr = val._allocerr;
+		if (val._status != TYPE_ERROR)
+			_status = val._status;
 		val.trulen = 0;
 		return true;
 	}
 	bool UVector::save(UVector& val, void (*const mover)(void*, void*)) {
-		_typeerr = false;
-		_allocerr = false;
-		if (mover == nullptr)
-			return !(_typeerr = true);
+		_status = NO_ERROR;
+		if (mover == nullptr) {
+			_status = TYPE_ERROR;
+			return false;
+		}
 		Utils::size target = val.len;
 		Utils::size ot = val.typeinfo->data->elem;
 		Utils::size cur = typeinfo->data->elem;
@@ -60,10 +63,11 @@ namespace CPPExtensions {
 		return true;
 	}
 	bool UVector::save(UVector& val, void (*const mover)(void*, void*) noexcept) noexcept {
-		_typeerr = false;
-		_allocerr = false;
-		if (mover == nullptr)
-			return !(_typeerr = true);
+		_status = NO_ERROR;
+		if (mover == nullptr) {
+			_status = TYPE_ERROR;
+			return false;
+		}
 		Utils::size target = val.len;
 		Utils::size ot = val.typeinfo->data->elem;
 		Utils::size cur = typeinfo->data->elem;
@@ -76,10 +80,11 @@ namespace CPPExtensions {
 		return true;
 	}
 	bool UVector::copy(const UVector& val) {
-		_typeerr = false;
-		_allocerr = false;
-		if (typeinfo->data->copier == nullptr)
-			return !(_typeerr = true);
+		_status = NO_ERROR;
+		if (typeinfo->data->copier == nullptr) {
+			_status = TYPE_ERROR;
+			return false;
+		}
 		Utils::size target = val.len;
 		Utils::size cur = typeinfo->data->elem;
 		deinit();
@@ -91,10 +96,11 @@ namespace CPPExtensions {
 		return true;
 	}
 	bool UVector::copy(const UVector& val, void (*const mobilize)(void*, const void*)) {
-		_typeerr = false;
-		_allocerr = false;
-		if (mobilize == nullptr)
-			return !(_typeerr = true);
+		_status = NO_ERROR;
+		if (mobilize == nullptr) {
+			_status = TYPE_ERROR;
+			return false;
+		}
 		Utils::size target = val.len;
 		Utils::size ot = val.typeinfo->data->elem;
 		Utils::size cur = typeinfo->data->elem;
@@ -114,10 +120,10 @@ namespace CPPExtensions {
 		return true;
 	}
 	bool UVector::copy(const UVector& val, void (*const mobilize)(void*, const void*) noexcept) noexcept {
-		_typeerr = false;
-		_allocerr = false;
-		if (mobilize == nullptr)
-			return !(_typeerr = true);
+		if (mobilize == nullptr) {
+			_status = TYPE_ERROR;
+			return false;
+		}
 		Utils::size target = val.len;
 		Utils::size ot = val.typeinfo->data->elem;
 		Utils::size cur = typeinfo->data->elem;
@@ -142,7 +148,7 @@ namespace CPPExtensions {
 		}
 	}
 	bool UVector::resize(Utils::size n1) noexcept {
-		_allocerr = false;
+		_status = NO_ERROR;
 		if (trulen == 0)
 			return _allocate(n1);
 		if (trulen > n1)
@@ -152,8 +158,10 @@ namespace CPPExtensions {
 			ntru *= 2;
 		Utils::size elem = typeinfo->data->elem;
 		char* temp = Utils::downcast<char*>(::operator new(ntru + elem));
-		if (!temp)
-			return !(_allocerr = true);
+		if (!temp) {
+			_status = MEM_ERROR;
+			return false;
+		}
 		Utils::memcpy(temp, raw, len * elem);
 		::operator delete(raw);
 		raw = temp;
@@ -185,7 +193,7 @@ namespace CPPExtensions {
 		len++;
 	}
 	bool UVector::allocate(Utils::size dat) noexcept {
-		_allocerr = false;
+		_status = NO_ERROR;
 		Utils::size elem = typeinfo->data->elem;
 		Utils::size locsiz = elem * dat;
 		if (trulen == 0)
@@ -193,8 +201,10 @@ namespace CPPExtensions {
 		if (trulen > locsiz)
 			return true;
 		char* temp = Utils::downcast<char*>(::operator new(locsiz));
-		if (!temp)
-			return !(_allocerr = true);
+		if (!temp) {
+			_status = MEM_ERROR;
+			return false;
+		}
 		Utils::memcpy(temp, raw, len * elem);
 		::operator delete(raw);
 		raw = temp;

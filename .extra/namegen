@@ -1,23 +1,22 @@
 #!/bin/bash
 function genname() {
 	local -n genname_ref=$1
-	declare -i genname_is_usable=1
+	declare -i genname_is_unusable=1
 	declare -- reason
 	case "$2" in
 		*$'\n'*)
-			genname_is_usable=0
 			reason='newlines'
 			;;
 		*$'\t'*)
-			genname_is_usable=0
 			reason='tabs'
 			;;
 		*$' '*)
-			genname_is_usable=0
 			reason='spaces'
 			;;
+		*)
+			genname_is_unusable=0
 	esac
-	if [[ "$genname_is_usable" == 0 ]]; then
+	if ((genname_is_unusable)); then
 		echo "genname() cannot escape $reason for Make" >&2
 		echo "error string: $2" >&2
 		return 1

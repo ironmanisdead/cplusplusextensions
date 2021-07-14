@@ -1,13 +1,12 @@
 #!/bin/bash
 set -e
-source .extra/namegen
-declare -- name wild
-genname name "$targetfile"
-genwild wild "$name"
 if [[ ! -f "$targetfile.cpp" ]]; then
 	exit 1
 fi
-declare -- shname
+source .extra/namegen
+declare -- name wild shname
+genname name "$targetfile"
+genwild wild "$name"
 genshname shname "$wild"
 declare -- path wpath shpath
 genname path "${installabs}"

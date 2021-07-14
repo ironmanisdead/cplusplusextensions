@@ -11,6 +11,7 @@ namespace CPPExtensions {
 		void vecput(T&, const Vector<char>*);
 	class UVector {
 		public:
+			enum State { NO_ERROR, MEM_ERROR, TYPE_ERROR };
 			const char* id() noexcept;
 			UVector(const UVector&) noexcept;
 			UVector(UVector&&) noexcept;
@@ -41,11 +42,10 @@ namespace CPPExtensions {
 			};
 			const FullType* const typeinfo;
 			UVector(const FullType*) noexcept;
+			State _status;
 			Utils::size trulen;
 			Utils::size len;
 			char* raw;
-			bool _allocerr;
-			bool _typeerr;
 			[[nodiscard]] bool save(UVector&) noexcept;
 			[[nodiscard]] bool save(UVector&, void (*)(void*, void*));
 			[[nodiscard]] bool save(UVector&, void (*)(void*, void*) noexcept) noexcept;
@@ -67,8 +67,7 @@ namespace CPPExtensions {
 					return 0;
 			}
 			constexpr Utils::size fullen() const noexcept { return trulen; }
-			constexpr bool hasTypeErr() const noexcept { return _typeerr; }
-			constexpr bool hasMemErr() const noexcept { return _allocerr; }
+			constexpr State getStatus() const noexcept { return _status; }
 			bool allocate(Utils::size) noexcept;
 			template <class V>
 				friend void vecput(V&, const Vector<char>*);
