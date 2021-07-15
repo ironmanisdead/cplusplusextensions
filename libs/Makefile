@@ -32,7 +32,7 @@ uninstall:
 	.extra/depgen $^
 
 .shared.so: $(patsubst %.cpp,.%.o,$(sources))
-	$(if $^,gcc -shared -Wl$(comma)-z$(comma)defs -o .shared.so $^ -lstdc++)
+	$(if $^,$(CC) -shared -Wl$(comma)-z$(comma)defs -o .shared.so $^ $(LDLIBS))
 
 .static.a: $(patsubst %.cpp,.%.o,$(sources))
 	$(if $(wildcard .static.a),rm .static.a)

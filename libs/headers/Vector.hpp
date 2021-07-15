@@ -74,13 +74,13 @@ namespace CPPExtensions {
 			void foreach(Z&& call) {
 				if (trulen > 0)
 					for (Utils::size n = 0; n < len; n++)
-						call(*downcast<T*>(&raw[sizeof(T) * n]));
+						call(*Utils::downcast<T*>(&raw[sizeof(T) * n]));
 			}
-			T* operator[](Utils::size n) {
-				return downcast<T*>(&raw[sizeof(T) * n]);
+			T* operator [](Utils::size n) {
+				return Utils::downcast<T*>(&raw[sizeof(T) * n]);
 			}
-			const T* operator[](Utils::size n) const {
-				return downcast<const T*>(&raw[sizeof(T) * n]);
+			const T* operator [](Utils::size n) const {
+				return Utils::downcast<const T*>(&raw[sizeof(T) * n]);
 			}
 			template <class V>
 			friend V& operator <<(V& os, const Vector<char>& vec) {

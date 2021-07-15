@@ -1,10 +1,10 @@
 #pragma once
-#include "Utils.hpp"
+#include "types.hpp"
 namespace CPPExtensions {
 	template <class, class...>
 		class Tuple;
 	//
-	class Tuples : Utils {
+	class Tuples {
 		public:
 			template <class T, class... V>
 				struct Worth {
@@ -27,9 +27,9 @@ namespace CPPExtensions {
 				constexpr hidden() {}
 			};
 			template <class, class... V>
-				struct GenTuple : identity<Tuple<V...>> {};
+				struct GenTuple : Utils::identity<Tuple<V...>> {};
 			template <class T>
-				struct GenTuple<T> : identity<hidden> {};
+				struct GenTuple<T> : Utils::identity<hidden> {};
 			template <class, class...>
 				friend class Tuple;
 	};

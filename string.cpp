@@ -1,6 +1,9 @@
 #include <CPPExtensions/String.hpp>
+#include <CPPExtensions/StringView.hpp>
 #include <iostream>
 using namespace CPPExtensions;
+constexpr StringView cons = "The StringView cannot handle literal "
+	"null characters directly\0this text isn't shown";
 
 int main() {
 	String test = "This is a String object.";

@@ -4,10 +4,10 @@
 #include "String.hpp"
 namespace CPPExtensions {
 	template <class K, class V>
-	class BinMap final : public BinTree, private Utils {
+	class BinMap final : public BinTree {
 		private:
 			static constexpr bool lessex =
-				noexcept(declval<K>() < declval<K>());
+				noexcept(Utils::declval<K>() < Utils::declval<K>());
 			using Node = BinNode<K, V>;
 			using NodeI = BinNodeI<K, V>;
 			using NodeC = BinNodeC<K, V>;
@@ -17,11 +17,11 @@ namespace CPPExtensions {
 			BinMap(BinMap&& val) noexcept : BinTree(val.root, &Node::info) { val.root = nullptr; }
 			BinMap(BinMap& val) : BinTree(nullptr, &Node::info) {
 				if (val.root)
-					root = downcast<Node*>(val.root)->clonemut(this);
+					root = Utils::downcast<Node*>(val.root)->clonemut(this);
 			}
 			BinMap(const BinMap& val) : BinTree(nullptr, &Node::info) {
 				if (val.root)
-					root = downcast<Node*>(val.root)->clone(this);
+					root = Utils::downcast<Node*>(val.root)->clone(this);
 			}
 			BinMap* clone() override {
 				if constexpr (Node::keycop && Node::valbil) {
@@ -48,7 +48,7 @@ namespace CPPExtensions {
 						nullptr, key, Utils::forward<L>(val)...);
 				try {
 					if (!_add(RECAST(Node*, temp))) {
-						Node* result = downcast<Node*>(::operator new(sizeof(Node)));
+						Node* result = Utils::downcast<Node*>(::operator new(sizeof(Node)));
 						Utils::memcpy(result, temp, sizeof(Node));
 						return result;
 					}
@@ -59,48 +59,49 @@ namespace CPPExtensions {
 				}
 			}
 			Node* attach(BinEnt* val) noexcept(lessex) {
-				return downcast<Node*>(BinTree::attach(val));
+				return Utils::downcast<Node*>(BinTree::attach(val));
 			}
 			template <class X, class Y>
 			Node* attach(BinNode<X, Y>* val) noexcept(lessex) {
-				static_assert(is_same<K, X> && is_same<V, Y>, "type conversion is improper");
-				return downcast<Node*>(BinTree::attach(val));
+				static_assert(Utils::is_same<K, X> && Utils::is_same<V, Y>,
+						"type conversion is improper");
+				return Utils::downcast<Node*>(BinTree::attach(val));
 			}
 			Node* detach(const K& key) noexcept(lessex) {
-				return downcast<Node*>(BinTree::_detach(&key));
+				return Utils::downcast<Node*>(BinTree::_detach(&key));
 			}
 			Node* getRoot() noexcept {
-				return downcast<Node*>(root);
+				return Utils::downcast<Node*>(root);
 			}
 			const Node* getRoot() const noexcept {
-				return downcast<const Node*>(root);
+				return Utils::downcast<const Node*>(root);
 			}
 			NodeI begin() noexcept {
 				BinEntI temp = BinTree::begin();
-				return downcast<NodeI&>(temp);
+				return Utils::downcast<NodeI&>(temp);
 			}
 			NodeI max() noexcept {
 				BinEntI temp = BinTree::max();
-				return downcast<NodeI&>(temp);
+				return Utils::downcast<NodeI&>(temp);
 			}
 			NodeC begin() const noexcept {
 				BinEntC temp = BinTree::begin();
-				return downcast<const NodeC&>(temp);
+				return Utils::downcast<const NodeC&>(temp);
 			}
 			NodeC max() const noexcept {
 				BinEntC temp = BinTree::begin();
-				return downcast<const NodeC&>(temp);
+				return Utils::downcast<const NodeC&>(temp);
 			}
 			NodeC end() const noexcept {
 				return nullptr;
 			}
 			V* find(const K& key) noexcept(lessex) {
 				Find<BinEnt*> medi = _find(&key);
-				Find<Node*> result = { medi.found, downcast<Node*>(medi.value) };
+				Find<Node*> result = { medi.found, Utils::downcast<Node*>(medi.value) };
 				if (result.value == nullptr)
 					return nullptr;
 				else if (result.found == 0)
-					return addressof(result.value->getValue());
+					return Utils::addressof(result.value->getValue());
 				else
 					return nullptr;
 			}
@@ -108,31 +109,31 @@ namespace CPPExtensions {
 				return const_cast<BinMap*>(this)->find(key);
 			}
 			Node* search(const K& key) noexcept(lessex) {
-				return downcast<Node*>(_search(&key));
+				return Utils::downcast<Node*>(_search(&key));
 			}
 			const Node* search(const K& key) const noexcept(lessex) {
-				return downcast<const Node*>(_search(&key));
+				return Utils::downcast<const Node*>(_search(&key));
 			}
 		private:
 			template <class, class>
-				struct strlen_callable : lie {};
+				struct strlen_callable : Utils::lie {};
 			template <class G>
-				struct strlen_callable<none<
-				decltype(GString::strlen(declval<G>()))>, G> {};
+				struct strlen_callable<Utils::none<
+				decltype(GString::strlen(Utils::declval<G>()))>, G> {};
 			template <class, class>
-				struct strlen_noexcept_callable : lie {};
+				struct strlen_noexcept_callable : Utils::lie {};
 			template <class G>
 				struct strlen_noexcept_callable<
-				enable_if<noexcept(GString::strlen(declval<G>())), void>, G> : truth {};
+				Utils::enable_if<noexcept(GString::strlen(Utils::declval<G>())), void>, G> : Utils::truth {};
 		public:
 			V& operator [](const K& key) {
 				V* result = find(key);
 				if (result)
 					return *result;
 				else if constexpr (strlen_noexcept_callable<void, const K&>::value)
-					RangeError(String("Error: binary tree doesn't contain such key: ", key));
+					Utils::RangeError(String("Error: binary tree doesn't contain such key: ", key));
 				else
-					RangeError("Error: binary tree doesn't contain such key");
+					Utils::RangeError("Error: binary tree doesn't contain such key");
 			}
 			const V& operator [](const K& key) const {
 				return const_cast<BinMap&>(*this)[key];

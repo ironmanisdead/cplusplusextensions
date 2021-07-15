@@ -3,20 +3,20 @@
 #include "Function.hpp"
 namespace CPPExtensions {
 	template <class K, class V>
-	class BinNode final : public BinEnt, private Utils {
+	class BinNode final : public BinEnt {
 		public:
-			static constexpr bool keycop = is_constructible<K, const K&>;
-			static constexpr bool valcop = is_constructible<V, const V&>;
-			static constexpr bool valbil = is_constructible<V, V&>;
+			static constexpr bool keycop = Utils::is_constructible<K, const K&>;
+			static constexpr bool valcop = Utils::is_constructible<V, const V&>;
+			static constexpr bool valbil = Utils::is_constructible<V, V&>;
 		private:
 			K key;
 			V value;
 		protected:
 			bool less(const void* val) const override {
-				return (key < *downcast<const K*>(val));
+				return (key < *Utils::downcast<const K*>(val));
 			}
 			bool greater(const void* val) const override {
-				return (*downcast<const K*>(val) < key);
+				return (*Utils::downcast<const K*>(val) < key);
 			}
 			BinNode* _copy() const noexcept override {
 				if constexpr (keycop && valcop)
@@ -47,9 +47,9 @@ namespace CPPExtensions {
 			noexcept(noexcept( ( K(ke), V(Utils::forward<L>(val)...) ) )) :
 				BinEnt(&info, false, out { nullptr }, nullptr, nullptr), key(ke),
 				value(Utils::forward<L>(val)...) {}
-			BinNode*& getParent() noexcept { return downcast<BinNode*&>(_parent()); }
-			BinNode*& getLeft() noexcept { return downcast<BinNode*&>(_left()); }
-			BinNode*& getRight() noexcept { return downcast<BinNode*&>(_right()); }
+			BinNode*& getParent() noexcept { return Utils::downcast<BinNode*&>(_parent()); }
+			BinNode*& getLeft() noexcept { return Utils::downcast<BinNode*&>(_left()); }
+			BinNode*& getRight() noexcept { return Utils::downcast<BinNode*&>(_right()); }
 			const BinNode* getParent() const noexcept { return (const BinNode*)_parent(); }
 			const BinNode* getLeft() const noexcept { return (const BinNode*)_left(); }
 			const BinNode* getRight() const noexcept { return (const BinNode*)_right(); }

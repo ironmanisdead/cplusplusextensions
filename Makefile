@@ -31,9 +31,6 @@ endif
 ifneq ($(call isundef,OFLAGS),)
  OFLAGS:=-fPIC
 endif
-ifneq ($(call isundef,REINSTALL_ON_CHANGE),)
- REINSTALL_ON_CHANGE:=true
-endif
 export installdir
 export installabs
 export targetfile
@@ -42,7 +39,6 @@ export LDFLAGS
 export LDLIBS
 export CFLAGS
 export OFLAGS
-export REINSTALL_ON_CHANGE
 ifneq ($(findstring /$(shell pwd),/$(installabs)),)
  $(error cannot install libcppextensions inside source directory)
 endif

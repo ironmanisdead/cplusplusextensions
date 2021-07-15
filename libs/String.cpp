@@ -112,6 +112,15 @@ namespace CPPExtensions {
 			return true;
 	}
 	template <bool reset>
+	String::setby<reset> String::byval(char ch) noexcept {
+		if constexpr (reset)
+			if (!resize(2))
+				return false;
+		addval(ch);
+		if constexpr (reset)
+			return true;
+	}
+	template <bool reset>
 	String::setby<reset> String::byval(Utils::size str) noexcept {
 		if constexpr (reset)
 			if (!resize(GString::strlen(str) + 1))
@@ -201,12 +210,13 @@ namespace CPPExtensions {
 	}
 	template <>
 	void _viewput(std::ostream& os, const StringView* val) {
-		if (val && *val)
+		if (val && val->read() && (val->len > 0))
 			return static_cast<void>(os.write(val->read(), val->len));
 	}
 	BOOL_EXTERN(String::byval, const String&);
 	BOOL_EXTERN(String::byval, const char*);
 	BOOL_EXTERN(String::byval, Utils::size);
 	BOOL_EXTERN(String::byval, signed);
+	BOOL_EXTERN(String::byval, char);
 	BOOL_EXTERN(String::byray, const char*, Utils::size);
 }

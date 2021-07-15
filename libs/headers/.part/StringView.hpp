@@ -49,7 +49,6 @@ namespace CPPExtensions {
 				else
 					return nullptr;
 			}
-			constexpr operator const char*() const noexcept { return read(); }
 			constexpr StringView& operator =(const char* val) noexcept {
 				len = GString::strlen(val);
 				buffer.modify = false;

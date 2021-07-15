@@ -1,7 +1,7 @@
 #pragma once
-#include "Utils.hpp"
+#include "types.hpp"
 #include "Array.hpp"
-#include <type_traits>
+//#include <type_traits>
 #include "GString.hpp"
 #include <stdexcept>
 namespace CPPExtensions {

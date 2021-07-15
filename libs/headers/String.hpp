@@ -1,5 +1,5 @@
 #pragma once
-#include "Utils.hpp"
+#include "types.hpp"
 #include ".part/StringView.hpp"
 namespace CPPExtensions {
 	class StringView;
@@ -17,7 +17,7 @@ namespace CPPExtensions {
 			bool resize(Utils::size) noexcept;
 			void finalize() noexcept;
 			template <bool reset>
-				using setby = Utils::switch_if<reset, bool, void>;
+				using setby = Utils::switch_it<reset, bool, void>;
 			template <bool reset = true>
 				setby<reset> byray(const char*, Utils::size) noexcept;
 			template <bool reset = true>
@@ -30,6 +30,8 @@ namespace CPPExtensions {
 				setby<reset> byval(signed) noexcept;
 			template <bool reset = true>
 				setby<reset> byval(const StringView&) noexcept;
+			template <bool reset = true>
+				setby<reset> byval(char) noexcept;
 			Utils::strongcmp_t valcmp(const StringView&) const noexcept;
 			void byval(String&&) noexcept;
 			void addray(const char*, Utils::size) noexcept;
@@ -68,7 +70,7 @@ namespace CPPExtensions {
 					return 0;
 			}
 			constexpr Utils::size gettlen() const noexcept { return trulen; }
-			constexpr bool haserr() const noexcept { return errbit; }
+			constexpr bool hasErr() const noexcept { return errbit; }
 			constexpr const char* data() const noexcept {
 				if (trulen > 0)
 					return view.read();

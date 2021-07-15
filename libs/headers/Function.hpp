@@ -1,7 +1,7 @@
 #pragma once
-#include "Utils.hpp"
+#include "types.hpp"
 #include "GString.hpp"
-#include <typeinfo>
+//#include <typeinfo>
 namespace CPPExtensions {
 	template <class>
 		class Function;
@@ -22,7 +22,7 @@ namespace CPPExtensions {
 					T callable;
 					using raw = Utils::raw_type<T>;
 					static constexpr bool mov_if = Utils::is_constructible<raw, const raw&>;
-					using retype = Utils::switch_if<mov_if, raw, T>;
+					using retype = Utils::switch_it<mov_if, raw, T>;
 				public:
 					Binding(Utils::add_reference<T> val) : callable(val) {}
 					Ret call(Utils::add_reference<Args>... args) override {
@@ -75,7 +75,7 @@ namespace CPPExtensions {
 				} else {
 					constexpr bool icon = Utils::is_lvalue_reference<T>;
 					constexpr bool addr = Utils::is_pointer<T>;
-					using retype = Utils::switch_if<icon && !addr, T, raw>;
+					using retype = Utils::switch_it<icon && !addr, T, raw>;
 					caller = new Binding<retype>(val);
 					size = sizeof(Binding<retype>);
 				}
@@ -128,7 +128,7 @@ namespace CPPExtensions {
 				} else {
 					constexpr bool icon = Utils::is_lvalue_reference<T>;
 					constexpr bool addr = Utils::is_pointer<T>;
-					using retype = Utils::switch_if<icon && !addr, T, raw>;
+					using retype = Utils::switch_it<icon && !addr, T, raw>;
 					caller = new Binding<retype>(val);
 					size = sizeof(Binding<retype>);
 				}

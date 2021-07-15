@@ -154,10 +154,11 @@ namespace CPPExtensions {
 		if (trulen > n1)
 			return true;
 		Utils::size ntru = trulen;
+		Utils::size elem = typeinfo->data->elem;
+		n1 += elem;
 		while (ntru < n1)
 			ntru *= 2;
-		Utils::size elem = typeinfo->data->elem;
-		char* temp = Utils::downcast<char*>(::operator new(ntru + elem));
+		char* temp = Utils::downcast<char*>(::operator new(ntru));
 		if (!temp) {
 			_status = MEM_ERROR;
 			return false;
