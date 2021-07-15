@@ -292,5 +292,17 @@ namespace CPPExtensions {
 					result[2] = '3';
 				return result;
 			}
+			template <uchar col>
+				constexpr Utils::size _gen_color_len =
+					_strlen(gen_color(false, col).data) + 1;
+			template <bool isfg, uchar col>
+				constexpr Array<char, _gen_color_len<col>>
+					gen_color_temp = gen_color(isfg, col);
+			template <uchar r, uchar g, uchar b>
+				constexpr Utils::size _truecolor_len =
+					_strlen(truecolor(false, r, g, b).data);
+			template <bool isfg, uchar r, uchar g, uchar b>
+				constexpr Array<char, _truecolor_len<r, g, b>>
+					truecolor_temp = truecolor(isfg, r, g, b);
 	};
 }

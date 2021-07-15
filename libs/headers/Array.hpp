@@ -8,9 +8,11 @@ namespace CPPExtensions {
 		public:
 			T data[N];
 		private:
-			template <Utils::size... nums>
-				constexpr Array(const T (&val)[N], Utils::list<nums...>)
-				noexcept : data { val[nums]... } {}
+			template <Utils::size Z, Utils::size... nums>
+				constexpr Array(const T (&val)[Z], Utils::list<nums...>)
+				noexcept : data { val[nums]... } {
+					static_assert(Z >= N, "assigning to Array from array of smaller size");
+				}
 			template <Utils::nullpt... filler, class... ts>
 				constexpr Array(Utils::list<filler...>, ts&&... args)
 				noexcept(noexcept(T(Utils::forward<ts>(args)...))) :
@@ -20,10 +22,12 @@ namespace CPPExtensions {
 			template <class... ts>
 			constexpr Array(Utils::nullpt, ts&&... args) noexcept(noexcept(T(Utils::forward<ts>(args)...))) :
 				Array(Utils::fill_set<Utils::null, N> {}, Utils::forward<ts>(args)...) {}
-			constexpr Array(const T (&val)[N])
+			template <Utils::size Z>
+			constexpr Array(const T (&val)[Z])
 				noexcept(noexcept(Array(val, Utils::queue<N> {}))) :
 					Array(val, Utils::queue<N> {}) {}
-			constexpr Array(const Array& val)
+			template <Utils::size Z>
+			constexpr Array(const Array<T, Z>& val)
 				noexcept(noexcept(Array(val.data, Utils::queue<N> {}))) :
 					Array(val.data, Utils::queue<N> {}) {}
 			constexpr operator Utils::array<T, N>&() noexcept {

@@ -4,10 +4,10 @@
 using namespace CPPExtensions;
 using namespace GString::codes;
 
-constexpr auto gencyan = GString::strcat(fg_black,
-		GString::gen_color(false, 51).data);
+constexpr auto gencyan = GString::raycat(fg_black,
+		GString::gen_color_temp<false, 51>.data);
 
-constexpr auto trublue = GString::truecolor(false, 40, 177, 249);
+constexpr auto trublue = GString::truecolor_temp<false, 40, 177, 249>;
 constexpr const char addr[] = "https://github.com/ironmanisdead/cplusplusextensions";
 constexpr const char display[] = "this is a link";
 
@@ -16,6 +16,7 @@ int main() {
 	std::cout << bold << "this is bold" << text_reset << std::endl;
 	std::cout << italics << "this is in italics" << text_reset << std::endl;
 	std::cout << strike << "this is striked through" << text_reset << std::endl;
+	std::cout << fg_red << "this has a red foreground" << text_reset << std::endl;
 	std::cout << bg_red << "this has a red background" << text_reset << std::endl;
 	std::cout << gencyan << "gen_color test: cyan" << text_reset << std::endl;
 	std::cout << trublue << "trucolor test: blue" << text_reset << std::endl;
