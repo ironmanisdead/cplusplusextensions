@@ -5,9 +5,24 @@
 namespace CPPExtensions {
 	template <class>
 		class Function;
+	class Functions {
+		protected:
+			Functions() = default;
+			Functions(const Functions&) = default;
+			Functions(Functions&&) = default;
+		public:
+			enum State {
+				NO_ERROR,
+				MEM_ERROR,
+				INIT_ERROR,
+				NULL_ERROR,
+				CALL_ERROR
+			};
+	};
 	template <class Ret, class... Args>
-	class Function<Ret(Args...)> {
+	class Function<Ret(Args...)> : public Functions {
 		private:
+			mutable State _status;
 			Utils::size size;
 			struct Proxy {
 				virtual Ret call(Utils::add_reference<Args>... args) = 0;
@@ -20,11 +35,14 @@ namespace CPPExtensions {
 			class Binding final : public Proxy {
 				private:
 					T callable;
+					using ref = Utils::add_reference<T>;
 					using raw = Utils::raw_type<T>;
+					static constexpr bool copy_except =
+						noexcept(T(Utils::declval<ref>()));
 					static constexpr bool mov_if = Utils::is_constructible<raw, const raw&>;
 					using retype = Utils::switch_it<mov_if, raw, T>;
 				public:
-					Binding(Utils::add_reference<T> val) : callable(val) {}
+					Binding(ref val) noexcept(copy_except) : callable(val) {}
 					Ret call(Utils::add_reference<Args>... args) override {
 						return callable(args...);
 					}
@@ -35,40 +53,82 @@ namespace CPPExtensions {
 						new (val) Binding<T>(callable);
 					}
 					void move(void* val) override {
-						new (val) Binding<retype>(reinterpret_cast<retype&&>(callable));
+						new (val) Binding<retype>(RECAST(retype&&, callable));
 					}
 					~Binding() override = default;
 			};
 			Proxy* caller;
 		public:
-			Function() noexcept : caller(nullptr) {}
-			Function(const Function& val) {
+			Function() noexcept : _status(NO_ERROR), caller(nullptr) {}
+			Function(const Function& val) : _status(NO_ERROR) {
 				if (val.caller) {
-					caller = downcast<Proxy*>(::operator new(size = val.size));
-					val.caller->copy(caller);
+					caller = downcast<Proxy*>(::operator new(size = val.size,
+								std::nothrow_t {}));
+					if (!caller) {
+						_status = MEM_ERROR;
+						return;
+					}
+					try {
+						val.caller->copy(caller);
+					} catch (...) {
+						::operator delete(caller);
+						throw;
+					}
 				} else
 					caller = nullptr;
 			}
-			Function(Function&& val) {
+			Function(Function&& val) : _status(NO_ERROR) {
 				if (val.caller) {
-					caller = downcast<Proxy*>(::operator new(size = val.caller->size()));
-					val.caller->move(caller);
+					caller = downcast<Proxy*>(::operator new(size = val.caller->size(),
+								std::nothrow_t {}));
+					if (!caller) {
+						_status = MEM_ERROR;
+						return;
+					}
+					try {
+						val.caller->move(caller);
+					} catch (...) {
+						::operator delete(caller);
+						throw;
+					}
 				} else
 					caller = nullptr;
 			}
 			template <class T, class raw = Utils::raw_type<T>,
 				 bool null = Utils::is_same<raw, Utils::nullpt>>
-			Function(T&& val) noexcept(null) {
+			Function(T&& val) noexcept(null) : _status(NO_ERROR) {
 				if constexpr (null)
 					caller = nullptr;
 				else if constexpr (Utils::is_same<raw, Function<Ret(Args...)>>) {
 					if (val.caller) {
 						if constexpr (Utils::is_lvalue_reference<T>) {
-							caller = downcast<Proxy*>(::operator new(size = val.size));
-							val.caller->copy(caller);
+							caller = downcast<Proxy*>(
+									::operator new(size = val.size,
+										std::nothrow_t{}));
+							if (!caller) {
+								_status = MEM_ERROR;
+								return;
+							}
+							try {
+								val.caller->copy(caller);
+							} catch (...) {
+								::operator delete(caller);
+								throw;
+							}
 						} else {
-							caller = downcast<Proxy*>(::operator new(size = val.caller->size()));
-							val.caller->move(caller);
+							caller = downcast<Proxy*>(
+									::operator new(size = val.caller->size(),
+										std::nothrow_t {}));
+							if (!caller) {
+								_status = MEM_ERROR;
+								return;
+							}
+							try {
+								val.caller->move(caller);
+							} catch (...) {
+								::operator delete(caller);
+								throw;
+							}
 						}
 					} else
 						caller = nullptr;
@@ -76,7 +136,18 @@ namespace CPPExtensions {
 					constexpr bool icon = Utils::is_lvalue_reference<T>;
 					constexpr bool addr = Utils::is_pointer<T>;
 					using retype = Utils::switch_it<icon && !addr, T, raw>;
-					caller = new Binding<retype>(val);
+					void* temp = ::operator new(sizeof(Binding<retype>), std::nothrow_t {});
+					if (!temp) {
+						_status = MEM_ERROR;
+						return;
+					}
+					try {
+						caller = new (temp) Binding<retype>(val);
+					} catch (...) {
+						_status = INIT_ERROR;
+						::operator delete(temp);
+						throw;
+					}
 					size = sizeof(Binding<retype>);
 				}
 			}
@@ -86,10 +157,20 @@ namespace CPPExtensions {
 				else
 					return false;
 			}
+			State getStatus() const noexcept {
+				return _status;
+			}
 			Ret operator ()(Utils::add_reference<Args>... args) const {
+				_status = NO_ERROR;
 				if (caller)
-					return caller->call(args...);
+					try {
+						return caller->call(args...);
+					} catch (...) {
+						_status = CALL_ERROR;
+						throw;
+					}
 				else {
+					_status = NULL_ERROR;
 					constexpr Array typ = GString::typestr<Function<Ret(Args...)>>;
 					constexpr Array err = GString::raycat(typ.data, " error: not assigned a callable value");
 					Utils::RunError(err.data);
@@ -98,6 +179,7 @@ namespace CPPExtensions {
 			template <class T, class raw = Utils::raw_type<T>,
 			bool null = Utils::is_same<raw, Utils::nullpt>>
 			Function& operator =(T&& val) noexcept(null) {
+				_status = NO_ERROR;
 				if constexpr (null) {
 					if (caller) {
 						delete caller;
@@ -113,13 +195,23 @@ namespace CPPExtensions {
 					void* temp;
 					try {
 						if constexpr (Utils::is_lvalue_reference<T>) {
-							temp = ::operator new (val.size);
+							temp = ::operator new (val.size, std::nothrow_t{});
+							if (!temp) {
+								_status = MEM_ERROR;
+								return *this;
+							}
 							val.caller->copy(temp);
 						} else {
-							temp = ::operator new (val.callable->size());
+							temp = ::operator new (val.callable->size(),
+									std::nothrow_t {});
+							if (!temp) {
+								_status = MEM_ERROR;
+								return *this;
+							}
 							val.caller->move(temp);
 						}
 					} catch (...) {
+						_status = INIT_ERROR;
 						::operator delete (temp);
 						throw;
 					}
@@ -129,7 +221,19 @@ namespace CPPExtensions {
 					constexpr bool icon = Utils::is_lvalue_reference<T>;
 					constexpr bool addr = Utils::is_pointer<T>;
 					using retype = Utils::switch_it<icon && !addr, T, raw>;
-					caller = new Binding<retype>(val);
+					void* temp = ::operator new(sizeof(Binding<retype>),
+							std::nothrow_t {});
+					if (!temp) {
+						_status = MEM_ERROR;
+						return *this;
+					}
+					try {
+						caller = new (temp) Binding<retype>(val);
+					} catch (...) {
+						_status = INIT_ERROR;
+						::operator delete (temp);
+						throw;
+					}
 					size = sizeof(Binding<retype>);
 				}
 				return *this;
@@ -142,9 +246,9 @@ namespace CPPExtensions {
 	template <class Ret, class... Args>
 		Function(const Function<Ret(Args...)>&) -> Function<Ret(Args...)>;
 	template <class T>
-	class Constructor {
+	class Constructor : public Functions {
 		private:
-			const Function<T()> caller;
+			Function<T()> caller;
 		public:
 			Constructor(const Constructor& val) : caller(val.caller) {}
 			Constructor(Constructor& val) : caller(val.caller) {}
@@ -154,6 +258,14 @@ namespace CPPExtensions {
 				caller([&args...] () { return T { Utils::forward<V>(args)... }; }) {}
 			T operator()() const {
 				return caller();
+			}
+			template <class... V>
+			void set(V&&...args) {
+				caller = [&args...] () { return T { Utils::forward<V>(args)... }; };
+			}
+			void unset() noexcept { caller = nullptr; }
+			State getStatus() const noexcept {
+				return caller.getStatus();
 			}
 	};
 	template <class T>
