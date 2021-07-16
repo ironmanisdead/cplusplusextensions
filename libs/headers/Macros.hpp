@@ -1,6 +1,12 @@
 #pragma once
-#if defined(__clang__) || defined(__GNUC__) || defined(_MSC_VER)
- #define _CUSTOMUTILS_recognized __clang__ __GNUC__ _MSC_VER
+#if defined(__clang__)
+ #define _CUSTOMUTILS_comp "clang"
+#elif defined(__GNUC__)
+ #define _CUSTOMUTILS_comp "GNU"
+#elif defined(_MSC_VER)
+ #define _CUSTOMUTILS_comp "MS"
+#else
+ #error "unrecognized compiler: not 'clang', a GNU compiler, or Windows compiler"
 #endif
 #ifndef RECAST
  #define RECAST(type, exp) reinterpret_cast<type>(exp)

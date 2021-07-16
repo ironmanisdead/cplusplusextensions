@@ -1,5 +1,5 @@
 #pragma once
-#include "../Utils.hpp"
+#include "../types.hpp"
 #include "../Array.hpp"
 #include "../Tuple.hpp"
 namespace CPPExtensions {
@@ -141,7 +141,6 @@ namespace CPPExtensions {
 				size fin = end.get<0>();
 				return Tuple { init, fin - init, start.get<2>() };
 			}
-		#if defined(_CUSTOMUTILS_recognized)
 			template <class T>
 				constexpr auto _gettype() {
 					#if defined(__clang__)
@@ -167,7 +166,6 @@ namespace CPPExtensions {
 				}
 			template <class T>
 				constexpr auto typestr = _gettype<T>();
-		#endif
 			constexpr Array<char, _s_len> numstr(size num) noexcept {
 				size len = 0;
 				for (size idx = num; idx > 0; len++)

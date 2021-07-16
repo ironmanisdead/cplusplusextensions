@@ -4,7 +4,13 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <chrono>
+#include <cerrno>
+#include <cstring>
 namespace CPPExtensions {
+	int Utils::geterr() noexcept { return errno; }
+	const char* strerror(int err) noexcept {
+		return std::strerror(err);
+	}
 	volatile void* Utils::ignore(volatile void*) noexcept {
 		return nullptr;
 	}
@@ -35,6 +41,38 @@ namespace CPPExtensions {
 		else
 			for (size i = len; i > 0; i--)
 				cdest[i-1] = csrc[i-1];
+	}
+}
+#ifdef _MSC_VER
+ #include <fileapi.h>
+#else
+ #include <unistd.h>
+#endif
+#include "headers/.part/GString.hpp"
+namespace CPPExtensions {
+	long Utils::print(desc fd, const char* str) noexcept {
+		auto numbytes = GString::_strlen(str);
+#ifdef _MSC_VER
+		int written = 0;
+		HANDLE file = RECAST(HANDLE, file);
+		::WriteFile(file, str, numbytes, &written, nullptr);
+		return written;
+#else
+		return ::write(fd, str, numbytes);
+#endif
+	}
+	long Utils::write(desc fd, const char* str, size len) noexcept {
+#ifdef _MSC_VER
+		int written = 0;
+		HANDLE file = RECAST(HANDLE, file);
+		::WriteFile(file, str, len, &written, nullptr);
+		return written;
+#else
+		return ::write(fd, str, len);
+#endif
+	}
+	int uncaught() noexcept {
+		return std::uncaught_exceptions();
 	}
 	[[noreturn]] void Utils::RunError(const char* str) {
 		throw std::runtime_error(str);

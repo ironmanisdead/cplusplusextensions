@@ -23,7 +23,7 @@ else
 	echo "updating file list..."
 	{
 		while read line <&"$FD"; do
-			if [[ "$line" =~ ^'#include "' ]]; then
+			if [[ "$line" =~ ^"#include \"" ]]; then
 				haslist=true
 				break
 			elif [[ "$intro" == "" ]]; then
@@ -37,7 +37,7 @@ else
 			exec .extra/depcheck
 		fi
 		while read line <&"$FD"; do
-			if ! [[ "$line" =~ ^'#include "' ]]; then
+			if ! [[ "$line" =~ ^"#include \"" ]]; then
 				ending="$line"
 				break
 			fi

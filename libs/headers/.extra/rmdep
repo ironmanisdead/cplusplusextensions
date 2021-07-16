@@ -11,7 +11,7 @@ for included in "${installabs}"/include/CPPExtensions/*.hpp; do
 		rm -v "$included"
 	fi
 done
-for included in "${installabs}"/include/CPPExtensions/.hide/*.hpp; do
+for included in "${installabs}"/include/CPPExtensions/.part/*.hpp; do
 	if [[ ! -f "${included}" ]]; then
 		continue
 	fi

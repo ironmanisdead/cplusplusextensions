@@ -1,11 +1,23 @@
 #pragma once
+#include "Macros.hpp"
 namespace CPPExtensions {
 	namespace Utils {
+#ifdef _MSC_VER
+		using desc = void*;
+#else
+		using desc = unsigned;
+#endif
+		using size = decltype(sizeof(0));
+		int geterr() noexcept;
+		const char* strerror(int) noexcept;
 		volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
 		int epoch() noexcept; //high_resolution_clock since epoch
 		int rand() noexcept; //random integer
-		void memcpy(void*, const void*, decltype(sizeof(0))) noexcept;
-		void memmove(void*, const void*, decltype(sizeof(0))) noexcept;
+		int uncaught() noexcept;
+		void memcpy(void*, const void*, size) noexcept;
+		void memmove(void*, const void*, size) noexcept;
+		long print(desc, const char*) noexcept;
+		long write(desc, const char*, size) noexcept;
 		[[noreturn]] void RunError(const char*);
 		[[noreturn]] void RangeError(const char*);
 	}

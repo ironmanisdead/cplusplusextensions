@@ -157,9 +157,7 @@ namespace CPPExtensions {
 				else
 					return false;
 			}
-			State getStatus() const noexcept {
-				return _status;
-			}
+			State getStatus() const noexcept { return _status; }
 			Ret operator ()(Utils::add_reference<Args>... args) const {
 				_status = NO_ERROR;
 				if (caller)
@@ -172,7 +170,8 @@ namespace CPPExtensions {
 				else {
 					_status = NULL_ERROR;
 					constexpr Array typ = GString::typestr<Function<Ret(Args...)>>;
-					constexpr Array err = GString::raycat(typ.data, " error: not assigned a callable value");
+					constexpr Array err = GString::raycat(typ.data, " error: could not return as no"
+							" callable value was assigned");
 					Utils::RunError(err.data);
 				}
 			}

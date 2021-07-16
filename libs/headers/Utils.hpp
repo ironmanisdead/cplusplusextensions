@@ -1,5 +1,4 @@
 #pragma once
-#include "Macros.hpp"
 #include "types.hpp"
 #include "misc.hpp"
 #include <compare>

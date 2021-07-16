@@ -6,6 +6,7 @@ A machine that runs Unix or Linux
 bash (version 4.4 or higher, however I have not tested with lower versions)
 gcc 10 or higher
 make (must be capable of supporting global export statements)
+sha256
 
 ## Objective and reasoning:
 In C++ there is several different tools at your disposal, but some things,
