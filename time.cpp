@@ -1,7 +1,7 @@
 #include <CPPExtensions/misc.hpp>
-
+#include <iostream>
 using namespace CPPExtensions;
 
 int main() {
-	Utils::write(1, "hey", 3);
+	std::cout << Utils::epoch() << std::endl;
 }
