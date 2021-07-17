@@ -3,7 +3,7 @@ set -e
 if [[ ! -f "$targetfile.cpp" ]]; then
 	exit 1
 fi
-source .extra/namegen
+source .extra/rulemk/rulegen
 declare -- name wild shname
 genname name "$targetfile"
 genwild wild "$name"
@@ -18,20 +18,19 @@ IFS= read -d '' info <<'EOF'
 #please do not modify or delete it yourself.
 EOF
 set -e
-declare -- ruledep trail
-ruledep="$(cc -I "libs/include/" -M "$targetfile.cpp")" || exit $?
+declare -- rulestr ruleend trail
+genrule rulestr ruleend -- "$targetfile" libs/include
 if test -f "${installabs}/lib64/libcppextensions.so"; then
 	trail="-I ${shpath}/include/ -L ${shpath}/lib64/ -Wl,-rpath,${shpath}/lib64/ -Wl,-lcppextensions"
 else
 	trail=$'-I "libs/include/" -L "$$(pwd)/libs/" -Wl,-rpath,\'$$ORIGIN/libs/\' -Wl,-l:.shared.so'
 fi
-ruledep="${ruledep/"$targetfile.o"/"$name.o"}"
-ruledep="${ruledep/"$targetfile.cpp"/"$name.cpp"}"
-ruledep+=" | libs"
-declare -- rule="$info"$'\n'"$ruledep"
+rulestr+=" | libs"
+declare -- rule="$info"$'\n'"$rulestr"
 rule+=$'\n\t'"\$(shell test -f ./$shname.mk.2)"
 rule+=$'\n\t'"\$(if \$(filter-out 0,\$(.SHELLSTATUS)),$0)"
 rule+=$'\n\t'"\$(CC) -o ./$shname.o ./$shname.cpp \$(CFLAGS) \$(LDFLAGS) \$(LDLIBS) $trail"
+rule+=$'\n'"$ruleend"
 echo "generating $targetfile.mk.2"
 touch "$targetfile.mk.2"
 .extra/proc/goup "$targetfile.mk.2"

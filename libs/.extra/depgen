@@ -1,11 +1,12 @@
 #!/bin/bash
 set -e
-declare -- rule
-rule="$(gcc -MM "$1")"
-declare -- base="${1%'.cpp'}"
-rule="${rule/"${base}.o"/".${base}.o"} | headers"
-rule+=$'\n\t'"\$(if \$(wildcard ${base}.mk.2),,$0 $1)"
-rule+=$'\n\t'"\$(CC) \$(CFLAGS) -o .${base}.o -c \$(OFLAGS) $1"
-touch "${base}.mk.2"
-.extra/proc/goup "${base}.mk.2"
-echo "$rule" >.${base}.mk
+source .extra/rulemk/rulegen
+declare -- rule ruleend
+genrule rule ruleend +M "$1"
+rule="${rule/"$1.o"/".$1.o"}"
+rule+=$'\n\t'"\$(if \$(wildcard ${1}.mk.2),,$0 $1)"
+rule+=$'\n\t'"\$(CC) \$(CFLAGS) -o .${1}.o -c \$(OFLAGS) $1.cpp"
+rule+=$'\n'"$ruleend"
+touch "${1}.mk.2"
+.extra/proc/goup "${1}.mk.2"
+echo "$rule" >.${1}.mk

@@ -1,14 +1,7 @@
 .DEFAULT_GOAL:=libs
-null:=
-slash:=\$(null)
-open:=(
-close:=)
-comma:=,
-semi:=;
-colon:=:
-hashtag:=$(subst \,,\#)
 not=$(if $(1),,true)
 targetfile=$*
+include .extra/rulemk/char.mk
 isundef=$(filter undefined default,$(origin $(1)))
 ifneq ($(call isundef,installabs),)
  ifneq ($(call isundef,installdir),)
@@ -51,6 +44,10 @@ OBJECTS:=$(patsubst %.cpp,%.o,$(SOURCES))
 isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))
 
 ifneq ($(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),)
+ no:=$(shell .extra/namecheck)
+ ifneq ($(.SHELLSTATUS),0)
+  $(error Makefile detected an invalid name)
+ endif
  include $(RULES)
 endif
 
@@ -74,13 +71,13 @@ nodown: #means make will not descend into subdirectories to remake things
 	.extra/depgen
 
 unmake: #removes all test object files
-	.extra/rmobj
+	.extra/rulemk/rmobj
 
 remake: unmake #remakes all test object files
 	MAKELEVEL=$(MAKELEVEL) make tests
 
 scrape: unmake #removes all test object files and also generated rules
-	.extra/rmgen
+	.extra/rulemk/rmgen
 
 clean: scrape
 	cd libs && make clean

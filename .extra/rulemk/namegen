@@ -41,10 +41,11 @@ function genshname() {
 	genname_ref="${genname_ref//'$$'/'$(slash)$$'}"
 	genname_ref="${genname_ref//'"'/'$(slash)"'}"
 	genname_ref="${genname_ref//\'/'$(slash)'\'}"
-	genname_ref="${genname_ref//'$(space)'/'$(slash)\ '}"
+	genname_ref="${genname_ref//'$(space)'/'$(slash)$(space)'}"
 	genname_ref="${genname_ref//'&'/'$(slash)&'}"
 	genname_ref="${genname_ref//'$(hashtag)'/'$(slash)$(hashtag)'}"
 	genname_ref="${genname_ref//'$(open)'/'$(slash)$(open)'}"
+	genname_ref="${genname_ref//'$(semi)'/'$(slash)$(semi)'}"
 	genname_ref="${genname_ref//'$(close)'/'$(slash)$(close)'}"
 }
 function compound_call() {
@@ -55,7 +56,12 @@ function compound_call() {
 	declare -n compounder_ref=$1
 	compounder_ref="$2"
 	shift 2
+	declare -i ret
 	for item in "$@"; do
 		"$item" compounder_ref "$compounder_ref"
+		ret=$?
+		if ((ret)); then
+			return $ret;
+		fi
 	done
 }
