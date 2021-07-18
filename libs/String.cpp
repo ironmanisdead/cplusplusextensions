@@ -76,8 +76,26 @@ namespace CPPExtensions {
 		val.trulen = 0;
 	}
 	template <bool reset>
+	String::setby<reset> String::byval(const StringView& val) noexcept {
+		if (val.len == 0) {
+			finalize();
+			if constexpr (reset)
+				return true;
+			else
+				return;
+		}
+		if constexpr (reset)
+			if (!resize(val.len + 1))
+				return false;
+		Utils::memcpy(view.edit(), val.read(), val.len);
+		view.len = val.len;
+		view.edit()[view.len] = '\0';
+		if constexpr (reset)
+			return true;
+	}
+	template <bool reset>
 	String::setby<reset> String::byval(const String& val) noexcept {
-		if (val.trulen == 0) {
+		if ((val.trulen == 0) || (val.view.len == 0)) {
 			finalize();
 			if constexpr (reset)
 				return true;
@@ -213,6 +231,7 @@ namespace CPPExtensions {
 		if (val && val->read() && (val->len > 0))
 			return static_cast<void>(os.write(val->read(), val->len));
 	}
+	BOOL_EXTERN(String::byval, const StringView&);
 	BOOL_EXTERN(String::byval, const String&);
 	BOOL_EXTERN(String::byval, const char*);
 	BOOL_EXTERN(String::byval, Utils::size_t);
