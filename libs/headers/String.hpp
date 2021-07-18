@@ -25,9 +25,9 @@ namespace CPPExtensions {
 			template <bool reset = true>
 				setby<reset> byval(const char*) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(Utils::size_t) noexcept;
+				setby<reset> byval(unsigned long) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(signed) noexcept;
+				setby<reset> byval(signed long) noexcept;
 			template <bool reset = true>
 				setby<reset> byval(const StringView&) noexcept;
 			template <bool reset = true>
@@ -37,8 +37,8 @@ namespace CPPExtensions {
 			void addray(const char*, Utils::size_t) noexcept;
 			void addval(const String&) noexcept;
 			void addval(const char*) noexcept;
-			void addval(Utils::size_t) noexcept;
-			void addval(signed) noexcept;
+			void addval(unsigned long) noexcept;
+			void addval(signed long) noexcept;
 			void addval(char) noexcept;
 			template <bool reset = true, class T, class... Ts>
 				setby<reset> adder(const T&, const Ts&...) noexcept;

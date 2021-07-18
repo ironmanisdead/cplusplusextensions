@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace CPPExtensions;
 constexpr StringView cons = "The StringView cannot handle literal "
-	"null characters directly\0this text isn't shown";
+	"null characters directly.\0 this text isn't shown.";
 
 int main() {
 	String test = "This is a String object.";

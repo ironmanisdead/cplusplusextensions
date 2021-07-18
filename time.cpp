@@ -4,5 +4,5 @@
 using namespace CPPExtensions;
 
 int main() {
-	std::cout << String((Utils::size_t)Utils::epoch()) << std::endl;
+	std::cout << String((unsigned long)Utils::epoch()) << std::endl;
 }

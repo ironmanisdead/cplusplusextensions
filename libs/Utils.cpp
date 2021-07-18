@@ -71,9 +71,13 @@ namespace CPPExtensions {
 		return ::write(fd, str, len);
 #endif
 	}
-	int uncaught() noexcept {
+	int Utils::uncaught() noexcept {
 		return std::uncaught_exceptions();
 	}
+	void* Utils::malloc(size_t size) noexcept {
+		return ::operator new(size, std::nothrow_t {});
+	}
+	void Utils::free(void* ptr) noexcept { ::operator delete(ptr); }
 	[[noreturn]] void Utils::RunError(const char* str) {
 		throw std::runtime_error(str);
 	}

@@ -13,11 +13,13 @@ namespace CPPExtensions {
 		volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
 		unsigned epoch() noexcept; //high_resolution_clock since epoch
 		int rand() noexcept; //random integer
-		int uncaught() noexcept;
 		void memcpy(void*, const void*, size_t) noexcept;
 		void memmove(void*, const void*, size_t) noexcept;
 		long print(desc, const char*) noexcept;
 		long write(desc, const char*, size_t) noexcept;
+		int uncaught() noexcept; //number of uncaught exceptions
+		void* malloc(size_t) noexcept; //calls operator new with nothrow_t
+		void free(void*) noexcept; //calls operator delete
 		[[noreturn]] void RunError(const char*);
 		[[noreturn]] void RangeError(const char*);
 	}
