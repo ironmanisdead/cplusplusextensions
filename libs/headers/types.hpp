@@ -1,5 +1,6 @@
 #pragma once
 #include "Macros.hpp"
+#include ".part/internals.hpp"
 namespace CPPExtensions {
 	template <class, decltype(sizeof 0)>
 		class Array;
@@ -21,7 +22,6 @@ namespace CPPExtensions {
 			using add_rvalue_reference = decltype(_try_rvalue_reference<T>(0));
 		template <class T>
 			using add_lvalue_reference = decltype(_try_lvalue_reference<T>(0));
-		using size_t = decltype(sizeof(0));
 		template <class...>
 			using none = void;
 		template <class T, class...>
@@ -38,8 +38,6 @@ namespace CPPExtensions {
 		constexpr auto null = nullptr;
 		template <class T, size_t N>
 			using array = T[N];
-		template <class T>
-			struct identity { using type = T; };
 		template <auto... items>
 			struct list {};
 		template <auto v>

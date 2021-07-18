@@ -1,5 +1,5 @@
 #include "headers/Macros.hpp"
-#include "headers/misc.hpp"
+#include "headers/system.hpp"
 #include "headers/types.hpp"
 #include <stdexcept>
 #include <cstdlib>
@@ -60,25 +60,32 @@ namespace CPPExtensions {
 		const desc outstream = 1;
 		const desc errstream = 2;
 #endif
-		size_t print(desc fd, const char* str) noexcept {
+		ssize_t print(desc fd, const char* str) noexcept {
 			auto numbytes = GString::_strlen(str);
-#ifdef _MSC_VER
-			int written = 0;
-			HANDLE file = RECAST(HANDLE, file);
-			::WriteFile(file, str, numbytes, &written, nullptr);
-			return written;
-#else
-			return ::write(fd, str, numbytes);
-#endif
+			return write(fd, str, numbytes);
 		}
-		size_t write(desc fd, const char* str, size_t len) noexcept {
+		ssize_t write(desc fd, const char* str, size_t len) noexcept {
 #ifdef _MSC_VER
 			int written = 0;
 			HANDLE file = RECAST(HANDLE, file);
-			::WriteFile(file, str, len, &written, nullptr);
-			return written;
+			if (::WriteFile(file, str, len, &written, nullptr))
+				return written;
+			else
+				return -1;
 #else
 			return ::write(fd, str, len);
+#endif
+		}
+		ssize_t read(desc fd, char* str, size_t len) noexcept {
+#ifdef _MSC_VER
+			int written = 0;
+			HANDLE file = RECAST(HANDLE, file);
+			if (::ReadFile(file, str, len, &written, nullptr))
+				return written;
+			else
+				return -1;
+#else
+			return ::read(fd, str, len);
 #endif
 		}
 		int uncaught() noexcept {

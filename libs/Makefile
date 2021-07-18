@@ -1,7 +1,7 @@
 PHON:=headers clean reset scrape unmake remake .reset install uninstall
 .DEFAULT_GOAL:=all
 not=$(if $(1),,true)
-include .extra/rulemk/char.mk
+include .extra/rulemk/helper.mk
 sources=$(wildcard *.cpp)
 mk2:=$(wildcard *.mk.2)
 isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))

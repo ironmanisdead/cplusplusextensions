@@ -1,37 +1,7 @@
 .DEFAULT_GOAL:=libs
 not=$(if $(1),,true)
 targetfile=$*
-include .extra/rulemk/char.mk
-isundef=$(filter undefined default,$(origin $(1)))
-ifneq ($(call isundef,installabs),)
- ifneq ($(call isundef,installdir),)
-  installdir:=/usr/local
- endif
- installabs:=$(abspath $(installdir))
-endif
-ifneq ($(call isundef,CC),)
- CC:=gcc
-endif
-ifneq ($(call isundef,LDFLAGS),)
- LDFLAGS:=-Wl,--disable-new-dtags
-endif
-ifneq ($(call isundef,LDLIBS),)
- LDLIBS:=-lstdc++
-endif
-ifneq ($(call isundef,CFLAGS),)
- CFLAGS:=-std=c++2a -O3 -Wall -Wextra
-endif
-ifneq ($(call isundef,OFLAGS),)
- OFLAGS:=-fPIC
-endif
-export installdir
-export installabs
-export targetfile
-export CC
-export LDFLAGS
-export LDLIBS
-export CFLAGS
-export OFLAGS
+include .extra/rulemk/helper.mk
 ifneq ($(findstring /$(shell pwd),/$(installabs)),)
  $(error cannot install libcppextensions inside source directory)
 endif

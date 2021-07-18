@@ -59,7 +59,7 @@ namespace CPPExtensions {
 				(void)UVector::copy(val);
 				return *this;
 			}
-			template <typename V>
+			template <class V>
 			Vector& operator =(const Vector<V>& val) {
 				static_assert(Utils::is_constructible<T, const V&>, "cannot convert types");
 				(void)copy(val, &Utils::wrap_construct<T, const V&>);
@@ -70,7 +70,7 @@ namespace CPPExtensions {
 				(void)UVector::save(val, &Utils::wrap_assign<T&, T&&>);
 				return *this;
 			}
-			template <typename Z>
+			template <class Z>
 			void foreach(Z&& call) {
 				if (trulen > 0)
 					for (Utils::size_t n = 0; n < len; n++)
