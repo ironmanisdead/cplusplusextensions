@@ -29,7 +29,7 @@ namespace CPPExtensions {
 				const char* assign;
 			};
 			struct TypeData {
-				Utils::size elem;
+				Utils::size_t elem;
 				void (*deleter)(void*) noexcept;
 				void (*copier)(void*, const void*);
 				void (*pheonix)(void*, void*);
@@ -43,8 +43,8 @@ namespace CPPExtensions {
 			const FullType* const typeinfo;
 			UVector(const FullType*) noexcept;
 			State _status;
-			Utils::size trulen;
-			Utils::size len;
+			Utils::size_t trulen;
+			Utils::size_t len;
 			char* raw;
 			[[nodiscard]] bool save(UVector&) noexcept;
 			[[nodiscard]] bool save(UVector&, void (*)(void*, void*));
@@ -52,23 +52,23 @@ namespace CPPExtensions {
 			[[nodiscard]] bool copy(const UVector&);
 			[[nodiscard]] bool copy(const UVector&, void (*)(void*, const void*));
 			[[nodiscard]] bool copy(const UVector&, void (*)(void*, const void*) noexcept) noexcept;
-			[[nodiscard]] bool _allocate(Utils::size) noexcept;
+			[[nodiscard]] bool _allocate(Utils::size_t) noexcept;
 			void finalize() noexcept;
 			void deinit() noexcept;
-			[[nodiscard]] bool resize(Utils::size) noexcept;
-			void place(Utils::size, const char*) noexcept;
-			bool remove(Utils::size, Utils::size = 1) noexcept;
+			[[nodiscard]] bool resize(Utils::size_t) noexcept;
+			void place(Utils::size_t, const char*) noexcept;
+			bool remove(Utils::size_t, Utils::size_t = 1) noexcept;
 		public:
 			UVector& operator =(const UVector&);
-			constexpr Utils::size getlen() const noexcept {
+			constexpr Utils::size_t getlen() const noexcept {
 				if (trulen > 0)
 					return len;
 				else
 					return 0;
 			}
-			constexpr Utils::size fullen() const noexcept { return trulen; }
+			constexpr Utils::size_t fullen() const noexcept { return trulen; }
 			constexpr State getStatus() const noexcept { return _status; }
-			bool allocate(Utils::size) noexcept;
+			bool allocate(Utils::size_t) noexcept;
 			template <class V>
 				friend void vecput(V&, const Vector<char>*);
 	};

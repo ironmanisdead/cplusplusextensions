@@ -14,7 +14,7 @@ namespace CPPExtensions {
 	volatile void* Utils::ignore(volatile void*) noexcept {
 		return nullptr;
 	}
-	int Utils::epoch() noexcept {
+	unsigned Utils::epoch() noexcept {
 		using namespace std::chrono;
 		auto time = system_clock::now().time_since_epoch();
 		return duration_cast<milliseconds>(time).count();
@@ -27,19 +27,19 @@ namespace CPPExtensions {
 		}
 		return std::rand();
 	}
-	void Utils::memcpy(void* dest, const void* src, size len) noexcept {
+	void Utils::memcpy(void* dest, const void* src, size_t len) noexcept {
 		char* cdest = downcast<char*>(dest);
 		const char* csrc = downcast<const char*>(src);
-		for (size i = 0; i < len; i++)
+		for (size_t i = 0; i < len; i++)
 			cdest[i] = csrc[i];
 	}
-	void Utils::memmove(void* dest, const void* src, size len) noexcept {
+	void Utils::memmove(void* dest, const void* src, size_t len) noexcept {
 		char* cdest = downcast<char*>(dest);
 		const char* csrc = downcast<const char*>(src);
 		if (cdest < csrc)
 			memcpy(dest, src, len);
 		else
-			for (size i = len; i > 0; i--)
+			for (size_t i = len; i > 0; i--)
 				cdest[i-1] = csrc[i-1];
 	}
 }
@@ -61,7 +61,7 @@ namespace CPPExtensions {
 		return ::write(fd, str, numbytes);
 #endif
 	}
-	long Utils::write(desc fd, const char* str, size len) noexcept {
+	long Utils::write(desc fd, const char* str, size_t len) noexcept {
 #ifdef _MSC_VER
 		int written = 0;
 		HANDLE file = RECAST(HANDLE, file);

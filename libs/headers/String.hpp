@@ -10,22 +10,22 @@ namespace CPPExtensions {
 		void _viewput(T&, const StringView*);
 	class String {
 		private:
-			Utils::size trulen;
+			Utils::size_t trulen;
 			StringView view;
 			bool errbit;
-			bool _allocate(Utils::size) noexcept;
-			bool resize(Utils::size) noexcept;
+			bool _allocate(Utils::size_t) noexcept;
+			bool resize(Utils::size_t) noexcept;
 			void finalize() noexcept;
 			template <bool reset>
 				using setby = Utils::switch_it<reset, bool, void>;
 			template <bool reset = true>
-				setby<reset> byray(const char*, Utils::size) noexcept;
+				setby<reset> byray(const char*, Utils::size_t) noexcept;
 			template <bool reset = true>
 				setby<reset> byval(const String&) noexcept;
 			template <bool reset = true>
 				setby<reset> byval(const char*) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(Utils::size) noexcept;
+				setby<reset> byval(Utils::size_t) noexcept;
 			template <bool reset = true>
 				setby<reset> byval(signed) noexcept;
 			template <bool reset = true>
@@ -34,10 +34,10 @@ namespace CPPExtensions {
 				setby<reset> byval(char) noexcept;
 			Utils::strongcmp_t valcmp(const StringView&) const noexcept;
 			void byval(String&&) noexcept;
-			void addray(const char*, Utils::size) noexcept;
+			void addray(const char*, Utils::size_t) noexcept;
 			void addval(const String&) noexcept;
 			void addval(const char*) noexcept;
-			void addval(Utils::size) noexcept;
+			void addval(Utils::size_t) noexcept;
 			void addval(signed) noexcept;
 			void addval(char) noexcept;
 			template <bool reset = true, class T, class... Ts>
@@ -63,13 +63,13 @@ namespace CPPExtensions {
 			}
 			template <class T, class... V, bool isn = (sizeof...(V) == 0)>
 				String(T&& val, const V&... rest) noexcept;
-			constexpr Utils::size getlen() const noexcept {
+			constexpr Utils::size_t getlen() const noexcept {
 				if (trulen > 0)
 					return view.len;
 				else
 					return 0;
 			}
-			constexpr Utils::size gettlen() const noexcept { return trulen; }
+			constexpr Utils::size_t gettlen() const noexcept { return trulen; }
 			constexpr bool hasErr() const noexcept { return errbit; }
 			constexpr const char* data() const noexcept {
 				if (trulen > 0)
@@ -111,7 +111,7 @@ namespace CPPExtensions {
 			Utils::strongcmp_t operator <=>(const T& val) const noexcept {
 				using ray_m = Utils::array_prop<T>;
 				using ray_r = Utils::array_util<T>;
-				Utils::size siz = ray_m::value ? ray_m::len : (ray_r::value ? ray_r::len : 0);
+				Utils::size_t siz = ray_m::value ? ray_m::len : (ray_r::value ? ray_r::len : 0);
 				if constexpr (ray_m::value) {
 					return valcmp(StringView(val, val[siz-1] ? siz : siz - 1));
 				} else if constexpr (ray_r::value) {
@@ -130,7 +130,7 @@ namespace CPPExtensions {
 				else
 					return nullptr;
 			}
-			bool allocate(Utils::size) noexcept;
+			bool allocate(Utils::size_t) noexcept;
 			~String();
 			template <class T>
 			friend T& operator <<(T& os, const String& val);
@@ -169,7 +169,7 @@ namespace CPPExtensions {
 		if constexpr (sizeof...(V) == 0) {
 			setup(Utils::forward<T>(val));
 		} else {
-			Utils::size total = GString::strlen(val) + (GString::strlen(rest) + ... + 1);
+			Utils::size_t total = GString::strlen(val) + (GString::strlen(rest) + ... + 1);
 			if (!_allocate(total))
 				return;
 			using ray_m = Utils::array_prop<T>;

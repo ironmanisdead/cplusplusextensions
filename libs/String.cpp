@@ -17,7 +17,7 @@ namespace CPPExtensions {
 	String::~String() {
 		finalize();
 	}
-	bool String::_allocate(Utils::size n1) noexcept {
+	bool String::_allocate(Utils::size_t n1) noexcept {
 		finalize();
 		if (n1 == 0)
 			return true;
@@ -29,7 +29,7 @@ namespace CPPExtensions {
 		trulen = n1;
 		return true;
 	}
-	bool String::resize(Utils::size n1) noexcept {
+	bool String::resize(Utils::size_t n1) noexcept {
 		if (trulen == 0)
 			return _allocate(n1);
 		else if (n1 == 0)
@@ -37,7 +37,7 @@ namespace CPPExtensions {
 		else if (n1 < trulen)
 			return true;
 		errbit = false;
-		Utils::size ntru = trulen;
+		Utils::size_t ntru = trulen;
 		while (ntru < n1)
 			ntru *= 2;
 		char* temp = Utils::downcast<char*>(::operator new (ntru, std::nothrow_t{}));
@@ -51,9 +51,9 @@ namespace CPPExtensions {
 		return true;
 	}
 	template <bool reset>
-	String::setby<reset> String::byray(const char* val, Utils::size siz) noexcept {
+	String::setby<reset> String::byray(const char* val, Utils::size_t siz) noexcept {
 		errbit = false;
-		Utils::size ntru, nlen;
+		Utils::size_t ntru, nlen;
 		if (val[siz - 1] == '\0') {
 			nlen = siz - 1;
 			ntru = siz;
@@ -102,7 +102,7 @@ namespace CPPExtensions {
 			else
 				return;
 		}
-		Utils::size siz = GString::strlen(val);
+		Utils::size_t siz = GString::strlen(val);
 		if constexpr (reset)
 			if (!resize(siz + 1))
 				return false;
@@ -121,7 +121,7 @@ namespace CPPExtensions {
 			return true;
 	}
 	template <bool reset>
-	String::setby<reset> String::byval(Utils::size str) noexcept {
+	String::setby<reset> String::byval(Utils::size_t str) noexcept {
 		if constexpr (reset)
 			if (!resize(GString::strlen(str) + 1))
 				return false;
@@ -138,8 +138,8 @@ namespace CPPExtensions {
 		if constexpr (reset)
 			return true;
 	}
-	void String::addray(const char* val, Utils::size siz) noexcept {
-		Utils::size nlen;
+	void String::addray(const char* val, Utils::size_t siz) noexcept {
+		Utils::size_t nlen;
 		if (val[siz - 1] == '\0')
 			nlen = siz - 1;
 		else
@@ -149,7 +149,7 @@ namespace CPPExtensions {
 		view.edit()[view.len] = '\0';
 	}
 	void String::addval(const char* val) noexcept {
-		Utils::size siz = GString::strlen(val);
+		Utils::size_t siz = GString::strlen(val);
 		Utils::memcpy(&view.edit()[view.len], val, siz);
 		view.len += siz;
 	}
@@ -159,11 +159,11 @@ namespace CPPExtensions {
 			view.len += val.view.len;
 		}
 	}
-	void String::addval(Utils::size str) noexcept {
+	void String::addval(Utils::size_t str) noexcept {
 		view.edit()[view.len] = '0';
-		Utils::size siz = GString::strlen(str);
-		for (Utils::size i = 0; i < siz; i++) {
-			view.edit()[view.len + siz - i] = (str % 10);
+		Utils::size_t siz = GString::strlen(str);
+		for (Utils::size_t i = 0; i < siz; i++) {
+			view.edit()[view.len + siz - i] = (str % 10) + '0';
 			str /= 10;
 		}
 		view.len += siz;
@@ -174,15 +174,15 @@ namespace CPPExtensions {
 			str = -str;
 		}
 		view.edit()[view.len] = '0';
-		Utils::size siz = GString::strlen(str);
-		for (Utils::size i = 1; i <= siz; i++) {
+		Utils::size_t siz = GString::strlen(str);
+		for (Utils::size_t i = 1; i <= siz; i++) {
 			view.edit()[view.len + siz - i] = (str % 10) + '0';
 			str /= 10;
 		}
 		view.len += siz;
 	}
 	void String::addval(char ch) noexcept { view.edit()[view.len++] = ch; }
-	bool String::allocate(Utils::size nsize) noexcept {
+	bool String::allocate(Utils::size_t nsize) noexcept {
 		errbit = false;
 		if (trulen == 0)
 			return _allocate(nsize);
@@ -215,8 +215,8 @@ namespace CPPExtensions {
 	}
 	BOOL_EXTERN(String::byval, const String&);
 	BOOL_EXTERN(String::byval, const char*);
-	BOOL_EXTERN(String::byval, Utils::size);
+	BOOL_EXTERN(String::byval, Utils::size_t);
 	BOOL_EXTERN(String::byval, signed);
 	BOOL_EXTERN(String::byval, char);
-	BOOL_EXTERN(String::byray, const char*, Utils::size);
+	BOOL_EXTERN(String::byray, const char*, Utils::size_t);
 }

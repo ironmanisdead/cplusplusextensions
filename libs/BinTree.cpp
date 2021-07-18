@@ -245,7 +245,7 @@ namespace CPPExtensions {
 	}
 	bool BinTree::_add(BinEnt* ins, bool force) {
 		const void* key = ins->_key();
-		Utils::size siz = ins->data->total;
+		Utils::size_t siz = ins->data->total;
 		if (!root) {
 			root = Utils::downcast<BinEnt*>(::operator new(siz, std::nothrow_t {}));
 			if (!root)

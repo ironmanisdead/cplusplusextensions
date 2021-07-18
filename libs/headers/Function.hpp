@@ -23,12 +23,12 @@ namespace CPPExtensions {
 	class Function<Ret(Args...)> : public Functions {
 		private:
 			mutable State _status;
-			Utils::size size;
+			Utils::size_t size;
 			struct Proxy {
 				virtual Ret call(Utils::add_reference<Args>... args) = 0;
 				virtual void copy(void*) const = 0;
 				virtual void move(void*) = 0;
-				virtual Utils::size size() const noexcept = 0;
+				virtual Utils::size_t size() const noexcept = 0;
 				virtual ~Proxy() {}
 			};
 			template <class T>
@@ -46,7 +46,7 @@ namespace CPPExtensions {
 					Ret call(Utils::add_reference<Args>... args) override {
 						return callable(args...);
 					}
-					Utils::size size() const noexcept override {
+					Utils::size_t size() const noexcept override {
 						return sizeof(Binding<retype>);
 					}
 					void copy(void* val) const override {

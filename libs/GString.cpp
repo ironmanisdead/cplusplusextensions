@@ -9,7 +9,7 @@
 #include <cxxabi.h>
 namespace CPPExtensions {
 	namespace GString {
-		[[noreturn]] void overflow(size len, size idx) {
+		[[noreturn]] void overflow(size_t len, size_t idx) {
 			throw std::overflow_error(String("Array of size ", len, " cannot hold string of size ", idx));
 		}
 		static BinMap<StringView, String> nametype = {};
@@ -25,10 +25,10 @@ namespace CPPExtensions {
 		String hyperlink(const char* site, const char* display) noexcept {
 			return String("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");
 		}
-		Utils::size _strlen(const String& val) noexcept {
+		Utils::size_t _strlen(const String& val) noexcept {
 			return val.getlen();
 		}
-		Utils::size _strlen(const Vector<char>& val) noexcept {
+		Utils::size_t _strlen(const Vector<char>& val) noexcept {
 			return val.getlen();
 		}
 	}

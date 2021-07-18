@@ -39,7 +39,7 @@ namespace CPPExtensions {
 		private:
 			template <class, class...>
 				friend class Tuple;
-			static constexpr Utils::size amount = sizeof...(V);
+			static constexpr Utils::size_t amount = sizeof...(V);
 			static constexpr bool isgg = (amount > 0);
 			static constexpr bool isll = (amount == 0);
 			static constexpr bool curnone = Utils::is_noexcept_constructible<T>;
@@ -49,7 +49,7 @@ namespace CPPExtensions {
 			T current;
 			typename Tuples::GenTuple<void, V...>::type other;
 		public:
-			template <Utils::size N>
+			template <Utils::size_t N>
 				constexpr auto& get() noexcept {
 					constexpr bool valid = (N <= amount);
 					static_assert(valid, "index out of bounds");
@@ -60,7 +60,7 @@ namespace CPPExtensions {
 					else
 						return other.template get<amount>();
 				}
-			template <Utils::size N>
+			template <Utils::size_t N>
 				constexpr const auto& get() const noexcept {
 					constexpr bool valid = (N <= amount);
 					static_assert(valid, "index out of bounds");
@@ -72,12 +72,12 @@ namespace CPPExtensions {
 						return other.template get<amount>();
 				}
 		private:
-			template <class F, class tup, Utils::size... ns, Utils::size idx>
+			template <class F, class tup, Utils::size_t... ns, Utils::size_t idx>
 			constexpr Tuple(Tuples::mapper, const tup& val, Utils::list<ns...>, Utils::list<idx>, const F& func) 
 				noexcept(noexcept((func(get<ns>()), ...))) : current(func(val.current)),
 					other(Tuples::mapper {}, val.other, Utils::queue<idx> {}, Utils::list<idx-1> {}, func) {}
 			//
-			template <class F, class tup, Utils::size... ns, Utils::size idx>
+			template <class F, class tup, Utils::size_t... ns, Utils::size_t idx>
 			constexpr Tuple(Tuples::mapper, tup& val, Utils::list<ns...>, Utils::list<idx>, F& func)
 				noexcept(noexcept((func(get<ns>()), ...))) : current(func(val.current)),
 					other(Tuples::mapper {}, val.other, Utils::queue<idx> {}, Utils::list<idx-1> {}, func) {}
@@ -92,20 +92,20 @@ namespace CPPExtensions {
 			constexpr Tuple(Tuple&& val) noexcept(iscons<T, T&&> && iscons<decltype(other), decltype(other)&&>) :
 				current(Utils::move(val.current)), other(Utils::move(val.other)) {}
 		private:
-			template <class F, Utils::size... ns>
+			template <class F, Utils::size_t... ns>
 			constexpr void ForEach(const F& func, Utils::list<ns...>) noexcept(noexcept( (func(get<ns>()), ...) )) {
 				(func(get<ns>()), ...);
 			}
-			template <class F, Utils::size... ns>
+			template <class F, Utils::size_t... ns>
 			constexpr void ForEach(const F& func, Utils::list<ns...>) const noexcept( noexcept( (func(get<ns>()), ...) )) {
 				(func(get<ns>()), ...);
 			}
-			template <class F, Utils::size... ns>
+			template <class F, Utils::size_t... ns>
 			constexpr auto MakeMap(F& func, Utils::list<ns...> lis) noexcept(noexcept( (func(get<ns>()), ...) )) {
 				using type = Tuple<Utils::decay<decltype(func(get<ns>()))>...>;
 				return type { Tuples::mapper {}, *this, lis, Utils::list<amount> {}, func };
 			}
-			template <class F, Utils::size... ns>
+			template <class F, Utils::size_t... ns>
 			constexpr auto MakeMap(const F& func, Utils::list<ns...> lis) const noexcept(noexcept( (func(get<ns>()), ...) )) {
 				using type = Tuple<decltype(func(get<ns>()))...>;
 				return type { Tuples::mapper {}, *this, lis, Utils::list<amount> {}, func };

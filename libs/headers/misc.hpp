@@ -7,17 +7,17 @@ namespace CPPExtensions {
 #else
 		using desc = unsigned;
 #endif
-		using size = decltype(sizeof(0));
+		using size_t = decltype(sizeof(0));
 		int geterr() noexcept;
 		const char* strerror(int) noexcept;
 		volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
-		int epoch() noexcept; //high_resolution_clock since epoch
+		unsigned epoch() noexcept; //high_resolution_clock since epoch
 		int rand() noexcept; //random integer
 		int uncaught() noexcept;
-		void memcpy(void*, const void*, size) noexcept;
-		void memmove(void*, const void*, size) noexcept;
+		void memcpy(void*, const void*, size_t) noexcept;
+		void memmove(void*, const void*, size_t) noexcept;
 		long print(desc, const char*) noexcept;
-		long write(desc, const char*, size) noexcept;
+		long write(desc, const char*, size_t) noexcept;
 		[[noreturn]] void RunError(const char*);
 		[[noreturn]] void RangeError(const char*);
 	}

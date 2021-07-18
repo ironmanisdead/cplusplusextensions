@@ -7,26 +7,26 @@ namespace CPPExtensions {
 	template <class>
 		class Vector;
 	namespace GString {
-			using size = Utils::size;
+			using size_t = Utils::size_t;
 			template <auto... vals>
 				using list = Utils::list<vals...>;
-			template <class T, size N>
+			template <class T, size_t N>
 				using array = Utils::array<T, N>;
-			template <size N>
+			template <size_t N>
 				using queue = Utils::queue<N>;
-			constexpr size _strlen(const char* str) noexcept {
-				for (size i = 0; true; i++)
+			constexpr size_t _strlen(const char* str) noexcept {
+				for (size_t i = 0; true; i++)
 					if (str[i] == '\0')
 						return i;
 			}
-			constexpr size _strlen(size str) noexcept {
-				size len = 1;
+			constexpr size_t _strlen(size_t str) noexcept {
+				size_t len = 1;
 				while ((str /= 10) > 0)
 					len++;
 				return len;
 			}
-			constexpr size _strlen(signed str) noexcept {
-				size len = 1;
+			constexpr size_t _strlen(signed str) noexcept {
+				size_t len = 1;
 				if (str < 0) {
 					str = -str;
 					len = 2;
@@ -35,13 +35,13 @@ namespace CPPExtensions {
 					len++;
 				return len;
 			}
-			size _strlen(const String&) noexcept;
-			size _strlen(const Vector<char>&) noexcept;
+			size_t _strlen(const String&) noexcept;
+			size_t _strlen(const Vector<char>&) noexcept;
 			const String& demangle(const char*);
 			template <class T>
 			const String& runtype(const T&);
 			template <class T>
-			constexpr size strlen(T&& str) noexcept {
+			constexpr size_t strlen(T&& str) noexcept {
 				using ray_t = Utils::array_prop<T>;
 				using ray_r = Utils::array_util<T>;
 				if constexpr (ray_t::value)
@@ -54,15 +54,15 @@ namespace CPPExtensions {
 					return _strlen(str);
 			}
 			constexpr auto find(const char* str, const char* cmp) {
-				const size len1 = strlen(str);
-				const size len2 = strlen(cmp);
+				const size_t len1 = strlen(str);
+				const size_t len2 = strlen(cmp);
 				if (len2 > len1)
-					return Tuple { (size)0, (size)0, false };
-				size mat = 0;
+					return Tuple { (size_t)0, (size_t)0, false };
+				size_t mat = 0;
 				bool ready = false;
-				size pos = 0;
+				size_t pos = 0;
 				bool found = false;
-				for (size idx = 0; idx < len1; ++idx) {
+				for (size_t idx = 0; idx < len1; ++idx) {
 					if (str[idx] == cmp[mat]) {
 						if (!ready) {
 							ready = true;
@@ -80,13 +80,13 @@ namespace CPPExtensions {
 				return Tuple { pos, len2, found };
 			}
 			constexpr auto rfind(const char* str, const char* cmp) {
-				const size len1 = strlen(str);
-				const size len2 = strlen(cmp);
+				const size_t len1 = strlen(str);
+				const size_t len2 = strlen(cmp);
 				if (len2 > len1)
-					return Tuple { (size)0, (size)0, false };
+					return Tuple { (size_t)0, (size_t)0, false };
 				bool found = false;
-				size mat = len2 - 1;
-				size idx = 0;
+				size_t mat = len2 - 1;
+				size_t idx = 0;
 				for (idx = len1 - 1;; --idx) {
 					if (str[idx] == cmp[mat]) {
 						if (mat < 2) {
@@ -101,31 +101,31 @@ namespace CPPExtensions {
 				}
 				return Tuple { idx, len2, found };
 			}
-			[[noreturn]] void _overflow(size, size);
-			template <size n, char... str>
+			[[noreturn]] void _overflow(size_t, size_t);
+			template <size_t n, char... str>
 				struct _numberify : _numberify<n / 10, (n % 10) + '0', str...> {};
 			template <char... str>
 				struct _numberify<0, str...> {
-					static constexpr size len = sizeof...(str) + 1;
+					static constexpr size_t len = sizeof...(str) + 1;
 					static constexpr const char value[len] = { str..., '\0' };
 				};
-			template <size n1, size n2, size... l1, size... l2>
+			template <size_t n1, size_t n2, size_t... l1, size_t... l2>
 				constexpr Array<char, (l1, ...) + (l2, ...) + 2>
 				_concatter(const char (&val1)[n1], const char (&val2)[n2], list<l1...>, list<l2...>) noexcept {
 					return Array { { val1[l1]..., val2[l2]... } };
 				}
-			template <size n1, size n2, char... items, size raylen = n1 + n2 - 1>
+			template <size_t n1, size_t n2, char... items, size_t raylen = n1 + n2 - 1>
 				constexpr Array<char, raylen>
 				_string_cat(const char (&val1)[n1], const char (&val2)[n2], list<items...>) noexcept {
 					char result[raylen] = { items... };
-					size idx = 0;
+					size_t idx = 0;
 					for (idx = 0; idx < n1; idx++)
 						if (val1[idx] == '\0')
 							break;
 						else
 							result[idx] = val1[idx];
 					//
-					for (size id2 = 0; id2 < n2; id2++)
+					for (size_t id2 = 0; id2 < n2; id2++)
 						if (val2[id2] == '\0')
 							break;
 						else
@@ -133,12 +133,12 @@ namespace CPPExtensions {
 					//
 					return Array { result };
 				}
-			constexpr size _s_len = sizeof(_numberify<(size)0 - (size)1>::value);
+			constexpr size_t _s_len = sizeof(_numberify<(size_t)0 - (size_t)1>::value);
 			constexpr auto _getint(const char* src, const char* cmp, const char* suf) noexcept {
 				Tuple start = find(src, cmp);
 				Tuple end = rfind(src, suf);
-				size init = start.get<0>() + start.get<1>();
-				size fin = end.get<0>();
+				size_t init = start.get<0>() + start.get<1>();
+				size_t fin = end.get<0>();
 				return Tuple { init, fin - init, start.get<2>() };
 			}
 			template <class T>
@@ -158,27 +158,27 @@ namespace CPPExtensions {
 					#endif
 					constexpr Tuple info = _getint(name, prefix, suffix);
 					static_assert(info.get<2>(), "search failed, (possible macro interference)");
-					constexpr size len = info.get<1>(), beg = info.get<0>();
-					Array<char, (size)(len + 1)> ray;
-					for (size idx = 0; idx < len; idx++)
+					constexpr size_t len = info.get<1>(), beg = info.get<0>();
+					Array<char, (size_t)(len + 1)> ray;
+					for (size_t idx = 0; idx < len; idx++)
 						ray[idx] = name[idx + beg];
 					return ray;
 				}
 			template <class T>
 				constexpr auto typestr = _gettype<T>();
-			constexpr Array<char, _s_len> numstr(size num) noexcept {
-				size len = 0;
-				for (size idx = num; idx > 0; len++)
+			constexpr Array<char, _s_len> numstr(size_t num) noexcept {
+				size_t len = 0;
+				for (size_t idx = num; idx > 0; len++)
 					idx /= 10;
 				Array<char, _s_len> result;
-				size idx = len;
-				for (size cop = num; cop > 0; cop /= 10)
+				size_t idx = len;
+				for (size_t cop = num; cop > 0; cop /= 10)
 					result[--idx] = (cop % 10) + '0';
 				return result;
 			}
-			template <size n>
+			template <size_t n>
 				constexpr auto& stringify = _numberify<n / 10, (n % 10) + '0'>::value;
-			template <size n1, size n2, size... nums>
+			template <size_t n1, size_t n2, size_t... nums>
 				constexpr Array<char, Utils::sum(n1, n2, nums...)> 
 				concat(const char (&val1)[n1], const char (&val2)[n2], const array<char, nums>&... args) noexcept {
 					if constexpr (sizeof...(nums) > 0)
@@ -186,7 +186,7 @@ namespace CPPExtensions {
 					else
 						return _concatter(val1, val2, queue<n1> {}, queue<n2> {});
 				}
-			template <size n1, size n2, size... nums, size raylen = (Utils::sum(n1, n2, nums...) - sizeof...(nums) - 1)>
+			template <size_t n1, size_t n2, size_t... nums, size_t raylen = (Utils::sum(n1, n2, nums...) - sizeof...(nums) - 1)>
 				constexpr Array<char, raylen>
 				raycat(const char (&val1)[n1], const char (&val2)[n2], const array<char, nums>&... args) noexcept {
 					if constexpr (sizeof...(nums) > 0)
@@ -198,7 +198,7 @@ namespace CPPExtensions {
 					else
 						return _concatter(val1, val2, queue<n1-1> {}, queue<n2> {});
 				}
-			template <size n1, size n2, size... nums, size raylen = (Utils::sum(n1, n2, nums...) - sizeof...(nums) - 1)>
+			template <size_t n1, size_t n2, size_t... nums, size_t raylen = (Utils::sum(n1, n2, nums...) - sizeof...(nums) - 1)>
 				constexpr Array<char, raylen>
 				strcat(const char (&val1)[n1], const char (&val2)[n2], const array<char, nums>&... args) noexcept {
 					if constexpr (sizeof...(nums) > 0)
@@ -256,7 +256,7 @@ namespace CPPExtensions {
 			constexpr auto gen_color(bool isfg, uchar col) noexcept {
 				Array<char, 5> code;
 				uchar colcop = col;
-				short len = _strlen(Utils::size(col));
+				short len = _strlen(Utils::size_t(col));
 				for (short i = 1; i <= len; i++) {
 					code[len - i] = (colcop % 10) + '0';
 					colcop /= 10;
@@ -271,7 +271,7 @@ namespace CPPExtensions {
 				auto fillcode = 
 					[] (auto& ray, uchar col) {
 						uchar colcop = col;
-						short len = _strlen(Utils::size(col));
+						short len = _strlen(Utils::size_t(col));
 						for (short i = 1; i <= len; i++) {
 							ray[len - i] = (colcop % 10) + '0';
 							colcop /= 10;
@@ -291,13 +291,13 @@ namespace CPPExtensions {
 				return result;
 			}
 			template <uchar col>
-				constexpr Utils::size _gen_color_len =
+				constexpr Utils::size_t _gen_color_len =
 					_strlen(gen_color(false, col).data) + 1;
 			template <bool isfg, uchar col>
 				constexpr Array<char, _gen_color_len<col>>
 					gen_color_temp = gen_color(isfg, col);
 			template <uchar r, uchar g, uchar b>
-				constexpr Utils::size _truecolor_len =
+				constexpr Utils::size_t _truecolor_len =
 					_strlen(truecolor(false, r, g, b).data);
 			template <bool isfg, uchar r, uchar g, uchar b>
 				constexpr Array<char, _truecolor_len<r, g, b>>

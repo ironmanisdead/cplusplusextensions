@@ -3,9 +3,9 @@
 #include "Find.hpp"
 namespace CPPExtensions {
 	struct BinInfo {
-		Utils::size keydist;
-		Utils::size valdist;
-		Utils::size total;
+		Utils::size_t keydist;
+		Utils::size_t valdist;
+		Utils::size_t total;
 	};
 	class BinTree;
 	class BinEnt {

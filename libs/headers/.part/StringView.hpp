@@ -10,7 +10,7 @@ namespace CPPExtensions {
 		void _viewput(T&, const StringView*);
 	class StringView {
 		public:
-			Utils::size len;
+			Utils::size_t len;
 		private:
 			struct Window {
 				bool modify;
@@ -35,11 +35,11 @@ namespace CPPExtensions {
 				  buffer(val.buffer) {}
 			constexpr StringView(const char* val) noexcept : len(GString::strlen(val)),
 				  buffer(false, {.view = {val}}) {}
-			constexpr StringView(const char* val, Utils::size ln) noexcept : len(ln),
+			constexpr StringView(const char* val, Utils::size_t ln) noexcept : len(ln),
 				  buffer(false, {.view = {val}}) {}
 			constexpr StringView(char* val) noexcept : len(GString::strlen(val)),
 				  buffer(true, {.edit = {val}}) {}
-			constexpr StringView(char* val, Utils::size ln) noexcept : len(ln),
+			constexpr StringView(char* val, Utils::size_t ln) noexcept : len(ln),
 				  buffer(true, {.edit = {val}}) {}
 			constexpr StringView(const String& val) noexcept;
 			constexpr const char* read() const noexcept { return viewer(buffer); }
@@ -73,12 +73,12 @@ namespace CPPExtensions {
 				return *this;
 			}
 			constexpr StringView& operator =(const String& val) noexcept;
-			constexpr void set(const char* val, Utils::size ln) noexcept {
+			constexpr void set(const char* val, Utils::size_t ln) noexcept {
 				buffer.modify = false;
 				buffer.view = val;
 				len = ln;
 			}
-			constexpr void set(char* val, Utils::size ln) noexcept {
+			constexpr void set(char* val, Utils::size_t ln) noexcept {
 				buffer.modify = true;
 				buffer.edit = val;
 				len = ln;
@@ -90,10 +90,10 @@ namespace CPPExtensions {
 					return (len <=> val.len);
 				if (!(see && valsee))
 					return (see <=> valsee);
-				Utils::size shrt = len;
+				Utils::size_t shrt = len;
 				if (val.len < shrt)
 					shrt = val.len;
-				for (Utils::size i = 0; i < shrt; i++) {
+				for (Utils::size_t i = 0; i < shrt; i++) {
 					char bufi = see[i], bufv = valsee[i];
 					if (bufi != bufv)
 						return (bufi <=> bufv);

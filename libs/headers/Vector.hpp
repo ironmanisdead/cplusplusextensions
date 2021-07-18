@@ -35,7 +35,7 @@ namespace CPPExtensions {
 					(void)create(String(Utils::forward<V>(ini), Utils::forward<L>(rest)...));
 			}
 			template <class... Ts>
-			bool insert(Utils::size n1, Ts&&... vals) noexcept {
+			bool insert(Utils::size_t n1, Ts&&... vals) noexcept {
 				if (n1 > len)
 					return false;
 				char alloc[sizeof(T)];
@@ -73,13 +73,13 @@ namespace CPPExtensions {
 			template <typename Z>
 			void foreach(Z&& call) {
 				if (trulen > 0)
-					for (Utils::size n = 0; n < len; n++)
+					for (Utils::size_t n = 0; n < len; n++)
 						call(*Utils::downcast<T*>(&raw[sizeof(T) * n]));
 			}
-			T* operator [](Utils::size n) {
+			T* operator [](Utils::size_t n) {
 				return Utils::downcast<T*>(&raw[sizeof(T) * n]);
 			}
-			const T* operator [](Utils::size n) const {
+			const T* operator [](Utils::size_t n) const {
 				return Utils::downcast<const T*>(&raw[sizeof(T) * n]);
 			}
 			template <class V>

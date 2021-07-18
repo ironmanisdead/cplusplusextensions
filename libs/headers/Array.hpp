@@ -2,13 +2,13 @@
 #include "types.hpp"
 namespace CPPExtensions {
 	template <class T>
-		void arrayput(T&, const char*, Utils::size);
-	template <class T, Utils::size N>
+		void arrayput(T&, const char*, Utils::size_t);
+	template <class T, Utils::size_t N>
 	class Array {
 		public:
 			T data[N];
 		private:
-			template <Utils::size Z, Utils::size... nums>
+			template <Utils::size_t Z, Utils::size_t... nums>
 				constexpr Array(const T (&val)[Z], Utils::list<nums...>)
 				noexcept : data { val[nums]... } {
 					static_assert(Z >= N, "assigning to Array from array of smaller size");
@@ -22,11 +22,11 @@ namespace CPPExtensions {
 			template <class... ts>
 			constexpr Array(Utils::nullpt, ts&&... args) noexcept(noexcept(T(Utils::forward<ts>(args)...))) :
 				Array(Utils::fill_set<Utils::null, N> {}, Utils::forward<ts>(args)...) {}
-			template <Utils::size Z>
+			template <Utils::size_t Z>
 			constexpr Array(const T (&val)[Z])
 				noexcept(noexcept(Array(val, Utils::queue<N> {}))) :
 					Array(val, Utils::queue<N> {}) {}
-			template <Utils::size Z>
+			template <Utils::size_t Z>
 			constexpr Array(const Array<T, Z>& val)
 				noexcept(noexcept(Array(val.data, Utils::queue<N> {}))) :
 					Array(val.data, Utils::queue<N> {}) {}
@@ -39,7 +39,7 @@ namespace CPPExtensions {
 			template <class V>
 				constexpr bool operator ==(const Array<V, N>& val)
 					noexcept(noexcept(Utils::declval<T&> == Utils::declval<const V&>)) {
-						for (Utils::size i = 0; i < N; i++)
+						for (Utils::size_t i = 0; i < N; i++)
 							if (!(data[i] == val[i]))
 								return false;
 						return true;
@@ -47,7 +47,7 @@ namespace CPPExtensions {
 			template <class V>
 				constexpr bool operator ==(V&& val)
 					noexcept(noexcept(Utils::declval<T&> == Utils::declval<V>)) {
-						for (Utils::size i = 0; i < N; i++)
+						for (Utils::size_t i = 0; i < N; i++)
 							if (!(data[i] == Utils::forward<V>(val)))
 								return false;
 						return true;
@@ -55,7 +55,7 @@ namespace CPPExtensions {
 			template <class V>
 				constexpr bool operator !=(const Array<V, N>& val)
 					noexcept(noexcept(Utils::declval<T&> != Utils::declval<const V&>)) {
-						for (Utils::size i = 0; i < N; i++)
+						for (Utils::size_t i = 0; i < N; i++)
 							if (data[i] != val[i])
 								return true;
 						return false;
@@ -63,7 +63,7 @@ namespace CPPExtensions {
 			template <class V>
 				constexpr bool operator !=(V&& val)
 					noexcept(noexcept(Utils::declval<T&> == Utils::declval<V>)) {
-						for (Utils::size i = 0; i < N; i++)
+						for (Utils::size_t i = 0; i < N; i++)
 							if (data[i] != Utils::forward<V>(val))
 								return true;
 						return false;
@@ -75,8 +75,8 @@ namespace CPPExtensions {
 						return os;
 					}
 	};
-	template <class T, Utils::size N>
+	template <class T, Utils::size_t N>
 		Array(const Array<T, N>&) -> Array<T, N>;
-	template <class T, Utils::size N>
+	template <class T, Utils::size_t N>
 		Array(const T(&)[N]) -> Array<T, N>;
 }

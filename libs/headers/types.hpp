@@ -21,7 +21,7 @@ namespace CPPExtensions {
 			using add_rvalue_reference = decltype(_try_rvalue_reference<T>(0));
 		template <class T>
 			using add_lvalue_reference = decltype(_try_lvalue_reference<T>(0));
-		using size = decltype(sizeof(0));
+		using size_t = decltype(sizeof(0));
 		template <class...>
 			using none = void;
 		template <class T, class...>
@@ -36,7 +36,7 @@ namespace CPPExtensions {
 			add_rvalue_reference<T> declval() noexcept;
 		using nullpt = decltype(nullptr);
 		constexpr auto null = nullptr;
-		template <class T, size N>
+		template <class T, size_t N>
 			using array = T[N];
 		template <class T>
 			struct identity { using type = T; };
@@ -139,22 +139,22 @@ namespace CPPExtensions {
 			static constexpr bool value = false;
 			using type = T;
 		};
-		template <class T, size N>
+		template <class T, size_t N>
 		struct _array_p<T[N]> {
 			static constexpr bool value = true;
 			using type = T;
-			static constexpr size len = N;
+			static constexpr size_t len = N;
 		};
 		template <class>
 		struct _array_v {
 			static constexpr bool value = false;
 			using type = void;
 		};
-		template <class T, size N>
+		template <class T, size_t N>
 		struct _array_v<Array<T, N>> {
 			static constexpr bool value = true;
 			using type = T;
-			static constexpr size len = N;
+			static constexpr size_t len = N;
 		};
 		template <class, class, class...>
 			struct _test_same : lie {};
@@ -182,7 +182,7 @@ namespace CPPExtensions {
 			struct _disarray : identity<T> {};
 		template <class T>
 			struct _disarray<T[]> : identity<T*> {};
-		template <class T, size N>
+		template <class T, size_t N>
 			struct _disarray<T[N]> : identity<T*> {};
 		template <class T>
 			struct _unreference : identity<T> {};
@@ -210,25 +210,25 @@ namespace CPPExtensions {
 			struct _alt_v : literal_constant<F> {};
 		template <auto T, auto F>
 			struct _alt_v<true, T, F> : literal_constant<T> {};
-		template <auto base, size idx, auto... items>
+		template <auto base, size_t idx, auto... items>
 			struct _genfull : _genfull<base, idx-1, items..., base> {};
 		template <auto base, auto... items>
 			struct _genfull<base, 0, items...> : identity<list<items...>> {};
-		template <size idx, size... nums>
+		template <size_t idx, size_t... nums>
 			struct _genqueue : _genqueue<idx-1, idx-1, nums...> {};
-		template <size... nums>
+		template <size_t... nums>
 			struct _genqueue<0, nums...> : identity<list<nums...>> {};
-		template <size idx, size... nums>
+		template <size_t idx, size_t... nums>
 			struct _genstack : _genstack<idx-1, nums..., idx-1> {};
-		template <size... nums>
+		template <size_t... nums>
 			struct _genstack<0, nums...> : identity<list<nums...>> {};
-		template <size base, size idx, size cur, size... nums>
+		template <size_t base, size_t idx, size_t cur, size_t... nums>
 			struct _genexp : _genexp<base, idx-1, cur*10, nums..., cur> {};
-		template <size base, size cur, size... nums>
+		template <size_t base, size_t cur, size_t... nums>
 			struct _genexp<base, 0, cur, nums...> : identity<list<nums...>> {};
-		template <size base, size idx, size cur, size... nums>
+		template <size_t base, size_t idx, size_t cur, size_t... nums>
 			struct _gendec : _gendec<base, idx-1, cur*10, cur, nums...> {};
-		template <size base, size cur, size... nums>
+		template <size_t base, size_t cur, size_t... nums>
 			struct _gendec<base, 0, cur, nums...> : identity<list<nums...>> {};
 		template <class... list>
 		constexpr bool addtest() {
@@ -238,7 +238,7 @@ namespace CPPExtensions {
 				return true;
 		};
 		template <class... list>
-		constexpr size sum(list... val) noexcept(addtest<list...>()) {
+		constexpr size_t sum(list... val) noexcept(addtest<list...>()) {
 			if constexpr (sizeof...(list) > 0)
 				return (val + ...);
 			else
@@ -314,15 +314,15 @@ namespace CPPExtensions {
 		template <bool dir, auto T, auto F = nullptr>
 			constexpr typename 
 				_alt_v<dir, T, F>::type switch_v = _alt_v<dir, T, F>::value;
-		template <size num>
+		template <size_t num>
 			using queue = typename _genqueue<num>::type;
-		template <size num>
+		template <size_t num>
 			using stack = typename _genstack<num>::type;
-		template <size base, size num>
+		template <size_t base, size_t num>
 			using queue_exp = typename _genexp<base, num, 1>::type;
-		template <size base, size num>
+		template <size_t base, size_t num>
 			using stack_exp = typename _gendec<base, num, 1>::type;
-		template <auto base, size num>
+		template <auto base, size_t num>
 			using fill_set = typename _genfull<base, num>::type;
 		template <class T>
 			using add_reference = switch_it<is_reference<T>, T, const T&>;
