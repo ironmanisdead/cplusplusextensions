@@ -50,38 +50,49 @@ namespace CPPExtensions {
 #endif
 #include "headers/.part/GString.hpp"
 namespace CPPExtensions {
-	long Utils::print(desc fd, const char* str) noexcept {
-		auto numbytes = GString::_strlen(str);
+	namespace Utils {
 #ifdef _MSC_VER
-		int written = 0;
-		HANDLE file = RECAST(HANDLE, file);
-		::WriteFile(file, str, numbytes, &written, nullptr);
-		return written;
+		const desc instream = GetStdHandle(STD_INPUT_HANDLE);
+		const desc outstream = GetStdHandle(STD_OUTPUT_HANDLE);
+		const desc errstream = GetStdHandle(STD_ERROR_HANDLE);
 #else
-		return ::write(fd, str, numbytes);
+		const desc instream = 0;
+		const desc outstream = 1;
+		const desc errstream = 2;
 #endif
-	}
-	long Utils::write(desc fd, const char* str, size_t len) noexcept {
+		size_t print(desc fd, const char* str) noexcept {
+			auto numbytes = GString::_strlen(str);
 #ifdef _MSC_VER
-		int written = 0;
-		HANDLE file = RECAST(HANDLE, file);
-		::WriteFile(file, str, len, &written, nullptr);
-		return written;
+			int written = 0;
+			HANDLE file = RECAST(HANDLE, file);
+			::WriteFile(file, str, numbytes, &written, nullptr);
+			return written;
 #else
-		return ::write(fd, str, len);
+			return ::write(fd, str, numbytes);
 #endif
-	}
-	int Utils::uncaught() noexcept {
-		return std::uncaught_exceptions();
-	}
-	void* Utils::malloc(size_t size) noexcept {
-		return ::operator new(size, std::nothrow_t {});
-	}
-	void Utils::free(void* ptr) noexcept { ::operator delete(ptr); }
-	[[noreturn]] void Utils::RunError(const char* str) {
-		throw std::runtime_error(str);
-	}
-	[[noreturn]] void Utils::RangeError(const char* str) {
-		throw std::out_of_range(str);
+		}
+		size_t write(desc fd, const char* str, size_t len) noexcept {
+#ifdef _MSC_VER
+			int written = 0;
+			HANDLE file = RECAST(HANDLE, file);
+			::WriteFile(file, str, len, &written, nullptr);
+			return written;
+#else
+			return ::write(fd, str, len);
+#endif
+		}
+		int uncaught() noexcept {
+			return std::uncaught_exceptions();
+		}
+		void* malloc(size_t size) noexcept {
+			return ::operator new(size, std::nothrow_t {});
+		}
+		void free(void* ptr) noexcept { ::operator delete(ptr); }
+		[[noreturn]] void RunError(const char* str) {
+			throw std::runtime_error(str);
+		}
+		[[noreturn]] void RangeError(const char* str) {
+			throw std::out_of_range(str);
+		}
 	}
 }
