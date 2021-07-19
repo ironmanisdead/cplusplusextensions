@@ -32,9 +32,10 @@ namespace CPPExtensions {
 				_cd(gcd(n, d)), _num(n / _cd), _den(d / _cd) {}
 			constexpr Fraction(double d) noexcept : _cd(0), _num(0), _den(0) {
 				const long approx = round(frac(d) * precision);
+				const long total = round(d * precision);
 				_cd = gcd(approx, precision);
 				_den = precision / _cd;
-				_num = approx / _cd;
+				_num = total / _cd;
 			}
 			constexpr long num() noexcept {
 				return _num;
