@@ -3,5 +3,9 @@ using namespace CPPExtensions;
 
 int main() {
 	Utils::print(Utils::outstream, "hey there\n");
-	Utils::RunError("slash");
+	try {
+		Utils::RunError("slash");
+	} catch (...) {
+		Utils::print(Utils::outstream, "error caught\n");
+	}
 }
