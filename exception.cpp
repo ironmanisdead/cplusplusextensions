@@ -2,10 +2,10 @@
 using namespace CPPExtensions;
 
 int main() {
-	Utils::print(Utils::outstream, "hey there\n");
+	Utils::print(Utils::std_out, "hey there\n");
 	try {
 		Utils::RunError("test");
 	} catch (...) {
-		Utils::print(Utils::outstream, "error caught\n");
+		Utils::print(Utils::std_out, "error caught\n");
 	}
 }

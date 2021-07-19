@@ -15,18 +15,18 @@ int main() {
 	String linktext = { fg_blue, display, text_reset };
 	String link = String(GString::hyperlink(addr, linktext).data(), '\n');
 	String boldtext = { bold, "this is bold", text_reset, '\n' };
-	Utils::print(Utils::outstream, boldtext);
+	Utils::print(Utils::std_out, boldtext);
 	String italictext = { italics, "this is in italics", text_reset, '\n' };
-	Utils::print(Utils::outstream, italictext);
+	Utils::print(Utils::std_out, italictext);
 	String strikedtext = { strike, "this is striked through", text_reset, '\n' };
-	Utils::print(Utils::outstream, strikedtext);
+	Utils::print(Utils::std_out, strikedtext);
 	String redfgtext = { fg_red, "this has a red foreground", text_reset, '\n' };
-	Utils::print(Utils::outstream, redfgtext);
+	Utils::print(Utils::std_out, redfgtext);
 	String redbgtext = { bg_red, "this has a red background", text_reset, '\n' };
-	Utils::print(Utils::outstream, redbgtext);
+	Utils::print(Utils::std_out, redbgtext);
 	String cyantext = { gencyan.data, "gen_color test: cyan", text_reset, '\n' };
-	Utils::print(Utils::outstream, cyantext);
+	Utils::print(Utils::std_out, cyantext);
 	String bluetext = { trublue.data, "trucolor test: blue", text_reset, '\n' };
-	Utils::print(Utils::outstream, bluetext);
-	Utils::print(Utils::outstream, link);
+	Utils::print(Utils::std_out, bluetext);
+	Utils::print(Utils::std_out, link);
 }

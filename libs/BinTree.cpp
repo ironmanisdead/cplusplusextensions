@@ -243,29 +243,29 @@ namespace CPPExtensions {
 			return ins;
 		return _attach(ins);
 	}
-	bool BinTree::_add(BinEnt* ins, bool force) {
+	BinTree::BinStat BinTree::_add(BinEnt* ins, bool force) {
 		const void* key = ins->_key();
 		Utils::size_t siz = ins->data->total;
 		if (!root) {
 			root = Utils::downcast<BinEnt*>(::operator new(siz, std::nothrow_t {}));
 			if (!root)
-				return false;
+				return { false, nullptr };
 			ins->setParent(this);
 			Utils::memcpy(root, ins, siz);
-			return true;
+			return { true, root };
 		}
 		Find<BinEnt*> result = _find(key);
 		if (result.found == 0) {
 			if (force)
 				_place(result.value, ins, 0 <=> 0);
-			return false;
+			return { false, result.value };
 		}
 		BinEnt* store = Utils::downcast<BinEnt*>(::operator new(siz, std::nothrow_t {}));
 		if (!store)
-			return false;
+			return { false, nullptr };
 		Utils::memcpy(store, ins, siz);
 		_place(result.value, store, result.found);
-		return true;
+		return { true, store };
 	}
 	Find<BinEnt*> BinTree::_find(const void* key) {
 		if (!root)

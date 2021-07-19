@@ -8,60 +8,62 @@
 #include <cerrno>
 #include <cstring>
 namespace CPPExtensions {
-	int Utils::geterr() noexcept { return errno; }
-	const char* strerror(int err) noexcept {
-		return std::strerror(err);
-	}
-	volatile void* Utils::ignore(volatile void*) noexcept {
-		return nullptr;
-	}
-	unsigned Utils::epoch() noexcept {
-		using namespace std::chrono;
-		auto time = system_clock::now().time_since_epoch();
-		return duration_cast<milliseconds>(time).count();
-	}
-	int Utils::rand() noexcept {
-		static bool set = false;
-		if (!set) {
-			std::srand(Utils::epoch());
-			set = true;
+	namespace Utils {
+		int geterr() noexcept { return errno; }
+		const char* strerror(int err) noexcept {
+			return std::strerror(err);
 		}
-		return std::rand();
-	}
-	void Utils::memcpy(void* dest, const void* src, size_t len) noexcept {
-		char* cdest = downcast<char*>(dest);
-		const char* csrc = downcast<const char*>(src);
-		for (size_t i = 0; i < len; i++)
-			cdest[i] = csrc[i];
-	}
-	void Utils::memmove(void* dest, const void* src, size_t len) noexcept {
-		char* cdest = downcast<char*>(dest);
-		const char* csrc = downcast<const char*>(src);
-		if (cdest < csrc)
-			memcpy(dest, src, len);
-		else
-			for (size_t i = len; i > 0; i--)
-				cdest[i-1] = csrc[i-1];
+		volatile void* ignore(volatile void*) noexcept {
+			return nullptr;
+		}
+		unsigned epoch() noexcept {
+			using namespace std::chrono;
+			auto time = system_clock::now().time_since_epoch();
+			return duration_cast<milliseconds>(time).count();
+		}
+		int rand() noexcept {
+			static bool set = false;
+			if (!set) {
+				std::srand(Utils::epoch());
+				set = true;
+			}
+			return std::rand();
+		}
+		void memcpy(void* dest, const void* src, size_t len) noexcept {
+			char* cdest = downcast<char*>(dest);
+			const char* csrc = downcast<const char*>(src);
+			for (size_t i = 0; i < len; i++)
+				cdest[i] = csrc[i];
+		}
+		void memmove(void* dest, const void* src, size_t len) noexcept {
+			char* cdest = downcast<char*>(dest);
+			const char* csrc = downcast<const char*>(src);
+			if (cdest < csrc)
+				memcpy(dest, src, len);
+			else
+				for (size_t i = len; i > 0; i--)
+					cdest[i-1] = csrc[i-1];
+		}
 	}
 }
 #ifdef _MSC_VER
- #include <windows>
+ #include <windows.h>
  #include <fileapi.h>
+ #include <winbase.h>
+ #include <sysinfoapi.h>
 #else
  #include <fstream>
  #include <unistd.h>
+ #include <fcntl.h>
 #endif
 #include "headers/.part/GString.hpp"
 namespace CPPExtensions {
 	namespace Utils {
 #ifdef _MSC_VER
-		const desc instream = GetStdHandle(STD_INPUT_HANDLE);
-		const desc outstream = GetStdHandle(STD_OUTPUT_HANDLE);
-		const desc errstream = GetStdHandle(STD_ERROR_HANDLE);
-#else
-		const desc instream = 0;
-		const desc outstream = 1;
-		const desc errstream = 2;
+		const desc std_in = GetStdHandle(STD_INPUT_HANDLE);
+		const desc std_out = GetStdHandle(STD_OUTPUT_HANDLE);
+		const desc std_err = GetStdHandle(STD_ERROR_HANDLE);
+		const desc errdesc = HFILE_ERROR;
 #endif
 		ssize_t print(desc fd, const char* str) noexcept {
 			auto numbytes = GString::_strlen(str);
@@ -89,6 +91,54 @@ namespace CPPExtensions {
 				return -1;
 #else
 			return ::read(fd, str, len);
+#endif
+		}
+		desc open(const chtype* path, int flags) noexcept {
+#ifdef _MSC_VER
+			int sysflags = 0;
+			int creator = OPEN_EXISTING;
+			if (flags & F_CREATE)
+				creator = OPEN_ALWAYS;
+			if (flags & F_READ)
+				sysflags = GENERIC_READ;
+			if (flags & F_WRITE)
+				sysflags |= GENERIC_WRITE;
+			return ::CreateFileA(path, sysflags,
+					FILE_SHARE_READ, nullptr,
+					sysflags, FILE_ATTRIBUTE_NORMAL, nullptr);
+#else
+			int sysflags = 0;
+			if ((flags & F_READ) && (flags & F_WRITE)) {
+				sysflags = O_RDWR;
+			} else if (flags & F_READ) {
+				sysflags = O_RDONLY;
+			} else if (flags & F_WRITE) {
+				sysflags = O_WRONLY;
+			}
+			if (flags & F_CREATE)
+				sysflags |= O_CREAT;
+			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP;
+			return ::open(path, sysflags, mode);
+#endif
+		}
+		bool close(desc fd) noexcept {
+#ifdef _MSC_VER
+			return ::CloseHandle(RECAST(HANDLE, file));
+#else
+			if (::close(fd) == 0)
+				return true;
+			else
+				return false;
+#endif
+		}
+		bool unlink(const chtype* name) noexcept {
+#ifdef _MSC_VER
+			return ::DeleteFile(name);
+#else
+			if (::unlink(name) == 0)
+				return true;
+			else
+				return false;
 #endif
 		}
 		u64 uptime() noexcept {

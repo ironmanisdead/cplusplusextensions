@@ -13,6 +13,10 @@ namespace CPPExtensions {
 			using NodeC = BinNodeC<K, V>;
 			BinMap(BinEnt* val) noexcept : BinTree(val, &Node::info) {}
 		public:
+			struct MapStat {
+				bool status;
+				Node* value;
+			};
 			BinMap() noexcept : BinTree(nullptr, &Node::info) {}
 			BinMap(BinMap&& val) noexcept : BinTree(val.root, &Node::info) { val.root = nullptr; }
 			BinMap(BinMap& val) : BinTree(nullptr, &Node::info) {
@@ -42,17 +46,18 @@ namespace CPPExtensions {
 				return nullptr;
 			}
 			template <class... L>
-			Node* insert(const K& key, L&&... val) {
+			MapStat insert(const K& key, L&&... val) {
 				char temp[sizeof(Node)];
 				new (temp) Node(Node::cons, false, BinEnt::out { nullptr }, nullptr,
 						nullptr, key, Utils::forward<L>(val)...);
 				try {
-					if (!_add(RECAST(Node*, temp))) {
+					BinStat test = _add(RECAST(Node*, temp));
+					if (!test.value) {
 						Node* result = Utils::downcast<Node*>(::operator new(sizeof(Node)));
 						Utils::memcpy(result, temp, sizeof(Node));
-						return result;
+						return { true, result };
 					}
-					return nullptr;
+					return { false, Utils::downcast<Node*>(test.value) };
 				} catch (...) {
 					RECAST(Node*, temp)->~Node();
 					throw;

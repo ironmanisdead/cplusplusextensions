@@ -10,6 +10,8 @@ namespace CPPExtensions {
 	class BinTree;
 	class BinEnt {
 		public:
+			enum State { NO_ERROR, MEM_ERROR,
+				ALLOC_ERROR, MISSING_ERROR };
 			union out {
 				BinTree* tree;
 				BinEnt* parent;
@@ -23,6 +25,7 @@ namespace CPPExtensions {
 			BinEnt* left;
 			BinEnt* right;
 		protected:
+			mutable State _status;
 			struct Imply {};
 			static constexpr Imply cons = {};
 			virtual void _rebalance() noexcept;
@@ -58,8 +61,10 @@ namespace CPPExtensions {
 			BinEnt* clone(BinTree*) const;
 		public:
 			BinEnt(const BinInfo* info, bool cent, out up, BinEnt* lef, BinEnt* rig) noexcept :
-				data(info), root(cent), upwards(up), left(lef), right(rig) {}
+				data(info), root(cent), upwards(up), left(lef), 
+				right(rig), _status(NO_ERROR) {}
 			bool rotate(bool) noexcept;
+			inline State getStatus() noexcept { return _status; }
 			inline bool isroot() const noexcept { return root; }
 			inline bool isattach() const noexcept {
 				return root ? (bool)upwards.tree : (bool)upwards.parent;
@@ -114,31 +119,31 @@ namespace CPPExtensions {
 namespace CPPExtensions {
 	class BinTree {
 		public:
-			enum State { NO_ERROR, TYPE_ERROR, MEM_ERROR };
+			enum State { NO_ERROR, TYPE_ERROR,
+				MEM_ERROR, OVERRIDE_ERROR, SEARCH_ERROR };
 		private:
 			const BinInfo* const data;
 		protected:
-			State _status;
+			struct BinStat {
+				bool error;
+				BinEnt* value;
+			};
 			BinEnt* root;
+			mutable State _status;
 			using stronk = Utils::strongcmp_t;
 			BinEnt* _place(BinEnt*, BinEnt*, stronk, bool = false) noexcept;
 			BinEnt* _attach(BinEnt*);
-			bool _add(BinEnt*, bool = false);
+			BinStat _add(BinEnt*, bool = false);
 		public:
 			inline BinTree(BinEnt* val, const BinInfo* info) noexcept :
-				data(info), root(val) {}
+				data(info), root(val), _status(NO_ERROR) {}
 			virtual BinTree* clone() = 0;
 			virtual BinTree* clone() const = 0;
 			BinEnt* attach(BinEnt*);
-			inline BinEnt* attach(BinEntI& val) {
-				return attach(&*val);
-			}
-			inline BinEnt* getRoot() noexcept {
-				return root;
-			}
-			inline const BinEnt* getRoot() const noexcept {
-				return root;
-			}
+			inline BinEnt* attach(BinEntI& val) { return attach(&*val); }
+			inline BinEnt* getRoot() noexcept { return root; }
+			inline const BinEnt* getRoot() const noexcept { return root; }
+			inline State getStatus() noexcept { return _status; }
 			Find<BinEnt*> _find(const void*);
 			inline Find<const BinEnt*> _find(const void* key) const {
 				return const_cast<BinTree*>(this)->_find(key);
@@ -147,9 +152,7 @@ namespace CPPExtensions {
 			BinEntI max() noexcept;
 			BinEntC begin() const noexcept;
 			BinEntC max() const noexcept;
-			inline const BinEntC end() const noexcept {
-				return nullptr;
-			}
+			inline const BinEntC end() const noexcept { return nullptr; }
 			BinEnt* _search(const void*);
 			inline const BinEnt* _search(const void* key) const {
 				return const_cast<BinTree*>(this)->_search(key);

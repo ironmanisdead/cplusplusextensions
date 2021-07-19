@@ -15,14 +15,21 @@ namespace CPPExtensions {
 			throw std::overflow_error(msg);
 		}
 		static BinMap<StringView, String> nametype = {};
-		const String& demangle(const char* val) {
+		const String* demangle(const char* val) {
 			StringView view = val;
-			if (!nametype.find(view)) {
+			String* find = nametype.find(view);
+			if (find) {
+				return find;
+			} else {
 				int status;
 				Object<char*> obj = { [&obj] () { std::free(obj.value); }, abi::__cxa_demangle(val, 0, 0, &status) };
-				nametype.insert(view, obj.value);
+				auto ptr = nametype.insert(view, obj.value);
+				if (ptr.value) {
+					return &(ptr.value->getValue());
+				} else {
+					return nullptr;
+				}
 			}
-			return *nametype.find(view);
 		}
 		String hyperlink(const char* site, const char* display) noexcept {
 			return String("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");

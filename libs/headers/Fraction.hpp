@@ -28,6 +28,8 @@ namespace CPPExtensions {
 			long _den;
 		public:
 			constexpr Fraction(long n) noexcept : _cd(1), _num(n), _den(1) {}
+			constexpr Fraction(int n) noexcept : _cd(1), _num(n), _den(1) {}
+			constexpr Fraction(short n) noexcept : _cd(1), _num(n), _den(1) {}
 			constexpr Fraction(long n, long d) noexcept : 
 				_cd(gcd(n, d)), _num(n / _cd), _den(d / _cd) {}
 			constexpr Fraction(double d) noexcept : _cd(0), _num(0), _den(0) {

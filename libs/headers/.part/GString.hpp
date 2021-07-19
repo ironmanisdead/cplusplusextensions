@@ -55,9 +55,9 @@ namespace CPPExtensions {
 		}
 		size_t _strlen(const String&) noexcept;
 		size_t _strlen(const Vector<char>&) noexcept;
-		const String& demangle(const char*);
+		const String* demangle(const char*);
 		template <class T>
-		const String& runtype(const T&);
+		const String* runtype(const T&) noexcept;
 		template <class T>
 		constexpr size_t strlen(T&& str) noexcept {
 			using ray_t = Utils::array_prop<T>;
