@@ -182,23 +182,18 @@ namespace CPPExtensions {
 		view.edit()[view.len] = '0';
 		Utils::size_t siz = GString::strlen(str);
 		for (Utils::size_t i = 0; i < siz; i++) {
-			view.edit()[view.len + siz - i] = (str % 10) + '0';
+			view.edit()[view.len + siz - i - 1] = (str % 10) + '0';
 			str /= 10;
 		}
 		view.len += siz;
+		view.edit()[view.len] = '\0';
 	}
 	void String::addval(Utils::s64 str) noexcept {
 		if (str < 0) {
 			view.edit()[view.len++] = '-';
 			str = -str;
 		}
-		view.edit()[view.len] = '0';
-		Utils::size_t siz = GString::strlen(str);
-		for (Utils::size_t i = 1; i <= siz; i++) {
-			view.edit()[view.len + siz - i] = (str % 10) + '0';
-			str /= 10;
-		}
-		view.len += siz;
+		addval(Utils::u64(str));
 	}
 	void String::addval(char ch) noexcept { 
 		view.edit()[view.len++] = ch;
