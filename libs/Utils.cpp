@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <chrono>
+#include <thread>
 #include <cerrno>
 #include <cstring>
 namespace CPPExtensions {
@@ -44,8 +45,10 @@ namespace CPPExtensions {
 	}
 }
 #ifdef _MSC_VER
+ #include <windows>
  #include <fileapi.h>
 #else
+ #include <fstream>
  #include <unistd.h>
 #endif
 #include "headers/.part/GString.hpp"
@@ -87,6 +90,25 @@ namespace CPPExtensions {
 #else
 			return ::read(fd, str, len);
 #endif
+		}
+		u64 uptime() noexcept {
+#ifdef _MSC_VER
+			return GetTickCount64();
+#else
+			static auto file = std::ifstream("/proc/uptime", std::ios::in);
+			if (!file.is_open())
+				return 0;
+			file.clear();
+			file.seekg(0);
+			double seconds = 0.0;
+			file >> seconds;
+			return seconds * 1000;
+#endif
+		}
+		void usleep(ulong time) noexcept {
+			using namespace std::this_thread;
+			using namespace std::chrono;
+			sleep_for(milliseconds(time));
 		}
 		int uncaught() noexcept {
 			return std::uncaught_exceptions();

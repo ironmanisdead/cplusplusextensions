@@ -72,6 +72,7 @@ namespace CPPExtensions {
 	}
 	void String::byval(String&& val) noexcept {
 		finalize();
+		trulen = val.trulen;
 		view = val.view;
 		val.trulen = 0;
 	}
@@ -199,7 +200,10 @@ namespace CPPExtensions {
 		}
 		view.len += siz;
 	}
-	void String::addval(char ch) noexcept { view.edit()[view.len++] = ch; }
+	void String::addval(char ch) noexcept { 
+		view.edit()[view.len++] = ch;
+		view.edit()[view.len] = '\0';
+	}
 	bool String::allocate(Utils::size_t nsize) noexcept {
 		errbit = false;
 		if (trulen == 0)

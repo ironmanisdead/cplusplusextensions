@@ -3,6 +3,11 @@
 using namespace CPPExtensions;
 
 int main() {
-	String epoch = { Utils::epoch(), '\n' };
+	String epoch = { "epoch: ", Utils::epoch(), '\n' };
 	Utils::print(Utils::outstream, epoch);
+	String uptime = { "uptime: ", Utils::uptime(), '\n' };
+	Utils::print(Utils::outstream, uptime);
+	Utils::usleep(1000);
+	uptime = String { "uptime: ", Utils::uptime(), '\n' };
+	Utils::print(Utils::outstream, uptime);
 }

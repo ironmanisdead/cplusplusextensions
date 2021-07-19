@@ -15,11 +15,13 @@ namespace CPPExtensions {
 		const char* strerror(int) noexcept;
 		volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
 		unsigned epoch() noexcept; //high_resolution_clock since epoch
+		u64 uptime() noexcept; //gets the uptime of the system
 		int rand() noexcept; //random integer
 		void memcpy(void*, const void*, size_t) noexcept;
 		void memmove(void*, const void*, size_t) noexcept;
 		ssize_t print(desc, const char*) noexcept;
 		ssize_t write(desc, const char*, size_t) noexcept;
+		void usleep(ulong) noexcept;
 		int uncaught() noexcept; //number of uncaught exceptions
 		void* malloc(size_t) noexcept; //calls operator new with nothrow_t
 		void free(void*) noexcept; //calls operator delete
