@@ -25,6 +25,9 @@ namespace CPPExtensions {
 			F_WRITE = 4,
 			F_RDWR = 6
 		};
+		constexpr Flags operator |(Flags a, Flags b) noexcept {
+			return (Flags)((int)a | (int) b);
+		}
 		int geterr() noexcept;
 		const char* strerror(int) noexcept;
 		volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
@@ -35,7 +38,7 @@ namespace CPPExtensions {
 		void memmove(void*, const void*, size_t) noexcept; //safer way to copy memory, checks for overlap
 		ssize_t print(desc, const char*) noexcept; //prints out string to stream
 		ssize_t write(desc, const char*, size_t) noexcept; //prints out string of specific length to stream
-		desc open(const chtype*, int) noexcept; //opens file under descriptor with flags
+		desc open(const chtype*, Flags) noexcept; //opens file under descriptor with flags
 		bool close(desc) noexcept; //closes open file descriptor
 		bool unlink(const chtype*) noexcept; //deletes (unlinks) a file
 		void usleep(ulong) noexcept; //sleeps for a specific number of milliseconds

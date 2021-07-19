@@ -14,5 +14,8 @@ int main() {
 	std::cout << test << std::endl;
 	test = String { "Strings can also handle numbers directly. ", 14, ' ', 15 };
 	std::cout << test << std::endl;
+	test = "Strings can have substrings extracted";
+	std::cout << test << std::endl;
+	std::cout << test.substr(6, 8) << std::endl;
 	std::cout << cons << std::endl;
 }

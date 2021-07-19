@@ -50,6 +50,22 @@ namespace CPPExtensions {
 		view.edit()[view.len] = '\0';
 		return true;
 	}
+	StringView String::substr(Utils::size_t n1, Utils::size_t len) const noexcept {
+		if ((trulen > 0) && (n1 < view.len)) {
+			const Utils::size_t cap = view.len - n1;
+			const Utils::size_t zlen = (len > cap) ? cap : len;
+			return StringView(&view.read()[n1], zlen);
+		} else {
+			return StringView(nullptr);
+		}
+	}
+	StringView String::substr(Utils::size_t n1) const noexcept {
+		if ((trulen > 0) && (n1 < view.len)) {
+			return StringView(&view.read()[n1], view.len - n1);
+		} else {
+			return StringView(nullptr);
+		}
+	}
 	template <bool reset>
 	String::setby<reset> String::byray(const char* val, Utils::size_t siz) noexcept {
 		errbit = false;

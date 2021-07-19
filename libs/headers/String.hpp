@@ -97,7 +97,7 @@ namespace CPPExtensions {
 			}
 		public:
 			String() noexcept;
-			inline String(const String& val) : trulen(0), view(nullptr), errbit(false) {
+			inline String(const String& val) noexcept : trulen(0), view(nullptr), errbit(false) {
 				byval(val);
 			}
 			inline String(String&& val) noexcept : trulen(0), view(nullptr), errbit(false) {
@@ -111,6 +111,8 @@ namespace CPPExtensions {
 				else
 					return 0;
 			}
+			StringView substr(Utils::size_t, Utils::size_t) const noexcept;
+			StringView substr(Utils::size_t) const noexcept;
 			constexpr Utils::size_t gettlen() const noexcept { return trulen; }
 			constexpr bool hasErr() const noexcept { return errbit; }
 			constexpr const char* data() const noexcept {

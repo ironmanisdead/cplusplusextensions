@@ -93,7 +93,7 @@ namespace CPPExtensions {
 			return ::read(fd, str, len);
 #endif
 		}
-		desc open(const chtype* path, int flags) noexcept {
+		desc open(const chtype* path, Flags flags) noexcept {
 #ifdef _MSC_VER
 			int sysflags = 0;
 			int creator = OPEN_EXISTING;
