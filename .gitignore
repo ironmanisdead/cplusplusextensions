@@ -5,6 +5,7 @@
 /libs/headers/All.hpp
 /libs/headers/.dirhash
 /libs/include
+/massif.out.*
 #next line is discardable in your own forks
 /.gitcred
 /.links
