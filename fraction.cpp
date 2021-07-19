@@ -6,6 +6,6 @@ using namespace CPPExtensions;
 
 int main() {
 	Fraction ratio = 1.2;
-	String frac = String(ratio.num(), '/', ratio.den(), '\n');
+	String frac = { ratio.num(), '/', ratio.den(), '\n' };
 	Utils::print(Utils::outstream, frac);
 }
