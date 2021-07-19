@@ -8,4 +8,5 @@ int main() {
 	String text = { "fd: ", fd, '\n' };
 	Utils::print(Utils::std_out, text);
 	Utils::close(fd);
+	Utils::unlink("test.txt");
 }
