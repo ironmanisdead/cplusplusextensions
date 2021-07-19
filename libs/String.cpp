@@ -139,7 +139,7 @@ namespace CPPExtensions {
 			return true;
 	}
 	template <bool reset>
-	String::setby<reset> String::byval(unsigned long str) noexcept {
+	String::setby<reset> String::byval(Utils::u64 str) noexcept {
 		if constexpr (reset)
 			if (!resize(GString::strlen(str) + 1))
 				return false;
@@ -148,7 +148,7 @@ namespace CPPExtensions {
 			return true;
 	}
 	template <bool reset>
-	String::setby<reset> String::byval(signed long str) noexcept {
+	String::setby<reset> String::byval(Utils::s64 str) noexcept {
 		if constexpr (reset)
 			if (!resize(GString::strlen(str) + 1))
 				return false;
@@ -177,7 +177,7 @@ namespace CPPExtensions {
 			view.len += val.view.len;
 		}
 	}
-	void String::addval(unsigned long str) noexcept {
+	void String::addval(Utils::u64 str) noexcept {
 		view.edit()[view.len] = '0';
 		Utils::size_t siz = GString::strlen(str);
 		for (Utils::size_t i = 0; i < siz; i++) {
@@ -186,7 +186,7 @@ namespace CPPExtensions {
 		}
 		view.len += siz;
 	}
-	void String::addval(signed long str) noexcept {
+	void String::addval(Utils::s64 str) noexcept {
 		if (str < 0) {
 			view.edit()[view.len++] = '-';
 			str = -str;
@@ -234,8 +234,8 @@ namespace CPPExtensions {
 	BOOL_EXTERN(String::byval, const StringView&);
 	BOOL_EXTERN(String::byval, const String&);
 	BOOL_EXTERN(String::byval, const char*);
-	BOOL_EXTERN(String::byval, unsigned long);
-	BOOL_EXTERN(String::byval, signed long);
+	BOOL_EXTERN(String::byval, Utils::u64);
+	BOOL_EXTERN(String::byval, Utils::s64);
 	BOOL_EXTERN(String::byval, char);
 	BOOL_EXTERN(String::byray, const char*, Utils::size_t);
 }

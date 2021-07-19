@@ -1,7 +1,11 @@
 #include <CPPExtensions/Fraction.hpp>
+#include <CPPExtensions/String.hpp>
+#include <CPPExtensions/system.hpp>
 
 using namespace CPPExtensions;
 
 int main() {
-	Fraction(1.3);
+	Fraction ratio = 1.3;
+	String frac = String(ratio.num(), '/', ratio.den(), '\n');
+	Utils::print(Utils::outstream, frac);
 }

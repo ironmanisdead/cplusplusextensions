@@ -10,7 +10,9 @@
 namespace CPPExtensions {
 	namespace GString {
 		[[noreturn]] void overflow(size_t len, size_t idx) {
-			throw std::overflow_error(String("Array of size ", len, " cannot hold string of size ", idx));
+			using namespace Utils;
+			String msg = { "Array of size ", len, " cannot hold string of size ", idx };
+			throw std::overflow_error(msg);
 		}
 		static BinMap<StringView, String> nametype = {};
 		const String& demangle(const char* val) {

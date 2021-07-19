@@ -1,6 +1,6 @@
 #include <CPPExtensions/GString.hpp>
 #include <CPPExtensions/String.hpp>
-#include <iostream>
+#include <CPPExtensions/system.hpp>
 using namespace CPPExtensions;
 using namespace GString::codes;
 
@@ -12,13 +12,21 @@ constexpr const char addr[] = "https://github.com/ironmanisdead/cplusplusextensi
 constexpr const char display[] = "this is a link";
 
 int main() {
-	String link = GString::hyperlink(addr, String(fg_blue, display, text_reset));
-	std::cout << bold << "this is bold" << text_reset << std::endl;
-	std::cout << italics << "this is in italics" << text_reset << std::endl;
-	std::cout << strike << "this is striked through" << text_reset << std::endl;
-	std::cout << fg_red << "this has a red foreground" << text_reset << std::endl;
-	std::cout << bg_red << "this has a red background" << text_reset << std::endl;
-	std::cout << gencyan << "gen_color test: cyan" << text_reset << std::endl;
-	std::cout << trublue << "trucolor test: blue" << text_reset << std::endl;
-	std::cout << link << std::endl;
+	String linktext = { fg_blue, display, text_reset };
+	String link = String(GString::hyperlink(addr, linktext).data(), '\n');
+	String boldtext = { bold, "this is bold", text_reset, '\n' };
+	Utils::print(Utils::outstream, boldtext);
+	String italictext = { italics, "this is in italics", text_reset, '\n' };
+	Utils::print(Utils::outstream, italictext);
+	String strikedtext = { strike, "this is striked through", text_reset, '\n' };
+	Utils::print(Utils::outstream, strikedtext);
+	String redfgtext = { fg_red, "this has a red foreground", text_reset, '\n' };
+	Utils::print(Utils::outstream, redfgtext);
+	String redbgtext = { bg_red, "this has a red background", text_reset, '\n' };
+	Utils::print(Utils::outstream, redbgtext);
+	String cyantext = { gencyan.data, "gen_color test: cyan", text_reset, '\n' };
+	Utils::print(Utils::outstream, cyantext);
+	String bluetext = { trublue.data, "trucolor test: blue", text_reset, '\n' };
+	Utils::print(Utils::outstream, bluetext);
+	Utils::print(Utils::outstream, link);
 }

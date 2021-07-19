@@ -36,5 +36,11 @@ namespace CPPExtensions {
 				_den = precision / _cd;
 				_num = approx / _cd;
 			}
+			constexpr long num() noexcept {
+				return _num;
+			}
+			constexpr long den() noexcept {
+				return _den;
+			}
 	};
 }

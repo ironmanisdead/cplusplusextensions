@@ -25,9 +25,33 @@ namespace CPPExtensions {
 			template <bool reset = true>
 				setby<reset> byval(const char*) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(unsigned long) noexcept;
+				setby<reset> byval(Utils::u64) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(signed long) noexcept;
+				setby<reset> byval(Utils::ulong val) noexcept {
+					return byval<reset>(Utils::u64(val));
+				}
+			template <bool reset = true>
+				setby<reset> byval(Utils::uint val) noexcept {
+					return byval<reset>(Utils::u64(val));
+				}
+			template <bool reset = true>
+				setby<reset> byval(Utils::ushort val) noexcept {
+					return byval<reset>(Utils::u64(val));
+				}
+			template <bool reset = true>
+				setby<reset> byval(Utils::s64) noexcept;
+			template <bool reset = true>
+				setby<reset> byval(long val) noexcept {
+					return byval<reset>(Utils::s64(val));
+				}
+			template <bool reset = true>
+				setby<reset> byval(int val) noexcept {
+					return byval<reset>(Utils::s64(val));
+				}
+			template <bool reset = true>
+				setby<reset> byval(short val) noexcept {
+					return byval<reset>(Utils::s64(val));
+				}
 			template <bool reset = true>
 				setby<reset> byval(const StringView&) noexcept;
 			template <bool reset = true>
@@ -37,8 +61,26 @@ namespace CPPExtensions {
 			void addray(const char*, Utils::size_t) noexcept;
 			void addval(const String&) noexcept;
 			void addval(const char*) noexcept;
-			void addval(unsigned long) noexcept;
-			void addval(signed long) noexcept;
+			void addval(Utils::u64) noexcept;
+			inline void addval(Utils::ulong val) noexcept {
+				return addval(Utils::u64(val));
+			}
+			inline void addval(Utils::uint val) noexcept {
+				return addval(Utils::u64(val));
+			}
+			inline void addval(Utils::ushort val) noexcept {
+				return addval(Utils::u64(val));
+			}
+			void addval(Utils::s64) noexcept;
+			inline void addval(long val) noexcept {
+				return addval(Utils::s64(val));
+			}
+			inline void addval(int val) noexcept {
+				return addval(Utils::s64(val));
+			}
+			inline void addval(short val) noexcept {
+				return addval(Utils::s64(val));
+			}
 			void addval(char) noexcept;
 			template <bool reset = true, class T, class... Ts>
 				setby<reset> adder(const T&, const Ts&...) noexcept;
@@ -124,12 +166,13 @@ namespace CPPExtensions {
 				adder(val, rest...);
 				return *this;
 			}
-			constexpr operator const char*() const noexcept {
+			constexpr operator const char*() const& noexcept {
 				if (trulen > 0)
 					return view.read();
 				else
 					return nullptr;
 			}
+			operator const char*() && = delete;
 			bool allocate(Utils::size_t) noexcept;
 			~String();
 			template <class T>

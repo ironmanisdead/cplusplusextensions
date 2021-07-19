@@ -19,13 +19,22 @@ namespace CPPExtensions {
 				if (str[i] == '\0')
 					return i;
 		}
-		constexpr size_t _strlen(unsigned long str) noexcept {
+		constexpr size_t _strlen(Utils::u64 str) noexcept {
 			size_t len = 1;
 			while ((str /= 10) > 0)
 				len++;
 			return len;
 		}
-		constexpr size_t _strlen(signed long str) noexcept {
+		constexpr size_t _strlen(Utils::ulong str) noexcept {
+			return _strlen(Utils::u64(str));
+		}
+		constexpr size_t _strlen(Utils::uint str) noexcept {
+			return _strlen(Utils::u64(str));
+		}
+		constexpr size_t _strlen(Utils::ushort str) noexcept {
+			return _strlen(Utils::u64(str));
+		}
+		constexpr size_t _strlen(Utils::s64 str) noexcept {
 			size_t len = 1;
 			if (str < 0) {
 				str = -str;
@@ -34,6 +43,15 @@ namespace CPPExtensions {
 			while ((str /= 10) > 0)
 				len++;
 			return len;
+		}
+		constexpr size_t _strlen(long str) noexcept {
+			return _strlen(Utils::s64(str));
+		}
+		constexpr size_t _strlen(int str) noexcept {
+			return _strlen(Utils::s64(str));
+		}
+		constexpr size_t _strlen(short str) noexcept {
+			return _strlen(Utils::s64(str));
 		}
 		size_t _strlen(const String&) noexcept;
 		size_t _strlen(const Vector<char>&) noexcept;
@@ -256,7 +274,7 @@ namespace CPPExtensions {
 		constexpr auto gen_color(bool isfg, uchar col) noexcept {
 			Array<char, 5> code;
 			uchar colcop = col;
-			short len = _strlen(Utils::size_t(col));
+			short len = _strlen(Utils::u64(col));
 			for (short i = 1; i <= len; i++) {
 				code[len - i] = (colcop % 10) + '0';
 				colcop /= 10;
@@ -271,7 +289,7 @@ namespace CPPExtensions {
 			auto fillcode = 
 				[] (auto& ray, uchar col) {
 					uchar colcop = col;
-					short len = _strlen(Utils::size_t(col));
+					short len = _strlen(Utils::u64(col));
 					for (short i = 1; i <= len; i++) {
 						ray[len - i] = (colcop % 10) + '0';
 						colcop /= 10;
