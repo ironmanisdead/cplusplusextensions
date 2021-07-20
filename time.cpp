@@ -4,8 +4,13 @@
 using namespace CPPExtensions;
 
 int main() {
-	Utils::puts(Utils::std_out, GString::numstr(Utils::epoch()));
-	Utils::puts(Utils::std_out, GString::numstr(Utils::uptime()));
+	String prnt;
+	prnt.allocate(79);
+	prnt.set("epoch: ", Utils::epoch(), '\n');
+	Utils::print(Utils::std_out, prnt);
+	prnt.set("uptime: ", Utils::uptime(), '\n');
+	Utils::print(Utils::std_out, prnt);
 	Utils::usleep(1000);
-	Utils::puts(Utils::std_out, GString::numstr(Utils::uptime()));
+	prnt.set("uptime: ", Utils::uptime(), '\n');
+	Utils::print(Utils::std_out, prnt);
 }

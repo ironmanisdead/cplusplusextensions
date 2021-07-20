@@ -167,6 +167,12 @@ namespace CPPExtensions {
 				adder(val, rest...);
 				return *this;
 			}
+			template <class T, class U, class... V>
+			String& set(const T& val, const U& second, const V&... rest) noexcept {
+				*this = val;
+				append(second, rest...);
+				return *this;
+			}
 			constexpr operator const char*() const& noexcept {
 				if (trulen > 0)
 					return view.read();
