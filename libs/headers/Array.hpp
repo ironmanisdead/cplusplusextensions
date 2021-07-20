@@ -1,8 +1,9 @@
 #pragma once
 #include "types.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	template <class T>
-		void arrayput(T&, const char*, Utils::size_t); //internal function for printing array
+		DLL_PUBLIC void arrayput(T&, const char*, Utils::size_t); //internal function for printing array
 	template <class T, Utils::size_t N>
 	class Array {
 		public:
@@ -113,3 +114,4 @@ namespace CPPExtensions {
 	template <class T, Utils::size_t N>
 		Array(const T(&)[N]) -> Array<T, N>;
 }
+DLL_RESTORE

@@ -1,6 +1,7 @@
 #pragma once
 #include "Utils.hpp"
 #include "Find.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	struct BinInfo {
 		Utils::size_t keydist;
@@ -8,7 +9,7 @@ namespace CPPExtensions {
 		Utils::size_t total;
 	};
 	class BinTree;
-	class BinEnt {
+	class DLL_PUBLIC BinEnt {
 		public:
 			enum State { NO_ERROR, MEM_ERROR,
 				ALLOC_ERROR, MISSING_ERROR };
@@ -28,19 +29,19 @@ namespace CPPExtensions {
 			mutable State _status;
 			struct Imply {};
 			static constexpr Imply cons = {};
-			virtual void _rebalance() noexcept;
-			virtual bool less(const void*) const = 0;
-			virtual bool greater(const void*) const = 0;
-			virtual BinEnt* _copy() const = 0;
-			virtual BinEnt* _build() = 0;
+			DLL_PUBLIC virtual void _rebalance() noexcept;
+			DLL_LOCAL virtual bool less(const void*) const = 0;
+			DLL_LOCAL virtual bool greater(const void*) const = 0;
+			DLL_LOCAL virtual BinEnt* _copy() const = 0;
+			DLL_LOCAL virtual BinEnt* _build() = 0;
 			inline BinTree*& uTree() noexcept {
 				return upwards.tree;
 			}
 			inline BinEnt*& uParent() noexcept {
 				return upwards.parent;
 			}
-			bool unParent(BinEnt*) noexcept;
-			void disownSelf(BinEnt*) noexcept;
+			DLL_LOCAL bool unParent(BinEnt*) noexcept;
+			DLL_LOCAL void disownSelf(BinEnt*) noexcept;
 			inline void setParent(BinEnt* val) noexcept {
 				root = false;
 				uParent() = val;
@@ -53,23 +54,23 @@ namespace CPPExtensions {
 				root = true;
 				uTree() = nullptr;
 			}
-			void setParentFrom(BinEnt*) noexcept;
-			void reSelf(BinEnt*) noexcept;
-			BinEnt* clonemut(BinEnt*);
-			BinEnt* clone(BinEnt*) const;
-			BinEnt* clonemut(BinTree*);
-			BinEnt* clone(BinTree*) const;
+			DLL_LOCAL void setParentFrom(BinEnt*) noexcept;
+			DLL_LOCAL void reSelf(BinEnt*) noexcept;
+			DLL_PUBLIC BinEnt* clonemut(BinEnt*);
+			DLL_PUBLIC BinEnt* clone(BinEnt*) const;
+			DLL_PUBLIC BinEnt* clonemut(BinTree*);
+			DLL_PUBLIC BinEnt* clone(BinTree*) const;
 		public:
-			BinEnt(const BinInfo* info, bool cent, out up, BinEnt* lef, BinEnt* rig) noexcept :
+			DLL_PUBLIC BinEnt(const BinInfo* info, bool cent, out up, BinEnt* lef, BinEnt* rig) noexcept :
 				data(info), root(cent), upwards(up), left(lef), 
 				right(rig), _status(NO_ERROR) {}
-			bool rotate(bool) noexcept;
+			DLL_PUBLIC bool rotate(bool) noexcept;
 			inline State getStatus() noexcept { return _status; }
 			inline bool isroot() const noexcept { return root; }
 			inline bool isattach() const noexcept {
 				return root ? (bool)upwards.tree : (bool)upwards.parent;
 			}
-			bool detach() noexcept;
+			DLL_PUBLIC bool detach() noexcept;
 			inline const void* _key() const noexcept {
 				return RECAST(const char*, this) + data->keydist;
 			}
@@ -88,7 +89,7 @@ namespace CPPExtensions {
 			inline const BinEnt* _parent() const noexcept {
 				return const_cast<BinEnt*>(this)->_parent();
 			}
-			BinEnt* _root() noexcept;
+			DLL_PUBLIC BinEnt* _root() noexcept;
 			inline const BinEnt* _root() const noexcept {
 				return const_cast<BinEnt*>(this)->_root();
 			}
@@ -102,20 +103,22 @@ namespace CPPExtensions {
 			inline BinEnt*& _right() noexcept { return right; }
 			inline const BinEnt* _left() const noexcept { return left; }
 			inline const BinEnt* _right() const noexcept { return right; }
-			BinEnt* _min() noexcept;
-			BinEnt* _max() noexcept;
-			BinEnt* _prev() noexcept;
-			BinEnt* _next() noexcept;
+			DLL_PUBLIC BinEnt* _min() noexcept;
+			DLL_PUBLIC BinEnt* _max() noexcept;
+			DLL_PUBLIC BinEnt* _prev() noexcept;
+			DLL_PUBLIC BinEnt* _next() noexcept;
 			inline const BinEnt* _min() const noexcept { return const_cast<BinEnt*>(this)->_min(); }
 			inline const BinEnt* _max() const noexcept { return const_cast<BinEnt*>(this)->_max(); }
 			inline const BinEnt* _prev() const noexcept { return const_cast<BinEnt*>(this)->_prev(); }
 			inline const BinEnt* _next() const noexcept { return const_cast<BinEnt*>(this)->_next(); }
-			virtual ~BinEnt() = default;
-			void deleter() noexcept;
+			DLL_PUBLIC virtual ~BinEnt() = default;
+			DLL_PUBLIC void deleter() noexcept;
 			friend class BinTree;
 	};
 }
+DLL_RESTORE
 #include "BinEntI.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	class BinTree {
 		public:
@@ -131,34 +134,34 @@ namespace CPPExtensions {
 			BinEnt* root;
 			mutable State _status;
 			using stronk = Utils::strongcmp_t;
-			BinEnt* _place(BinEnt*, BinEnt*, stronk, bool = false) noexcept;
-			BinEnt* _attach(BinEnt*);
-			BinStat _add(BinEnt*, bool = false);
+			DLL_PUBLIC BinEnt* _place(BinEnt*, BinEnt*, stronk, bool = false) noexcept;
+			DLL_PUBLIC BinEnt* _attach(BinEnt*);
+			DLL_PUBLIC BinStat _add(BinEnt*, bool = false);
 		public:
 			inline BinTree(BinEnt* val, const BinInfo* info) noexcept :
 				data(info), root(val), _status(NO_ERROR) {}
-			virtual BinTree* clone() = 0;
-			virtual BinTree* clone() const = 0;
-			BinEnt* attach(BinEnt*);
+			DLL_PUBLIC virtual BinTree* clone() = 0;
+			DLL_PUBLIC virtual BinTree* clone() const = 0;
+			DLL_PUBLIC BinEnt* attach(BinEnt*);
 			inline BinEnt* attach(BinEntI& val) { return attach(&*val); }
 			inline BinEnt* getRoot() noexcept { return root; }
 			inline const BinEnt* getRoot() const noexcept { return root; }
 			inline State getStatus() noexcept { return _status; }
-			Find<BinEnt*> _find(const void*);
+			DLL_PUBLIC Find<BinEnt*> _find(const void*);
 			inline Find<const BinEnt*> _find(const void* key) const {
 				return const_cast<BinTree*>(this)->_find(key);
 			}
-			BinEntI begin() noexcept;
-			BinEntI max() noexcept;
-			BinEntC begin() const noexcept;
-			BinEntC max() const noexcept;
+			DLL_PUBLIC BinEntI begin() noexcept;
+			DLL_PUBLIC BinEntI max() noexcept;
+			DLL_PUBLIC BinEntC begin() const noexcept;
+			DLL_PUBLIC BinEntC max() const noexcept;
 			inline const BinEntC end() const noexcept { return nullptr; }
-			BinEnt* _search(const void*);
+			DLL_PUBLIC BinEnt* _search(const void*);
 			inline const BinEnt* _search(const void* key) const {
 				return const_cast<BinTree*>(this)->_search(key);
 			}
-			BinEnt* _detach(const void*) noexcept;
-			virtual ~BinTree() = default;
+			DLL_PUBLIC BinEnt* _detach(const void*) noexcept;
+			DLL_PUBLIC virtual ~BinTree() = default;
 			friend class BinEnt;
 	};
 	template <class T, class = T>
@@ -166,3 +169,4 @@ namespace CPPExtensions {
 	template <class T, class = T>
 		class BinMap;
 }
+DLL_RESTORE

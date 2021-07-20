@@ -1,6 +1,7 @@
 #pragma once
 #include "UVector.hpp"
 #include "String.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	class String;
 	template <class>
@@ -10,8 +11,8 @@ namespace CPPExtensions {
 		private:
 			#include ".part/Vector-info.hpp"
 			static constexpr bool self_char = Utils::is_same<T, char>;
-			void create(Utils::enable_it<self_char, String&&> val) noexcept;
-			[[nodiscard]] bool create(Utils::enable_it<self_char, const String&> val) noexcept;
+			DLL_PUBLIC void create(Utils::enable_it<self_char, String&&> val) noexcept;
+			DLL_PUBLIC [[nodiscard]] bool create(Utils::enable_it<self_char, const String&> val) noexcept;
 			template <class V>
 			[[nodiscard]] bool create(const Vector<V>& val) noexcept {
 				return UVector::copy(val, &Utils::wrap_construct<T, const V&>);
@@ -103,3 +104,4 @@ namespace CPPExtensions {
 		save(val);
 	}
 }
+DLL_RESTORE

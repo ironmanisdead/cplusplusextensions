@@ -2,6 +2,7 @@
 #include "types.hpp"
 #include "GString.hpp"
 //#include <typeinfo>
+DLL_HIDE
 namespace CPPExtensions {
 	template <class>
 		class Function;
@@ -24,7 +25,7 @@ namespace CPPExtensions {
 		private:
 			mutable State _status;
 			Utils::size_t size;
-			struct Proxy {
+			struct DLL_PUBLIC Proxy {
 				virtual Ret call(Utils::add_reference<Args>... args) = 0;
 				virtual void copy(void*) const = 0;
 				virtual void move(void*) = 0;
@@ -279,3 +280,4 @@ namespace CPPExtensions {
 			~Object() { destruct(); }
 	};
 }
+DLL_RESTORE

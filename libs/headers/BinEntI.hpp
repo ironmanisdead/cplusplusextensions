@@ -1,5 +1,6 @@
 #pragma once
 #include "Macros.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	class BinEnt;
 	class BinTree;
@@ -23,17 +24,17 @@ namespace CPPExtensions {
 			constexpr operator bool() const noexcept {
 				return current ? true : false;
 			}
-			BinEntI& operator ++() noexcept;
-			BinEntI& operator --() noexcept;
-			BinEntI operator ++(int) noexcept;
-			BinEntI operator --(int) noexcept;
-			BinEntI next() noexcept;
-			BinEntI prev() noexcept;
-			BinEntC next() const noexcept;
-			BinEntC prev() const noexcept;
-			bool operator ==(const BinEntI&) const noexcept;
-			bool operator ==(const BinEntC&) const noexcept;
-			void erase() noexcept;
+			DLL_PUBLIC BinEntI& operator ++() noexcept;
+			DLL_PUBLIC BinEntI& operator --() noexcept;
+			DLL_PUBLIC BinEntI operator ++(int) noexcept;
+			DLL_PUBLIC BinEntI operator --(int) noexcept;
+			DLL_PUBLIC BinEntI next() noexcept;
+			DLL_PUBLIC BinEntI prev() noexcept;
+			DLL_PUBLIC BinEntC next() const noexcept;
+			DLL_PUBLIC BinEntC prev() const noexcept;
+			DLL_PUBLIC bool operator ==(const BinEntI&) const noexcept;
+			DLL_PUBLIC bool operator ==(const BinEntC&) const noexcept;
+			DLL_PUBLIC void erase() noexcept;
 			constexpr BinEnt* operator ->() noexcept {
 				return current;
 			}
@@ -63,14 +64,14 @@ namespace CPPExtensions {
 			constexpr operator bool() const noexcept {
 				return current ? true : false;
 			}
-			BinEntC& operator ++() noexcept;
-			BinEntC& operator --() noexcept;
-			BinEntC operator ++(int) noexcept;
-			BinEntC operator --(int) noexcept;
-			BinEntC next() const noexcept;
-			BinEntC prev() const noexcept;
-			bool operator ==(const BinEntC&) const noexcept;
-			bool operator ==(const BinEntI&) const noexcept;
+			DLL_PUBLIC BinEntC& operator ++() noexcept;
+			DLL_PUBLIC BinEntC& operator --() noexcept;
+			DLL_PUBLIC BinEntC operator ++(int) noexcept;
+			DLL_PUBLIC BinEntC operator --(int) noexcept;
+			DLL_PUBLIC BinEntC next() const noexcept;
+			DLL_PUBLIC BinEntC prev() const noexcept;
+			DLL_PUBLIC bool operator ==(const BinEntC&) const noexcept;
+			DLL_PUBLIC bool operator ==(const BinEntI&) const noexcept;
 			constexpr const BinEnt* operator ->() const noexcept {
 				return current;
 			}
@@ -80,3 +81,4 @@ namespace CPPExtensions {
 			friend class BinEntI;
 	};
 }
+DLL_RESTORE

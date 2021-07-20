@@ -1,6 +1,7 @@
 #pragma once
 #include "../Utils.hpp"
 #include "../GString.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	class String;
 	template <class>
@@ -140,3 +141,4 @@ namespace CPPExtensions {
 			constexpr Utils::strongcmp_t operator <=>(const String& val) const noexcept;
 	};
 }
+DLL_RESTORE

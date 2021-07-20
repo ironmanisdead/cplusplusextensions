@@ -9,6 +9,7 @@ isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))
 ifneq ($(if $(MAKECMDGOALS),$(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),true),)
  include $(patsubst %.cpp,.%.mk,$(wildcard *.cpp))
 endif
+
 headers:
 	.extra/depcheck
 	$(if $(filter-out nodown,$(MAKECMDGOALS)),,cd headers && make)

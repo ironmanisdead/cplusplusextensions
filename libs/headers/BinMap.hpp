@@ -2,6 +2,7 @@
 #include "BinNode.hpp"
 #include "BinNodeI.hpp"
 #include "String.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	template <class K, class V>
 	class BinMap final : public BinTree {
@@ -157,3 +158,4 @@ namespace CPPExtensions {
 	template <class K, class V>
 		BinMap(const BinMap<K, V>&) -> BinMap<K, V>;
 }
+DLL_RESTORE

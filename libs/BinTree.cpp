@@ -2,9 +2,10 @@
 #include "headers/BinNode.hpp"
 #include "headers/Utils.hpp"
 #include <new>
+DLL_HIDE
 namespace CPPExtensions {
-	void BinEnt::_rebalance() noexcept {}
-	bool BinEnt::rotate(bool direction) noexcept {
+	DLL_PUBLIC void BinEnt::_rebalance() noexcept {}
+	DLL_PUBLIC bool BinEnt::rotate(bool direction) noexcept {
 		if (!isattach())
 			return false; //cannot rotate node that isn't on a tree
 		if (direction) { //right rotation
@@ -34,7 +35,7 @@ namespace CPPExtensions {
 		}
 		return true;
 	}
-	BinEnt* BinTree::_detach(const void* key) noexcept {
+	DLL_PUBLIC BinEnt* BinTree::_detach(const void* key) noexcept {
 		Find<BinEnt*> result = _find(key);
 		if (result.found == 0) {
 			result.value->detach();
@@ -42,7 +43,7 @@ namespace CPPExtensions {
 		}
 		return nullptr;
 	}
-	BinEnt* BinEnt::_root() noexcept {
+	DLL_PUBLIC BinEnt* BinEnt::_root() noexcept {
 		for (BinEnt* capture = this; capture; capture = capture->uParent()) {
 			if (capture->root) {
 				if (capture->uTree())
@@ -53,21 +54,21 @@ namespace CPPExtensions {
 		}
 		return nullptr;
 	}
-	BinEnt* BinTree::_search(const void* key) {
+	DLL_PUBLIC BinEnt* BinTree::_search(const void* key) {
 		Find<BinEnt*> result = _find(key);
 		if (result.found == 0)
 			return result.value;
 		else
 			return nullptr;
 	}
-	void BinEnt::setParentFrom(BinEnt* val) noexcept {
+	DLL_LOCAL void BinEnt::setParentFrom(BinEnt* val) noexcept {
 		root = val->root;
 		if (root)
 			uTree() = val->uTree();
 		else
 			uParent() = val->uParent();
 	}
-	bool BinEnt::unParent(BinEnt* val) noexcept {
+	DLL_LOCAL bool BinEnt::unParent(BinEnt* val) noexcept {
 		if (root) {
 			if (uTree())
 				uTree()->root = val;
@@ -82,13 +83,13 @@ namespace CPPExtensions {
 		}
 		return false;
 	}
-	void BinEnt::disownSelf(BinEnt* val) noexcept {
+	DLL_LOCAL void BinEnt::disownSelf(BinEnt* val) noexcept {
 		if (unParent(val))
 			uTree() = nullptr;
 		else
 			uParent() = nullptr;
 	}
-	bool BinEnt::detach() noexcept {
+	DLL_PUBLIC bool BinEnt::detach() noexcept {
 		if (!isattach())
 			return false;
 		if (left && right) { //node has both children
@@ -123,19 +124,19 @@ namespace CPPExtensions {
 		}
 		return true;
 	}
-	BinEnt* BinEnt::_min() noexcept {
+	DLL_PUBLIC BinEnt* BinEnt::_min() noexcept {
 		BinEnt* current = this;
 		while (current->left)
 			current = current->left;
 		return current;
 	}
-	BinEnt* BinEnt::_max() noexcept {
+	DLL_PUBLIC BinEnt* BinEnt::_max() noexcept {
 		BinEnt* current = this;
 		while (current->right)
 			current = current->right;
 		return current;
 	}
-	BinEnt* BinEnt::_next() noexcept {
+	DLL_PUBLIC BinEnt* BinEnt::_next() noexcept {
 		if (right)
 			return right->_min();
 		BinEnt* current = this;
@@ -148,7 +149,7 @@ namespace CPPExtensions {
 			current = parent;
 		}
 	}
-	BinEnt* BinEnt::_prev() noexcept {
+	DLL_PUBLIC BinEnt* BinEnt::_prev() noexcept {
 		if (left)
 			return left->_max();
 		BinEnt* current = this;
@@ -161,7 +162,7 @@ namespace CPPExtensions {
 			current = parent;
 		}
 	}
-	void BinEnt::deleter() noexcept {
+	DLL_PUBLIC void BinEnt::deleter() noexcept {
 		if (left) {
 			left->deleter();
 			delete left;
@@ -171,31 +172,31 @@ namespace CPPExtensions {
 			delete right;
 		}
 	}
-	BinEntI BinTree::begin() noexcept {
+	DLL_PUBLIC BinEntI BinTree::begin() noexcept {
 		if (root)
 			return root->_min();
 		else
 			return nullptr;
 	}
-	BinEntI BinTree::max() noexcept {
+	DLL_PUBLIC BinEntI BinTree::max() noexcept {
 		if (root)
 			return root->_max();
 		else
 			return nullptr;
 	}
-	BinEntC BinTree::begin() const noexcept {
+	DLL_PUBLIC BinEntC BinTree::begin() const noexcept {
 		if (root)
 			return root->_min();
 		else
 			return nullptr;
 	}
-	BinEntC BinTree::max() const noexcept {
+	DLL_PUBLIC BinEntC BinTree::max() const noexcept {
 		if (root)
 			return root->_max();
 		else
 			return nullptr;
 	}
-	void BinEnt::reSelf(BinEnt* val) noexcept {
+	DLL_LOCAL void BinEnt::reSelf(BinEnt* val) noexcept {
 		if ((root = val->root))
 			uTree() = val->uTree();
 		else
@@ -203,7 +204,7 @@ namespace CPPExtensions {
 		left = val->left;
 		right = val->right;
 	}
-	BinEnt* BinTree::_place(BinEnt* dest, BinEnt* src, stronk dir, bool pop) noexcept {
+	DLL_PUBLIC BinEnt* BinTree::_place(BinEnt* dest, BinEnt* src, stronk dir, bool pop) noexcept {
 		if (dir < 0) {
 			src->setParent(dest);
 			dest->_left() = src;
@@ -226,7 +227,7 @@ namespace CPPExtensions {
 		dest->_rebalance();
 		return nullptr;
 	}
-	BinEnt* BinTree::_attach(BinEnt* ins) {
+	DLL_PUBLIC BinEnt* BinTree::_attach(BinEnt* ins) {
 		if (ins->isattach())
 			return ins;
 		const void* key = ins->_key();
@@ -238,12 +239,12 @@ namespace CPPExtensions {
 		Find<BinEnt*> result = _find(key);
 		return _place(result.value, ins, result.found, true);
 	}
-	BinEnt* BinTree::attach(BinEnt* ins) {
+	DLL_PUBLIC BinEnt* BinTree::attach(BinEnt* ins) {
 		if (ins->data != data)
 			return ins;
 		return _attach(ins);
 	}
-	BinTree::BinStat BinTree::_add(BinEnt* ins, bool force) {
+	DLL_PUBLIC BinTree::BinStat BinTree::_add(BinEnt* ins, bool force) {
 		const void* key = ins->_key();
 		Utils::size_t siz = ins->data->total;
 		if (!root) {
@@ -267,7 +268,7 @@ namespace CPPExtensions {
 		_place(result.value, store, result.found);
 		return { true, store };
 	}
-	Find<BinEnt*> BinTree::_find(const void* key) {
+	DLL_PUBLIC Find<BinEnt*> BinTree::_find(const void* key) {
 		if (!root)
 			return { 0 <=> 1, nullptr };
 		BinEnt* current = root;
@@ -288,7 +289,7 @@ namespace CPPExtensions {
 				return { 0 <=> 0, current };
 		}
 	}
-	BinEnt* BinEnt::clone(BinEnt* up) const {
+	DLL_PUBLIC BinEnt* BinEnt::clone(BinEnt* up) const {
 		BinEnt* copy = _copy();
 		if (copy) {
 			copy->uParent() = up;
@@ -299,7 +300,7 @@ namespace CPPExtensions {
 		}
 		return copy;
 	}
-	BinEnt* BinEnt::clone(BinTree* top) const {
+	DLL_PUBLIC BinEnt* BinEnt::clone(BinTree* top) const {
 		BinEnt* copy = _copy();
 		if (copy) {
 			try {
@@ -316,7 +317,7 @@ namespace CPPExtensions {
 		}
 		return copy;
 	}
-	BinEnt* BinEnt::clonemut(BinEnt* up) {
+	DLL_PUBLIC BinEnt* BinEnt::clonemut(BinEnt* up) {
 		BinEnt* copy = _build();
 		if (copy) {
 			copy->uParent() = up;
@@ -327,7 +328,7 @@ namespace CPPExtensions {
 		}
 		return copy;
 	}
-	BinEnt* BinEnt::clonemut(BinTree* top) {
+	DLL_PUBLIC BinEnt* BinEnt::clonemut(BinTree* top) {
 		BinEnt* copy = _build();
 		if (copy) {
 			copy->setParent(top);
@@ -345,3 +346,4 @@ namespace CPPExtensions {
 		return copy;
 	}
 }
+DLL_RESTORE

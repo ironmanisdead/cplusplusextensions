@@ -1,6 +1,7 @@
 #pragma once
 #include ".part/StringView.hpp"
 #include "String.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	constexpr StringView::StringView(const String& val) noexcept : len(0),
 	 buffer(false, {nullptr}) {
@@ -19,3 +20,4 @@ namespace CPPExtensions {
 		return (*this <=> StringView(val.data(), val.getlen()));
 	}
 }
+DLL_RESTORE

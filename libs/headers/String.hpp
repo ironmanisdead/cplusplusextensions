@@ -1,6 +1,7 @@
 #pragma once
 #include "types.hpp"
 #include ".part/StringView.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	class String;
 	template <class>
@@ -12,19 +13,19 @@ namespace CPPExtensions {
 			Utils::size_t trulen;
 			StringView view;
 			bool errbit;
-			bool _allocate(Utils::size_t) noexcept;
-			bool resize(Utils::size_t) noexcept;
-			void finalize() noexcept;
+			DLL_PUBLIC bool _allocate(Utils::size_t) noexcept;
+			DLL_PUBLIC bool resize(Utils::size_t) noexcept;
+			DLL_LOCAL void finalize() noexcept;
 			template <bool reset>
 				using setby = Utils::switch_it<reset, bool, void>;
 			template <bool reset = true>
-				setby<reset> byray(const char*, Utils::size_t) noexcept;
+				DLL_PUBLIC setby<reset> byray(const char*, Utils::size_t) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(const String&) noexcept;
+				DLL_PUBLIC setby<reset> byval(const String&) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(const char*) noexcept;
+				DLL_PUBLIC setby<reset> byval(const char*) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(Utils::u64) noexcept;
+				DLL_PUBLIC setby<reset> byval(Utils::u64) noexcept;
 			template <bool reset = true>
 				setby<reset> byval(Utils::ulong val) noexcept {
 					return byval<reset>(Utils::u64(val));
@@ -38,7 +39,7 @@ namespace CPPExtensions {
 					return byval<reset>(Utils::u64(val));
 				}
 			template <bool reset = true>
-				setby<reset> byval(Utils::s64) noexcept;
+				DLL_PUBLIC setby<reset> byval(Utils::s64) noexcept;
 			template <bool reset = true>
 				setby<reset> byval(long val) noexcept {
 					return byval<reset>(Utils::s64(val));
@@ -52,15 +53,15 @@ namespace CPPExtensions {
 					return byval<reset>(Utils::s64(val));
 				}
 			template <bool reset = true>
-				setby<reset> byval(const StringView&) noexcept;
+				DLL_PUBLIC setby<reset> byval(const StringView&) noexcept;
 			template <bool reset = true>
-				setby<reset> byval(char) noexcept;
-			Utils::strongcmp_t valcmp(const StringView&) const noexcept;
-			void byval(String&&) noexcept;
-			void addray(const char*, Utils::size_t) noexcept;
-			void addval(const String&) noexcept;
-			void addval(const char*) noexcept;
-			void addval(Utils::u64) noexcept;
+				DLL_PUBLIC setby<reset> byval(char) noexcept;
+			DLL_PUBLIC Utils::strongcmp_t valcmp(const StringView&) const noexcept;
+			DLL_PUBLIC void byval(String&&) noexcept;
+			DLL_PUBLIC void addray(const char*, Utils::size_t) noexcept;
+			DLL_PUBLIC void addval(const String&) noexcept;
+			DLL_PUBLIC void addval(const char*) noexcept;
+			DLL_PUBLIC void addval(Utils::u64) noexcept;
 			inline void addval(Utils::ulong val) noexcept {
 				return addval(Utils::u64(val));
 			}
@@ -70,7 +71,7 @@ namespace CPPExtensions {
 			inline void addval(Utils::ushort val) noexcept {
 				return addval(Utils::u64(val));
 			}
-			void addval(Utils::s64) noexcept;
+			DLL_PUBLIC void addval(Utils::s64) noexcept;
 			inline void addval(long val) noexcept {
 				return addval(Utils::s64(val));
 			}
@@ -80,7 +81,7 @@ namespace CPPExtensions {
 			inline void addval(short val) noexcept {
 				return addval(Utils::s64(val));
 			}
-			void addval(char) noexcept;
+			DLL_PUBLIC void addval(char) noexcept;
 			template <bool reset = true, class T, class... Ts>
 				setby<reset> adder(const T&, const Ts&...) noexcept;
 			template <class T>
@@ -95,7 +96,7 @@ namespace CPPExtensions {
 					byval(Utils::forward<T>(val));
 			}
 		public:
-			String() noexcept;
+			DLL_PUBLIC String() noexcept;
 			inline String(const String& val) noexcept : trulen(0), view(nullptr), errbit(false) {
 				byval(val);
 			}
@@ -110,8 +111,8 @@ namespace CPPExtensions {
 				else
 					return 0;
 			}
-			StringView substr(Utils::size_t, Utils::size_t) const noexcept;
-			StringView substr(Utils::size_t) const noexcept;
+			DLL_PUBLIC StringView substr(Utils::size_t, Utils::size_t) const noexcept;
+			DLL_PUBLIC StringView substr(Utils::size_t) const noexcept;
 			constexpr Utils::size_t gettlen() const noexcept { return trulen; }
 			constexpr bool hasErr() const noexcept { return errbit; }
 			constexpr const char* data() const noexcept {
@@ -149,7 +150,7 @@ namespace CPPExtensions {
 				byval(Utils::forward<String>(val));
 				return *this;
 			}
-			Utils::strongcmp_t operator <=>(const String&) const noexcept;
+			DLL_PUBLIC Utils::strongcmp_t operator <=>(const String&) const noexcept;
 			template <class T>
 			Utils::strongcmp_t operator <=>(const T& val) const noexcept {
 				using ray_m = Utils::array_prop<T>;
@@ -180,8 +181,8 @@ namespace CPPExtensions {
 					return nullptr;
 			}
 			operator const char*() && = delete;
-			bool allocate(Utils::size_t) noexcept;
-			~String();
+			DLL_PUBLIC bool allocate(Utils::size_t) noexcept;
+			DLL_PUBLIC ~String();
 			template <class T>
 			friend T& operator <<(T& os, const String& val);
 			template <class T>
@@ -244,3 +245,4 @@ namespace CPPExtensions {
 		return os;
 	}
 }
+DLL_RESTORE

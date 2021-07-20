@@ -2,6 +2,7 @@
 #include "../types.hpp"
 #include "../Array.hpp"
 #include "../Tuple.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	class String;
 	template <class>
@@ -60,9 +61,9 @@ namespace CPPExtensions {
 		constexpr size_t _strlen(short str) noexcept {
 			return _strlen(s64(str));
 		}
-		size_t _strlen(const String&) noexcept;
-		size_t _strlen(const Vector<char>&) noexcept;
-		const String* demangle(const char*);
+		DLL_PUBLIC size_t _strlen(const String&) noexcept;
+		DLL_PUBLIC size_t _strlen(const Vector<char>&) noexcept;
+		DLL_PUBLIC const String* demangle(const char*);
 		template <class T>
 		const String* runtype(const T&) noexcept;
 		template <class T>
@@ -126,7 +127,7 @@ namespace CPPExtensions {
 			}
 			return Tuple { idx, len2, found };
 		}
-		[[noreturn]] void _overflow(size_t, size_t);
+		DLL_LOCAL [[noreturn]] void _overflow(size_t, size_t);
 		template <size_t n, char... str>
 			struct _numberify : _numberify<n / 10, (n % 10) + '0', str...> {};
 		template <char... str>
@@ -276,7 +277,7 @@ namespace CPPExtensions {
 			ESCAPE(bg_reset, 49);
 		};
 #pragma pop_macro("ESCAPE")
-		String hyperlink(const char* site, const char* display) noexcept;
+		DLL_PUBLIC String hyperlink(const char* site, const char* display) noexcept;
 		using uchar = unsigned char;
 		constexpr auto gen_color(bool isfg, uchar col) noexcept {
 			Array<char, 5> code;
@@ -329,3 +330,4 @@ namespace CPPExtensions {
 				truecolor_temp = truecolor(isfg, r, g, b);
 	};
 }
+DLL_RESTORE

@@ -1,6 +1,7 @@
 #pragma once
 #include "BinTree.hpp"
 #include "Function.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	template <class K, class V>
 	class BinNode final : public BinEnt {
@@ -68,3 +69,4 @@ namespace CPPExtensions {
 			friend class BinMap<K, V>;
 	};
 }
+DLL_RESTORE

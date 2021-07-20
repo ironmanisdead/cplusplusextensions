@@ -1,5 +1,6 @@
 #pragma once
 #include "BinEntI.hpp"
+DLL_HIDE
 namespace CPPExtensions {
 	template <class K, class V>
 		class BinNodeI;
@@ -134,3 +135,4 @@ namespace CPPExtensions {
 	template <class K, class V>
 		BinNodeI(BinNode<K, V>*) -> BinNodeI<K, V>;
 }
+DLL_RESTORE
