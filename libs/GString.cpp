@@ -6,13 +6,25 @@
 #include "headers/BinMap.hpp"
 #include <stdexcept>
 #include <cstdlib>
+#ifndef _MSC_VER
 #include <cxxabi.h>
+#endif
 namespace CPPExtensions {
 	namespace GString {
 		[[noreturn]] void overflow(size_t len, size_t idx) {
 			using namespace Utils;
 			String msg = { "Array of size ", len, " cannot hold string of size ", idx };
 			throw std::overflow_error(msg);
+		}
+		static String _demangle(const char* src) noexcept {
+#ifdef _MSC_VER
+			return String(src);
+#else
+			int status;
+			Object<char*> obj = { [&obj] () { std::free(obj.value); },
+				abi::__cxa_demangle(src, 0, 0, &status) };
+			return String(obj.value);
+#endif
 		}
 		const String* demangle(const char* val) {
 			static BinMap<StringView, String> nametype = {};
@@ -21,9 +33,8 @@ namespace CPPExtensions {
 			if (find) {
 				return find;
 			} else {
-				int status;
-				Object<char*> obj = { [&obj] () { std::free(obj.value); }, abi::__cxa_demangle(val, 0, 0, &status) };
-				auto ptr = nametype.insert(view, obj.value);
+				String str = _demangle(val);
+				auto ptr = nametype.insert(view, str);
 				if (ptr.value) {
 					return &(ptr.value->getValue());
 				} else {
