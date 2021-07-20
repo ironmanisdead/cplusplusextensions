@@ -127,13 +127,13 @@ namespace CPPExtensions {
 				if (n != '.')
 					return result;
 				i++;
-				double precision = 0.1;
+				double base = 0.1;
 				for (i = i; i < len; i++) {
 					n = str[i];
 					if ((n < '0') || (n > '9'))
 						break;
-					result += (n - '0') * precision;
-					precision /= 10;
+					result += (n - '0') * base;
+					base /= 10;
 				}
 				return result;
 			}
