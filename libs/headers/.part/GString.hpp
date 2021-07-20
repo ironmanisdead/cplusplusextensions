@@ -127,7 +127,7 @@ namespace CPPExtensions {
 			}
 			return Tuple { idx, len2, found };
 		}
-		DLL_LOCAL [[noreturn]] void _overflow(size_t, size_t);
+		[[noreturn]] DLL_LOCAL void _overflow(size_t, size_t);
 		template <size_t n, char... str>
 			struct _numberify : _numberify<n / 10, (n % 10) + '0', str...> {};
 		template <char... str>
@@ -261,7 +261,7 @@ namespace CPPExtensions {
 			ESCAPE(fg_green, 32);
 			ESCAPE(fg_yellow, 33);
 			ESCAPE(fg_blue, 34);
-			ESCAPE(fd_magenta, 35);
+			ESCAPE(fg_magenta, 35);
 			ESCAPE(fg_cyan, 36);
 			ESCAPE(fg_white, 37);
 			ESCAPE(fg_reset, 39);
@@ -278,6 +278,7 @@ namespace CPPExtensions {
 		};
 #pragma pop_macro("ESCAPE")
 		DLL_PUBLIC String hyperlink(const char* site, const char* display) noexcept;
+		DLL_PUBLIC bool hyperlink(const char* site, const char* display, String& output) noexcept;
 		using uchar = unsigned char;
 		constexpr auto gen_color(bool isfg, uchar col) noexcept {
 			Array<char, 5> code;

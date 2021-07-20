@@ -80,6 +80,16 @@ namespace CPPExtensions {
 			return ::write(fd, str, len);
 #endif
 		}
+		DLL_PUBLIC ssize_t writestr(desc fd, const String& val) noexcept {
+			if (val.gettlen() == 0)
+				return -1;
+			else
+				return write(fd, val.data(), val.getlen());
+		}
+		DLL_PUBLIC ssize_t print(desc fd, const char* str) noexcept {
+			auto numbytes = GString::_strlen(str);
+			return write(fd, str, numbytes);
+		}
 		DLL_PUBLIC bool putchar(desc fd, char ch) noexcept {
 			static char ray[1];
 			ray[0] = ch;
@@ -88,10 +98,6 @@ namespace CPPExtensions {
 			} else {
 				return false;
 			}
-		}
-		DLL_PUBLIC ssize_t print(desc fd, const char* str) noexcept {
-			auto numbytes = GString::_strlen(str);
-			return write(fd, str, numbytes);
 		}
 		DLL_PUBLIC ssize_t puts(desc fd, const char* str) noexcept {
 			auto numbytes = GString::_strlen(str);
@@ -210,10 +216,10 @@ namespace CPPExtensions {
 			return ::operator new(size, std::nothrow_t {});
 		}
 		DLL_PUBLIC void free(void* ptr) noexcept { ::operator delete(ptr); }
-		DLL_PUBLIC [[noreturn]] void RunError(const char* str) {
+		[[noreturn]] DLL_PUBLIC void RunError(const char* str) {
 			throw std::runtime_error(str);
 		}
-		DLL_PUBLIC [[noreturn]] void RangeError(const char* str) {
+		[[noreturn]] DLL_PUBLIC void RangeError(const char* str) {
 			throw std::out_of_range(str);
 		}
 	}

@@ -12,7 +12,7 @@ namespace CPPExtensions {
 			#include ".part/Vector-info.hpp"
 			static constexpr bool self_char = Utils::is_same<T, char>;
 			DLL_PUBLIC void create(Utils::enable_it<self_char, String&&> val) noexcept;
-			DLL_PUBLIC [[nodiscard]] bool create(Utils::enable_it<self_char, const String&> val) noexcept;
+			[[nodiscard]] DLL_PUBLIC bool create(Utils::enable_it<self_char, const String&> val) noexcept;
 			template <class V>
 			[[nodiscard]] bool create(const Vector<V>& val) noexcept {
 				return UVector::copy(val, &Utils::wrap_construct<T, const V&>);

@@ -4,7 +4,7 @@
 DLL_HIDE
 namespace CPPExtensions {
 	constexpr StringView::StringView(const String& val) noexcept : len(0),
-	 buffer(false, {nullptr}) {
+	 buffer{ false, {nullptr} } {
 		if (val.getlen() > 0) {
 			len = val.getlen();
 			buffer.view = val.data();

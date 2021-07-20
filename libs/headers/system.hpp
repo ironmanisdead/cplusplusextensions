@@ -3,6 +3,7 @@
 #include ".part/internals.hpp"
 DLL_HIDE
 namespace CPPExtensions {
+	class String;
 	namespace Utils {
 		//chtype is the type of character that the OS supports in filenames
 		//desc is the OS-defined file descriptor or handle
@@ -46,6 +47,7 @@ namespace CPPExtensions {
 		DLL_PUBLIC int rand() noexcept; //random integer
 		DLL_PUBLIC void memcpy(void*, const void*, size_t) noexcept; //copies memory from one location to another
 		DLL_PUBLIC void memmove(void*, const void*, size_t) noexcept; //safer way to copy memory, checks for overlap
+		DLL_PUBLIC ssize_t writestr(desc, const String&) noexcept;
 		DLL_PUBLIC ssize_t write(desc, const char*, size_t) noexcept; //prints out string of specific length to stream
 		DLL_PUBLIC bool putchar(desc, char) noexcept; //prints character to stream
 		DLL_PUBLIC ssize_t print(desc, const char*) noexcept; //prints out string to stream

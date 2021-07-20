@@ -12,7 +12,7 @@
 DLL_HIDE
 namespace CPPExtensions {
 	namespace GString {
-		DLL_LOCAL [[noreturn]] void _overflow(size_t len, size_t idx) {
+		[[noreturn]] DLL_LOCAL void _overflow(size_t len, size_t idx) {
 			using namespace Utils;
 			String msg = { "Array of size ", len, " cannot hold string of size ", idx };
 			throw std::overflow_error(msg);
@@ -45,6 +45,10 @@ namespace CPPExtensions {
 		}
 		DLL_PUBLIC String hyperlink(const char* site, const char* display) noexcept {
 			return String("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");
+		}
+		DLL_PUBLIC bool hyperlink(const char* site, const char* display, String& out) noexcept {
+			out.set("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");
+			return !(out.hasErr());
 		}
 		DLL_PUBLIC Utils::size_t _strlen(const String& val) noexcept {
 			return val.getlen();

@@ -29,19 +29,19 @@ namespace CPPExtensions {
 			};
 		public:
 			constexpr StringView(const StringView& val) noexcept : len(val.len),
-				  buffer(false, {.view = {viewer(val.buffer)}}) {}
+				  buffer{ false, {.view = viewer(val.buffer)} } {}
 			constexpr StringView(Utils::nullpt) noexcept : len(0),
-				  buffer(false, {nullptr}) {}
+				  buffer{ false, {nullptr} } {}
 			constexpr StringView(StringView& val) noexcept : len(val.len),
 				  buffer(val.buffer) {}
 			constexpr StringView(const char* val) noexcept : len(GString::strlen(val)),
-				  buffer(false, {.view = {val}}) {}
+				  buffer{ false, {.view = val} } {}
 			constexpr StringView(const char* val, Utils::size_t ln) noexcept : len(ln),
-				  buffer(false, {.view = {val}}) {}
+				  buffer{ false, {.view = val} } {}
 			constexpr StringView(char* val) noexcept : len(GString::strlen(val)),
-				  buffer(true, {.edit = {val}}) {}
+				  buffer{ true, {.edit = val} } {}
 			constexpr StringView(char* val, Utils::size_t ln) noexcept : len(ln),
-				  buffer(true, {.edit = {val}}) {}
+				  buffer{ true, {.edit = val} } {}
 			constexpr StringView(const String& val) noexcept;
 			constexpr const char* read() const noexcept { return viewer(buffer); }
 			constexpr char* edit() noexcept {
@@ -129,7 +129,7 @@ namespace CPPExtensions {
 					return result;
 				i++;
 				double base = 0.1;
-				for (i = i; i < len; i++) {
+				for (; i < len; i++) {
 					n = str[i];
 					if ((n < '0') || (n > '9'))
 						break;

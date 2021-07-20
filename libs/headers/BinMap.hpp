@@ -134,12 +134,14 @@ namespace CPPExtensions {
 		public:
 			V& operator [](const K& key) {
 				V* result = find(key);
-				if (result)
+				if (result) {
 					return *result;
-				else if constexpr (strlen_noexcept_callable<void, const K&>::value)
-					Utils::RangeError(String("Error: binary tree doesn't contain such key: ", key));
-				else
+				} else if constexpr (strlen_noexcept_callable<void, const K&>::value) {
+					String msg = { "Error: binary tree doesn't contain such key: ", key };
+					Utils::RangeError(msg);
+				} else {
 					Utils::RangeError("Error: binary tree doesn't contain such key");
+				}
 			}
 			const V& operator [](const K& key) const {
 				return const_cast<BinMap&>(*this)[key];

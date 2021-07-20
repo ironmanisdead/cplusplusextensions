@@ -47,16 +47,16 @@ namespace CPPExtensions {
 			Utils::size_t trulen;
 			Utils::size_t len;
 			char* raw;
-			DLL_PUBLIC [[nodiscard]] bool save(UVector&) noexcept;
-			DLL_PUBLIC [[nodiscard]] bool save(UVector&, void (*)(void*, void*));
-			DLL_PUBLIC [[nodiscard]] bool save(UVector&, void (*)(void*, void*) noexcept) noexcept;
-			DLL_PUBLIC [[nodiscard]] bool copy(const UVector&);
-			DLL_PUBLIC [[nodiscard]] bool copy(const UVector&, void (*)(void*, const void*));
-			DLL_PUBLIC [[nodiscard]] bool copy(const UVector&, void (*)(void*, const void*) noexcept) noexcept;
-			DLL_PUBLIC [[nodiscard]] bool _allocate(Utils::size_t) noexcept;
+			[[nodiscard]] DLL_PUBLIC bool save(UVector&) noexcept;
+			[[nodiscard]] DLL_PUBLIC bool save(UVector&, void (*)(void*, void*));
+			[[nodiscard]] DLL_PUBLIC bool save(UVector&, void (*)(void*, void*) noexcept) noexcept;
+			[[nodiscard]] DLL_PUBLIC bool copy(const UVector&);
+			[[nodiscard]] DLL_PUBLIC bool copy(const UVector&, void (*)(void*, const void*));
+			[[nodiscard]] DLL_PUBLIC bool copy(const UVector&, void (*)(void*, const void*) noexcept) noexcept;
+			[[nodiscard]] DLL_PUBLIC bool _allocate(Utils::size_t) noexcept;
 			DLL_PUBLIC void finalize() noexcept;
 			DLL_PUBLIC void deinit() noexcept;
-			DLL_PUBLIC [[nodiscard]] bool resize(Utils::size_t) noexcept;
+			[[nodiscard]] DLL_PUBLIC bool resize(Utils::size_t) noexcept;
 			DLL_PUBLIC void place(Utils::size_t, const char*) noexcept;
 			DLL_PUBLIC bool remove(Utils::size_t, Utils::size_t = 1) noexcept;
 		public:
