@@ -7,6 +7,7 @@ int main() {
 	Utils::desc fd = Utils::open("test.txt", flags);
 	String text = { "fd: ", fd, '\n' };
 	Utils::print(Utils::std_out, text);
+	Utils::usleep(1000);
 	Utils::close(fd);
 	Utils::unlink("test.txt");
 }
