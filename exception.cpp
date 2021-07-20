@@ -1,5 +1,4 @@
 #include <CPPExtensions/system.hpp>
-#include <CPPExtensions/Exception.hpp>
 using namespace CPPExtensions;
 
 int main() {

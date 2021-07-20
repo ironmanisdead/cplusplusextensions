@@ -16,7 +16,7 @@ namespace CPPExtensions {
 			String msg = { "Array of size ", len, " cannot hold string of size ", idx };
 			throw std::overflow_error(msg);
 		}
-		static String _demangle(const char* src) noexcept {
+		inline String _demangle(const char* src) noexcept {
 #ifdef _MSC_VER
 			return String(src);
 #else

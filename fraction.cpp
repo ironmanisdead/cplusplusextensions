@@ -5,7 +5,7 @@
 using namespace CPPExtensions;
 
 int main() {
-	Fraction ratio = 0;
+	Fraction ratio = 1.0/3.0;
 	String frac = { ratio.num(), '/', ratio.den(), '\n' };
 	Utils::print(Utils::std_out, frac);
 }
