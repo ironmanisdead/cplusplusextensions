@@ -20,10 +20,15 @@ namespace CPPExtensions {
 		constexpr desc errdesc = -1;
 #endif
 		enum Flags { //flags are for opening files
-			F_CREATE = 1,
-			F_READ = 2,
-			F_WRITE = 4,
-			F_RDWR = 6
+			F_CREATE = 1, //create file if non-existant
+			F_READ = 2, //open file in read mode
+			F_WRITE = 4, //open file in write mode
+			F_RDWR = 6 //F_READ | F_WRITE
+		};
+		enum SeekFlag { //Seek flags are for seek 
+			S_RES, //Seeks from beginning
+			S_CUR, //Seeks from current position
+			S_END //Seeks from end
 		};
 		constexpr Flags operator |(Flags a, Flags b) noexcept {
 			return (Flags)((int)a | (int) b);
@@ -36,10 +41,13 @@ namespace CPPExtensions {
 		int rand() noexcept; //random integer
 		void memcpy(void*, const void*, size_t) noexcept; //copies memory from one location to another
 		void memmove(void*, const void*, size_t) noexcept; //safer way to copy memory, checks for overlap
-		ssize_t print(desc, const char*) noexcept; //prints out string to stream
 		ssize_t write(desc, const char*, size_t) noexcept; //prints out string of specific length to stream
+		bool putchar(desc, char) noexcept;
+		ssize_t print(desc, const char*) noexcept; //prints out string to stream
+		ssize_t puts(desc, const char*) noexcept; //prints out string and newline
 		desc open(const chtype*, Flags) noexcept; //opens file under descriptor with flags
 		bool close(desc) noexcept; //closes open file descriptor
+		ssize_t seek(desc, ssize_t, SeekFlag) noexcept; //seeks with method
 		bool unlink(const chtype*) noexcept; //deletes (unlinks) a file
 		void usleep(ulong) noexcept; //sleeps for a specific number of milliseconds
 		int uncaught() noexcept; //number of uncaught exceptions

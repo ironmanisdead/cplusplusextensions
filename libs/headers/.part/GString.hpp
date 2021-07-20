@@ -8,6 +8,13 @@ namespace CPPExtensions {
 		class Vector;
 	namespace GString {
 		using size_t = Utils::size_t;
+		using ssize_t = Utils::ssize_t;
+		using u64 = Utils::u64;
+		using s64 = Utils::s64;
+		using schar = Utils::schar;
+		using ulong = Utils::ulong;
+		using uint = Utils::uint;
+		using ushort = Utils::ushort;
 		template <auto... vals>
 			using list = Utils::list<vals...>;
 		template <class T, size_t N>
@@ -19,22 +26,22 @@ namespace CPPExtensions {
 				if (str[i] == '\0')
 					return i;
 		}
-		constexpr size_t _strlen(Utils::u64 str) noexcept {
+		constexpr size_t _strlen(u64 str) noexcept {
 			size_t len = 1;
 			while ((str /= 10) > 0)
 				len++;
 			return len;
 		}
-		constexpr size_t _strlen(Utils::ulong str) noexcept {
-			return _strlen(Utils::u64(str));
+		constexpr size_t _strlen(ulong str) noexcept {
+			return _strlen(u64(str));
 		}
-		constexpr size_t _strlen(Utils::uint str) noexcept {
-			return _strlen(Utils::u64(str));
+		constexpr size_t _strlen(uint str) noexcept {
+			return _strlen(u64(str));
 		}
-		constexpr size_t _strlen(Utils::ushort str) noexcept {
-			return _strlen(Utils::u64(str));
+		constexpr size_t _strlen(ushort str) noexcept {
+			return _strlen(u64(str));
 		}
-		constexpr size_t _strlen(Utils::s64 str) noexcept {
+		constexpr size_t _strlen(s64 str) noexcept {
 			size_t len = 1;
 			if (str < 0) {
 				str = -str;
@@ -45,13 +52,13 @@ namespace CPPExtensions {
 			return len;
 		}
 		constexpr size_t _strlen(long str) noexcept {
-			return _strlen(Utils::s64(str));
+			return _strlen(s64(str));
 		}
 		constexpr size_t _strlen(int str) noexcept {
-			return _strlen(Utils::s64(str));
+			return _strlen(s64(str));
 		}
 		constexpr size_t _strlen(short str) noexcept {
-			return _strlen(Utils::s64(str));
+			return _strlen(s64(str));
 		}
 		size_t _strlen(const String&) noexcept;
 		size_t _strlen(const Vector<char>&) noexcept;
@@ -151,7 +158,7 @@ namespace CPPExtensions {
 				//
 				return Array { result };
 			}
-		constexpr size_t _s_len = sizeof(_numberify<(size_t)0 - (size_t)1>::value);
+		constexpr size_t _s_len = sizeof(_numberify<(u64)0 - (u64)1>::value);
 		constexpr auto _getint(const char* src, const char* cmp, const char* suf) noexcept {
 			Tuple start = find(src, cmp);
 			Tuple end = rfind(src, suf);
@@ -274,7 +281,7 @@ namespace CPPExtensions {
 		constexpr auto gen_color(bool isfg, uchar col) noexcept {
 			Array<char, 5> code;
 			uchar colcop = col;
-			short len = _strlen(Utils::u64(col));
+			short len = _strlen(u64(col));
 			for (short i = 1; i <= len; i++) {
 				code[len - i] = (colcop % 10) + '0';
 				colcop /= 10;
@@ -289,7 +296,7 @@ namespace CPPExtensions {
 			auto fillcode = 
 				[] (auto& ray, uchar col) {
 					uchar colcop = col;
-					short len = _strlen(Utils::u64(col));
+					short len = _strlen(u64(col));
 					for (short i = 1; i <= len; i++) {
 						ray[len - i] = (colcop % 10) + '0';
 						colcop /= 10;
@@ -309,13 +316,13 @@ namespace CPPExtensions {
 			return result;
 		}
 		template <uchar col>
-			constexpr Utils::size_t _gen_color_len =
+			constexpr size_t _gen_color_len =
 				_strlen(gen_color(false, col).data) + 1;
 		template <bool isfg, uchar col>
 			constexpr Array<char, _gen_color_len<col>>
 				gen_color_temp = gen_color(isfg, col);
 		template <uchar r, uchar g, uchar b>
-			constexpr Utils::size_t _truecolor_len =
+			constexpr size_t _truecolor_len =
 				_strlen(truecolor(false, r, g, b).data);
 		template <bool isfg, uchar r, uchar g, uchar b>
 			constexpr Array<char, _truecolor_len<r, g, b>>

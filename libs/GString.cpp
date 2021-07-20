@@ -14,8 +14,8 @@ namespace CPPExtensions {
 			String msg = { "Array of size ", len, " cannot hold string of size ", idx };
 			throw std::overflow_error(msg);
 		}
-		static BinMap<StringView, String> nametype = {};
 		const String* demangle(const char* val) {
+			static BinMap<StringView, String> nametype = {};
 			StringView view = val;
 			String* find = nametype.find(view);
 			if (find) {

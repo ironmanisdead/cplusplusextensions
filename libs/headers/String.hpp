@@ -2,7 +2,6 @@
 #include "types.hpp"
 #include ".part/StringView.hpp"
 namespace CPPExtensions {
-	class StringView;
 	class String;
 	template <class>
 		class Vector;

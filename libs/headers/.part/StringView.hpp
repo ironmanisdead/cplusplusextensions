@@ -100,6 +100,43 @@ namespace CPPExtensions {
 				}
 				return (len <=> val.len);
 			}
+			constexpr int convert_int() const noexcept {
+				const char* str = viewer(buffer);
+				int result = 0;
+				for (size_t i = 0; i < len; i++) {
+					char n = str[i];
+					if ((n < '0') || (n > '9'))
+						break;
+					result *= 10;
+					result += (n - '0');
+				}
+				return result;
+			}
+			constexpr double convert_double() const noexcept {
+				const char* str = viewer(buffer);
+				double result = 0;
+				char n = '\0';
+				size_t i = 0;
+				for (i = 0; i < len; i++) {
+					n = str[i];
+					if ((n < '0') || (n > '9'))
+						break;
+					result *= 10;
+					result += (n - '0');
+				}
+				if (n != '.')
+					return result;
+				i++;
+				double precision = 0.1;
+				for (i = i; i < len; i++) {
+					n = str[i];
+					if ((n < '0') || (n > '9'))
+						break;
+					result += (n - '0') * precision;
+					precision /= 10;
+				}
+				return result;
+			}
 			constexpr Utils::strongcmp_t operator <=>(const String& val) const noexcept;
 	};
 }

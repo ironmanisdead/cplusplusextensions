@@ -7,6 +7,7 @@
 #include <thread>
 #include <cerrno>
 #include <cstring>
+#include "headers/GString.hpp"
 namespace CPPExtensions {
 	namespace Utils {
 		int geterr() noexcept { return errno; }
@@ -56,7 +57,6 @@ namespace CPPExtensions {
  #include <unistd.h>
  #include <fcntl.h>
 #endif
-#include "headers/.part/GString.hpp"
 namespace CPPExtensions {
 	namespace Utils {
 #ifdef _MSC_VER
@@ -65,10 +65,6 @@ namespace CPPExtensions {
 		const desc std_err = GetStdHandle(STD_ERROR_HANDLE);
 		const desc errdesc = HFILE_ERROR;
 #endif
-		ssize_t print(desc fd, const char* str) noexcept {
-			auto numbytes = GString::_strlen(str);
-			return write(fd, str, numbytes);
-		}
 		ssize_t write(desc fd, const char* str, size_t len) noexcept {
 #ifdef _MSC_VER
 			int written = 0;
@@ -80,6 +76,32 @@ namespace CPPExtensions {
 #else
 			return ::write(fd, str, len);
 #endif
+		}
+		bool putchar(desc fd, char ch) noexcept {
+			static char ray[1];
+			ray[0] = ch;
+			if (write(fd, ray, 1) > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		ssize_t print(desc fd, const char* str) noexcept {
+			auto numbytes = GString::_strlen(str);
+			return write(fd, str, numbytes);
+		}
+		ssize_t puts(desc fd, const char* str) noexcept {
+			auto numbytes = GString::_strlen(str);
+			auto written = write(fd, str, numbytes);
+			if (written != -1) {
+				if (putchar(fd, '\n')) {
+					return written + 1;
+				} else {
+					return written;
+				}
+			} else {
+				return -1;
+			}
 		}
 		ssize_t read(desc fd, char* str, size_t len) noexcept {
 #ifdef _MSC_VER
@@ -131,6 +153,21 @@ namespace CPPExtensions {
 				return false;
 #endif
 		}
+		ssize_t seek(desc fd, ssize_t pos, SeekFlag method) noexcept {
+#ifdef _MSC_VER
+			auto result = ::SetFilePointer(fd, pos, nullptr, method);
+			if (result == INVALID_SET_FILE_POINTER)
+				return -1;
+			else
+				return result;
+#else
+			auto result = ::lseek(fd, pos, method);
+			if (result == -1)
+				return -1;
+			else
+				return result;
+#endif
+		}
 		bool unlink(const chtype* name) noexcept {
 #ifdef _MSC_VER
 			return ::DeleteFile(name);
@@ -145,14 +182,17 @@ namespace CPPExtensions {
 #ifdef _MSC_VER
 			return GetTickCount64();
 #else
-			static auto file = std::ifstream("/proc/uptime", std::ios::in);
-			if (!file.is_open())
+			static desc file = open("/proc/uptime", F_READ);
+			static char array[16];
+			static StringView view = { array, 16 };
+			if (file == errdesc)
 				return 0;
-			file.clear();
-			file.seekg(0);
-			double seconds = 0.0;
-			file >> seconds;
-			return seconds * 1000;
+			seek(file, 0, S_RES);
+			if (read(file, array, 16) != -1) {
+				return view.convert_double() * 1000;
+			} else {
+				return 0;
+			}
 #endif
 		}
 		void usleep(ulong time) noexcept {
