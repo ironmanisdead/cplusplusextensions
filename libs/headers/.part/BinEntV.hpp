@@ -1,5 +1,5 @@
 #pragma once
-#include "../Macros.hpp"
+#include "../predefs.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	class BinEnt;

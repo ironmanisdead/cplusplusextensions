@@ -2,7 +2,6 @@
 #include "types.hpp"
 #include "GString.hpp"
 #include "system.hpp"
-//#include <typeinfo>
 DLL_HIDE
 namespace CPPExtensions {
 	template <class>

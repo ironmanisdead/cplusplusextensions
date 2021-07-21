@@ -1,6 +1,5 @@
 #pragma once
-#include "Macros.hpp"
-#include ".part/internals.hpp"
+#include "predefs.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	class String;

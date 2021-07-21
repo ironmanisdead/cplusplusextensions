@@ -1,5 +1,5 @@
 #pragma once
-#include ".part/internals.hpp"
+#include "predefs.hpp"
 #include <iostream>
 namespace CPPExtensions {
 	class Fraction {

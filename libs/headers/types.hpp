@@ -1,6 +1,5 @@
 #pragma once
-#include "Macros.hpp"
-#include ".part/internals.hpp"
+#include "predefs.hpp"
 namespace CPPExtensions {
 	template <class, decltype(sizeof 0)>
 		class Array;

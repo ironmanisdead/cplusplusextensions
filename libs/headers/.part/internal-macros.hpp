@@ -1,9 +1,16 @@
-#pragma once
+#undef DLL_PUBLIC
+#undef DLL_LOCAL
+#undef DLL_HIDE
+#undef DLL_RESTORE
 #if defined(__unix__)
- #define CUSTOMUTILS_unix 1
+ #ifndef DLL_OS_unix
+  #define DLL_OS_unix 1
+ #endif
 #elif defined(_MSC_VER)
- #define CUSTOMUTILS_windows 1
- #ifdef DLL_EXPORTED
+ #ifndef DLL_OS_windows
+  #define DLL_OS_windows 1
+ #endif
+ #if (DLL_EXPORTED > 0)
   #define DLL_PUBLIC __declspec(dllexport)
  #else
   #define DLL_PUBLIC __declspec(dllimport)
@@ -15,24 +22,28 @@
 #if defined(__clang__)
  #define DLL_HIDE
  #define DLL_RESTORE
- #define CUSTOMUTILS_clang 1
- #ifndef CUSTOMUTILS_windows
+ #ifndef DLL_CC_clang
+  #define DLL_CC_clang 1
+ #endif
+ #ifndef DLL_OS_windows
   #define DLL_PUBLIC __attribute__ ((visibility("default")))
   #define DLL_LOCAL __attribute__ ((visibility("hidden")))
  #endif
 #elif defined(__GNUC__)
  #define DLL_HIDE _Pragma("GCC visibility push (internal)")
  #define DLL_RESTORE _Pragma("GCC visibility pop")
- #define CUSTOMUTILS_gcc 1
- #ifndef CUSTOMUTILS_windows
+ #define DLL_CC_gcc 1
+ #ifndef DLL_OS_windows
   #define DLL_PUBLIC __attribute__ ((visibility("default")))
   #define DLL_LOCAL __attribute__ ((visibility("hidden")))
  #endif
 #else
  #define DLL_HIDE
  #define DLL_RESTORE
- #define DLL_PUBLIC
- #define DLL_LOCAL
+ #ifndef DLL_OS_windows
+  #define DLL_PUBLIC
+  #define DLL_LOCAL
+ #endif
 #endif
 #ifndef RECAST
  #define RECAST(type, exp) reinterpret_cast<type>(exp)

@@ -65,3 +65,6 @@ namespace CPPExtensions {
 		using ssize_t = make_signed<size_t>;
 	}
 }
+#undef DLL_EXPORTED
+#define DLL_EXPORTED DLL_EXPORT_LIB_cppextensions
+#include ".part/internal-macros.hpp"
