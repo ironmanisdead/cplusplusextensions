@@ -164,14 +164,11 @@ namespace CPPExtensions {
 					return valcmp(val);
 			}
 			template <class T, class... V>
-			String& append(const T& val, const V&... rest) noexcept {
-				adder(val, rest...);
-				return *this;
-			}
-			template <class T, class U, class... V>
-			String& set(const T& val, const U& second, const V&... rest) noexcept {
+			String& set(const T& val, const V&... rest) noexcept {
+				resize(GString::strlen(val) + (GString::strlen(rest) + ... + 1));
 				*this = val;
-				append(second, rest...);
+				if constexpr (sizeof...(rest) > 0)
+					adder<false>(rest...);
 				return *this;
 			}
 			constexpr operator const char*() const& noexcept {

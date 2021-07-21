@@ -218,6 +218,8 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC bool String::allocate(Utils::size_t nsize) noexcept {
 		errbit = false;
+		if (nsize > 0)
+			nsize++;
 		if (trulen == 0)
 			return _allocate(nsize);
 		else if (nsize == 0)
