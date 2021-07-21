@@ -7,10 +7,10 @@ int main() {
 	String prnt;
 	prnt.allocate(79);
 	prnt.set("epoch: ", Utils::epoch(), '\n');
-	Utils::print(Utils::std_out, prnt);
+	Utils::writestr(Utils::std_out, prnt);
 	prnt.set("uptime: ", Utils::uptime(), '\n');
-	Utils::print(Utils::std_out, prnt);
+	Utils::writestr(Utils::std_out, prnt);
 	Utils::usleep(1000);
 	prnt.set("uptime: ", Utils::uptime(), '\n');
-	Utils::print(Utils::std_out, prnt);
+	Utils::writestr(Utils::std_out, prnt);
 }

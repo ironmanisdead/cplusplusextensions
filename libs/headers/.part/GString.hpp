@@ -159,7 +159,7 @@ namespace CPPExtensions {
 				//
 				return Array { result };
 			}
-		constexpr size_t _s_len = sizeof(_numberify<(u64)0 - (u64)1>::value);
+		constexpr size_t _s_len = sizeof(_numberify<(u64)0 - (u64)1>::value) + 1;
 		constexpr auto _getint(const char* src, const char* cmp, const char* suf) noexcept {
 			Tuple start = find(src, cmp);
 			Tuple end = rfind(src, suf);
@@ -192,7 +192,7 @@ namespace CPPExtensions {
 			}
 		template <class T>
 			constexpr auto typestr = _gettype<T>();
-		constexpr Array<char, _s_len> numstr(size_t num) noexcept {
+		constexpr Array<char, _s_len> numstr(u64 num) noexcept {
 			size_t len = 0;
 			for (size_t idx = num; idx > 0; len++)
 				idx /= 10;

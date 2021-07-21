@@ -12,8 +12,12 @@ namespace CPPExtensions {
 				while (a != b) {
 					if (a == 0)
 						return b;
+					if (a == 1)
+						return 1;
 					if (b == 0)
 						return a;
+					if (b == 1)
+						return 1;
 					if (a > b)
 						a -= b;
 					else
@@ -22,7 +26,7 @@ namespace CPPExtensions {
 				return a;
 			}
 		private:
-			static constexpr long precision = 10000;
+			static constexpr long precision = 1000000000;
 			long _cd;
 			long _num;
 			long _den;
@@ -39,10 +43,10 @@ namespace CPPExtensions {
 				_den = precision / _cd;
 				_num = total / _cd;
 			}
-			constexpr long num() noexcept {
+			constexpr long num() const noexcept {
 				return _num;
 			}
-			constexpr long den() noexcept {
+			constexpr long den() const noexcept {
 				return _den;
 			}
 	};

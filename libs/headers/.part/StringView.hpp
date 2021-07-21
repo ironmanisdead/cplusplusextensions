@@ -104,7 +104,7 @@ namespace CPPExtensions {
 			constexpr int convert_int() const noexcept {
 				const char* str = viewer(buffer);
 				int result = 0;
-				for (size_t i = 0; i < len; i++) {
+				for (Utils::size_t i = 0; i < len; i++) {
 					char n = str[i];
 					if ((n < '0') || (n > '9'))
 						break;
@@ -117,7 +117,7 @@ namespace CPPExtensions {
 				const char* str = viewer(buffer);
 				double result = 0;
 				char n = '\0';
-				size_t i = 0;
+				Utils::size_t i = 0;
 				for (i = 0; i < len; i++) {
 					n = str[i];
 					if ((n < '0') || (n > '9'))

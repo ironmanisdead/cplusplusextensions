@@ -1,6 +1,7 @@
 #pragma once
 #include "types.hpp"
 #include "GString.hpp"
+#include "system.hpp"
 //#include <typeinfo>
 DLL_HIDE
 namespace CPPExtensions {
@@ -63,8 +64,7 @@ namespace CPPExtensions {
 			Function() noexcept : _status(NO_ERROR), caller(nullptr) {}
 			Function(const Function& val) : _status(NO_ERROR) {
 				if (val.caller) {
-					caller = downcast<Proxy*>(::operator new(size = val.size,
-								std::nothrow_t {}));
+					caller = downcast<Proxy*>(Utils::malloc(caller.size));
 					if (!caller) {
 						_status = MEM_ERROR;
 						return;
@@ -72,7 +72,7 @@ namespace CPPExtensions {
 					try {
 						val.caller->copy(caller);
 					} catch (...) {
-						::operator delete(caller);
+						Utils::free(caller);
 						throw;
 					}
 				} else
@@ -80,8 +80,7 @@ namespace CPPExtensions {
 			}
 			Function(Function&& val) : _status(NO_ERROR) {
 				if (val.caller) {
-					caller = downcast<Proxy*>(::operator new(size = val.caller->size(),
-								std::nothrow_t {}));
+					caller = downcast<Proxy*>(Utils::malloc(size = val.caller->size()));
 					if (!caller) {
 						_status = MEM_ERROR;
 						return;
@@ -89,7 +88,7 @@ namespace CPPExtensions {
 					try {
 						val.caller->move(caller);
 					} catch (...) {
-						::operator delete(caller);
+						Utils::free(caller);
 						throw;
 					}
 				} else
@@ -104,8 +103,7 @@ namespace CPPExtensions {
 					if (val.caller) {
 						if constexpr (Utils::is_lvalue_reference<T>) {
 							caller = downcast<Proxy*>(
-									::operator new(size = val.size,
-										std::nothrow_t{}));
+									Utils::malloc(size = val.size));
 							if (!caller) {
 								_status = MEM_ERROR;
 								return;
@@ -113,13 +111,12 @@ namespace CPPExtensions {
 							try {
 								val.caller->copy(caller);
 							} catch (...) {
-								::operator delete(caller);
+								Utils::free(caller);
 								throw;
 							}
 						} else {
 							caller = downcast<Proxy*>(
-									::operator new(size = val.caller->size(),
-										std::nothrow_t {}));
+									Utils::malloc(size = val.caller->size()));
 							if (!caller) {
 								_status = MEM_ERROR;
 								return;
@@ -127,7 +124,7 @@ namespace CPPExtensions {
 							try {
 								val.caller->move(caller);
 							} catch (...) {
-								::operator delete(caller);
+								Utils::free(caller);
 								throw;
 							}
 						}
@@ -137,7 +134,7 @@ namespace CPPExtensions {
 					constexpr bool icon = Utils::is_lvalue_reference<T>;
 					constexpr bool addr = Utils::is_pointer<T>;
 					using retype = Utils::switch_it<icon && !addr, T, raw>;
-					void* temp = ::operator new(sizeof(Binding<retype>), std::nothrow_t {});
+					void* temp = Utils::malloc(sizeof(Binding<retype>));
 					if (!temp) {
 						_status = MEM_ERROR;
 						return;
@@ -146,7 +143,7 @@ namespace CPPExtensions {
 						caller = new (temp) Binding<retype>(val);
 					} catch (...) {
 						_status = INIT_ERROR;
-						::operator delete(temp);
+						Utils::free(temp);
 						throw;
 					}
 					size = sizeof(Binding<retype>);
@@ -195,15 +192,14 @@ namespace CPPExtensions {
 					void* temp;
 					try {
 						if constexpr (Utils::is_lvalue_reference<T>) {
-							temp = ::operator new (val.size, std::nothrow_t{});
+							temp = Utils::malloc(val.size);
 							if (!temp) {
 								_status = MEM_ERROR;
 								return *this;
 							}
 							val.caller->copy(temp);
 						} else {
-							temp = ::operator new (val.callable->size(),
-									std::nothrow_t {});
+							temp = Utils::malloc(val.callable->size());
 							if (!temp) {
 								_status = MEM_ERROR;
 								return *this;
@@ -212,7 +208,7 @@ namespace CPPExtensions {
 						}
 					} catch (...) {
 						_status = INIT_ERROR;
-						::operator delete (temp);
+						Utils::free(temp);
 						throw;
 					}
 					caller = temp;
@@ -221,8 +217,7 @@ namespace CPPExtensions {
 					constexpr bool icon = Utils::is_lvalue_reference<T>;
 					constexpr bool addr = Utils::is_pointer<T>;
 					using retype = Utils::switch_it<icon && !addr, T, raw>;
-					void* temp = ::operator new(sizeof(Binding<retype>),
-							std::nothrow_t {});
+					void* temp = Utils::malloc(sizeof(Binding<retype>));
 					if (!temp) {
 						_status = MEM_ERROR;
 						return *this;
@@ -231,7 +226,7 @@ namespace CPPExtensions {
 						caller = new (temp) Binding<retype>(val);
 					} catch (...) {
 						_status = INIT_ERROR;
-						::operator delete (temp);
+						Utils::free(temp);
 						throw;
 					}
 					size = sizeof(Binding<retype>);

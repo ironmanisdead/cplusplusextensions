@@ -1,7 +1,6 @@
 #include "headers/BinTree.hpp"
 #include "headers/BinNode.hpp"
-#include "headers/Utils.hpp"
-#include <new>
+#include "headers/system.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	DLL_PUBLIC void BinEnt::_rebalance() noexcept {}
@@ -248,7 +247,7 @@ namespace CPPExtensions {
 		const void* key = ins->_key();
 		Utils::size_t siz = ins->data->total;
 		if (!root) {
-			root = Utils::downcast<BinEnt*>(::operator new(siz, std::nothrow_t {}));
+			root = Utils::downcast<BinEnt*>(Utils::malloc(siz));
 			if (!root)
 				return { false, nullptr };
 			ins->setParent(this);
@@ -261,7 +260,7 @@ namespace CPPExtensions {
 				_place(result.value, ins, 0 <=> 0);
 			return { false, result.value };
 		}
-		BinEnt* store = Utils::downcast<BinEnt*>(::operator new(siz, std::nothrow_t {}));
+		BinEnt* store = Utils::downcast<BinEnt*>(Utils::malloc(siz));
 		if (!store)
 			return { false, nullptr };
 		Utils::memcpy(store, ins, siz);

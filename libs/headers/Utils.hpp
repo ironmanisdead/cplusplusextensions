@@ -2,7 +2,6 @@
 #include "types.hpp"
 #include "system.hpp"
 #include <compare>
-#include <new>
 namespace CPPExtensions {
 	namespace Utils {
 		using strongcmp_t = decltype(0 <=> 0);
@@ -18,7 +17,7 @@ namespace CPPExtensions {
 		enable_it<is_destructible<T>, void> full_destruct(void* src)
 		noexcept(assert || noexcept(declval<T>().~T())) {
 			reinterpret_cast<T*>(src)->~T();
-			::operator delete(src);
+			Utils::free(src);
 		}
 		template <class T, class Y, class Z = remove_reference<Y>>
 		void wrap_construct(void* dest, switch_it<is_const<Z>, const void*, void*> src)
@@ -29,7 +28,7 @@ namespace CPPExtensions {
 		template <class T, class Y, class Z = remove_reference<Y>>
 		T* full_construct(switch_it<is_const<Z>, const void*, void*> src)
 		noexcept(noexcept(T(declval<Y>()))) {
-			void* store = downcast<T*>(::operator new(sizeof(T), std::nothrow_t {}));
+			void* store = downcast<T*>(Utils::malloc(sizeof(T)));
 			if (store)
 				new (store) T(forward<Y>(*downcast<Z*>(src)));
 			return store;

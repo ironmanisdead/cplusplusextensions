@@ -12,7 +12,7 @@ namespace CPPExtensions {
 	class DLL_PUBLIC BinEnt {
 		public:
 			enum State { NO_ERROR, MEM_ERROR,
-				ALLOC_ERROR, MISSING_ERROR };
+				INIT_ERROR, MISSING_ERROR };
 			union out {
 				BinTree* tree;
 				BinEnt* parent;
@@ -123,7 +123,8 @@ namespace CPPExtensions {
 	class BinTree {
 		public:
 			enum State { NO_ERROR, TYPE_ERROR,
-				MEM_ERROR, OVERRIDE_ERROR, SEARCH_ERROR };
+				MEM_ERROR, INIT_ERROR,
+				OVERRIDE_ERROR, SEARCH_ERROR };
 		private:
 			const BinInfo* const data;
 		protected:

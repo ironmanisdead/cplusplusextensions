@@ -1,6 +1,6 @@
 #include "headers/UVector.hpp"
 #include <stdexcept>
-#include <new>
+#include "headers/system.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	DLL_PUBLIC UVector::UVector(const FullType* const type)
@@ -10,7 +10,7 @@ namespace CPPExtensions {
 	DLL_PUBLIC bool UVector::_allocate(Utils::size_t siz) noexcept {
 		_status = NO_ERROR;
 		void* temp =
-			Utils::downcast<char*>(::operator new(siz, std::nothrow_t {}));
+			Utils::downcast<char*>(Utils::malloc(siz));
 		if (!temp) {
 			_status = MEM_ERROR;
 			return false;
@@ -144,7 +144,7 @@ namespace CPPExtensions {
 	DLL_PUBLIC void UVector::finalize() noexcept {
 		if (trulen > 0) {
 			deinit();
-			::operator delete (raw);
+			Utils::free(raw);
 			trulen = 0;
 		}
 	}
@@ -159,13 +159,13 @@ namespace CPPExtensions {
 		n1 += elem;
 		while (ntru < n1)
 			ntru *= 2;
-		char* temp = Utils::downcast<char*>(::operator new(ntru));
+		char* temp = Utils::downcast<char*>(Utils::malloc(ntru));
 		if (!temp) {
 			_status = MEM_ERROR;
 			return false;
 		}
 		Utils::memcpy(temp, raw, len * elem);
-		::operator delete(raw);
+		Utils::free(raw);
 		raw = temp;
 		trulen = ntru + elem;
 		return true;
@@ -202,13 +202,13 @@ namespace CPPExtensions {
 			return _allocate(locsiz);
 		if (trulen > locsiz)
 			return true;
-		char* temp = Utils::downcast<char*>(::operator new(locsiz));
+		char* temp = Utils::downcast<char*>(Utils::malloc(locsiz));
 		if (!temp) {
 			_status = MEM_ERROR;
 			return false;
 		}
 		Utils::memcpy(temp, raw, len * elem);
-		::operator delete(raw);
+		Utils::free(raw);
 		raw = temp;
 		trulen = locsiz;
 		return true;

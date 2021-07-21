@@ -1,11 +1,13 @@
 #include <CPPExtensions/Fraction.hpp>
-#include <CPPExtensions/String.hpp>
+#include <CPPExtensions/GString.hpp>
 #include <CPPExtensions/system.hpp>
 
 using namespace CPPExtensions;
 
+constexpr Fraction ratio = 0.4;
+constexpr auto frac = GString::strcat(GString::numstr(ratio.num()).data,
+		"/", GString::numstr(ratio.den()).data);
+
 int main() {
-	Fraction ratio = 1.0/3.0;
-	String frac = { ratio.num(), '/', ratio.den(), '\n' };
-	Utils::print(Utils::std_out, frac);
+	Utils::puts(Utils::std_out, frac.data);
 }

@@ -49,20 +49,26 @@ namespace CPPExtensions {
 			template <class... L>
 			MapStat insert(const K& key, L&&... val) {
 				char temp[sizeof(Node)];
-				new (temp) Node(Node::cons, false, BinEnt::out { nullptr }, nullptr,
-						nullptr, key, Utils::forward<L>(val)...);
+				_status = NO_ERROR;
 				try {
-					BinStat test = _add(RECAST(Node*, temp));
-					if (!test.value) {
-						Node* result = Utils::downcast<Node*>(::operator new(sizeof(Node)));
-						Utils::memcpy(result, temp, sizeof(Node));
-						return { true, result };
-					}
-					return { false, Utils::downcast<Node*>(test.value) };
+					new (temp) Node(Node::cons, false, BinEnt::out { nullptr }, nullptr,
+							nullptr, key, Utils::forward<L>(val)...);
 				} catch (...) {
-					RECAST(Node*, temp)->~Node();
-					throw;
+					_status = INIT_ERROR;
+					return { false, nullptr };
 				}
+				BinStat test = _add(RECAST(Node*, temp));
+				if (!test.value) {
+					Node* result = Utils::downcast<Node*>(Utils::malloc(sizeof(Node)));
+					if (!result) {
+						RECAST(Node*, temp)->~Node();
+						_status = MEM_ERROR;
+						return { false, nullptr };
+					}
+					Utils::memcpy(result, temp, sizeof(Node));
+					return { true, result };
+				}
+				return { false, Utils::downcast<Node*>(test.value) };
 			}
 			Node* attach(BinEnt* val) noexcept(lessex) {
 				return Utils::downcast<Node*>(BinTree::attach(val));

@@ -1,7 +1,7 @@
 #include "headers/String.hpp"
 #include "headers/GString.hpp"
 #include "headers/StringView.hpp"
-#include <new>
+#include "headers/system.hpp"
 #include <iostream>
 #define BOOL_EXTERN(fun, ...) template DLL_PUBLIC String::setby<true> fun<true>(__VA_ARGS__); \
 	template DLL_PUBLIC String::setby<false> fun<false>(__VA_ARGS__)
@@ -10,7 +10,7 @@ namespace CPPExtensions {
 	DLL_PUBLIC String::String() noexcept : trulen(0), view(nullptr) {}
 	DLL_LOCAL void String::finalize() noexcept {
 		if (trulen > 0)
-			::operator delete(view.edit());
+			Utils::free(view.edit());
 		errbit = false;
 		trulen = 0;
 		view.len = 0;
@@ -22,7 +22,7 @@ namespace CPPExtensions {
 		finalize();
 		if (n1 == 0)
 			return true;
-		char* temp = Utils::downcast<char*>(::operator new(n1, std::nothrow_t{}));
+		char* temp = Utils::downcast<char*>(Utils::malloc(n1));
 		if (!temp) {
 			return !(errbit = true);
 		}
@@ -41,11 +41,11 @@ namespace CPPExtensions {
 		Utils::size_t ntru = trulen;
 		while (ntru < n1)
 			ntru *= 2;
-		char* temp = Utils::downcast<char*>(::operator new (ntru, std::nothrow_t{}));
+		char* temp = Utils::downcast<char*>(Utils::malloc(ntru));
 		if (!temp)
 			return !(errbit = true);
 		Utils::memcpy(temp, view.read(), view.len);
-		::operator delete(view.edit());
+		Utils::free(view.edit());
 		view.set(temp, view.len);
 		trulen = ntru;
 		view.edit()[view.len] = '\0';
@@ -224,11 +224,11 @@ namespace CPPExtensions {
 			return finalize(), true;
 		else if (nsize < trulen)
 			return true;
-		char* temp = Utils::downcast<char*>(::operator new (nsize, std::nothrow_t{}));
+		char* temp = Utils::downcast<char*>(Utils::malloc(nsize));
 		if (!temp)
 			return !(errbit = true);
 		Utils::memcpy(temp, view.read(), view.len);
-		::operator delete(view.edit());
+		Utils::free(view.edit());
 		view.set(temp, view.len);
 		trulen = nsize;
 		view.edit()[view.len] = '\0';
