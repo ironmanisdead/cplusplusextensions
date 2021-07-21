@@ -59,6 +59,7 @@ DLL_RESTORE
  #include <unistd.h>
  #include <fcntl.h>
 #endif
+#include "headers/String.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	namespace Utils {
@@ -99,19 +100,18 @@ namespace CPPExtensions {
 				return false;
 			}
 		}
+		static String _putstr = {};
 		DLL_PUBLIC ssize_t puts(desc fd, const char* str) noexcept {
-			auto numbytes = GString::_strlen(str);
-			auto written = write(fd, str, numbytes);
-			if (written != -1) {
-				if (putchar(fd, '\n')) {
-					return written + 1;
-				} else {
-					return written;
-				}
-			} else {
+			_putstr.set(str, '\n');
+			if (_putstr.gettlen() > 0)
+				return write(fd, _putstr.data(), _putstr.getlen());
+			else
 				return -1;
-			}
 		}
+		DLL_PUBLIC bool puts_alloc(size_t siz) noexcept {
+			return _putstr.allocate(siz);
+		}
+		DLL_PUBLIC void puts_free() noexcept { _putstr = nullptr; }
 		DLL_PUBLIC ssize_t read(desc fd, char* str, size_t len) noexcept {
 #ifdef _MSC_VER
 			int written = 0;

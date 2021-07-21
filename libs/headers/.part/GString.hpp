@@ -193,14 +193,40 @@ namespace CPPExtensions {
 		template <class T>
 			constexpr auto typestr = _gettype<T>();
 		constexpr Array<char, _s_len> numstr(u64 num) noexcept {
-			size_t len = 0;
-			for (size_t idx = num; idx > 0; len++)
-				idx /= 10;
+			size_t len = _strlen(num);
 			Array<char, _s_len> result;
 			size_t idx = len;
-			for (size_t cop = num; cop > 0; cop /= 10)
+			for (u64 cop = num; cop > 0; cop /= 10)
 				result[--idx] = (cop % 10) + '0';
 			return result;
+		}
+		constexpr auto numstr(ulong num) noexcept {
+			return numstr(u64(num));
+		}
+		constexpr auto numstr(uint num) noexcept {
+			return numstr(u64(num));
+		}
+		constexpr auto numstr(ushort num) noexcept {
+			return numstr(u64(num));
+		}
+		constexpr Array<char, _s_len + 1> numstr(s64 num) noexcept {
+			size_t len = _strlen(num);
+			Array<char, _s_len + 1> result;
+			size_t idx = len;
+			if (num < 0)
+				result[0] = '-';
+			for (u64 cop = (num > 0) ? num : -num; cop > 0; cop /= 10)
+				result[--idx] = (cop % 10) + '0';
+			return result;
+		}
+		constexpr auto numstr(long num) noexcept {
+			return numstr(s64(num));
+		}
+		constexpr auto numstr(int num) noexcept {
+			return numstr(s64(num));
+		}
+		constexpr auto numstr(short num) noexcept {
+			return numstr(s64(num));
 		}
 		template <size_t n>
 			constexpr auto& stringify = _numberify<n / 10, (n % 10) + '0'>::value;

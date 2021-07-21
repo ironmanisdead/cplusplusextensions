@@ -47,11 +47,13 @@ namespace CPPExtensions {
 		DLL_PUBLIC int rand() noexcept; //random integer
 		DLL_PUBLIC void memcpy(void*, const void*, size_t) noexcept; //copies memory from one location to another
 		DLL_PUBLIC void memmove(void*, const void*, size_t) noexcept; //safer way to copy memory, checks for overlap
-		DLL_PUBLIC ssize_t writestr(desc, const String&) noexcept;
+		DLL_PUBLIC ssize_t writestr(desc, const String&) noexcept; //writes out String object to file descriptor/handle
 		DLL_PUBLIC ssize_t write(desc, const char*, size_t) noexcept; //prints out string of specific length to stream
 		DLL_PUBLIC bool putchar(desc, char) noexcept; //prints character to stream
 		DLL_PUBLIC ssize_t print(desc, const char*) noexcept; //prints out string to stream
 		DLL_PUBLIC ssize_t puts(desc, const char*) noexcept; //prints out string and newline
+		DLL_PUBLIC bool puts_alloc(size_t) noexcept; //allocates specific amount of memory beforehand for puts
+		DLL_PUBLIC void puts_free() noexcept; //frees all memory used by puts
 		DLL_PUBLIC desc open(const chtype*, Flags) noexcept; //opens file under descriptor with flags
 		DLL_PUBLIC bool close(desc) noexcept; //closes open file descriptor
 		DLL_PUBLIC ssize_t seek(desc, ssize_t, SeekFlag) noexcept; //seeks with method
