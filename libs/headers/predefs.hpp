@@ -67,4 +67,4 @@ namespace CPPExtensions {
 }
 #undef DLL_EXPORTED
 #define DLL_EXPORTED DLL_EXPORT_LIB_cppextensions
-#include ".part/internal-macros.hpp"
+#include ".extra/internal-macros.h"
