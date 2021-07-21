@@ -64,7 +64,7 @@ namespace CPPExtensions {
 			Function() noexcept : _status(NO_ERROR), caller(nullptr) {}
 			Function(const Function& val) : _status(NO_ERROR) {
 				if (val.caller) {
-					caller = downcast<Proxy*>(Utils::malloc(caller.size));
+					caller = downcast<Proxy*>(Utils::malloc(size = val.size));
 					if (!caller) {
 						_status = MEM_ERROR;
 						return;
