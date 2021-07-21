@@ -1,6 +1,6 @@
 #include "headers/UVector.hpp"
 #include <stdexcept>
-#include "headers/system.hpp"
+#include "headers/system_internals.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	DLL_PUBLIC UVector::UVector(const FullType* const type)

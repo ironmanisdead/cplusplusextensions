@@ -1,6 +1,6 @@
 #include "headers/BinTree.hpp"
 #include "headers/BinNode.hpp"
-#include "headers/system.hpp"
+#include "headers/system_internals.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	DLL_PUBLIC void BinEnt::_rebalance() noexcept {}

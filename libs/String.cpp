@@ -1,7 +1,7 @@
 #include "headers/String.hpp"
 #include "headers/GString.hpp"
 #include "headers/StringView.hpp"
-#include "headers/system.hpp"
+#include "headers/system_internals.hpp"
 #include <iostream>
 #define BOOL_EXTERN(fun, ...) template DLL_PUBLIC String::setby<true> fun<true>(__VA_ARGS__); \
 	template DLL_PUBLIC String::setby<false> fun<false>(__VA_ARGS__)

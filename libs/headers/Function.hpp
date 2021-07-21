@@ -1,7 +1,7 @@
 #pragma once
 #include "types.hpp"
 #include "GString.hpp"
-#include "system.hpp"
+#include "system_internals.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	template <class>

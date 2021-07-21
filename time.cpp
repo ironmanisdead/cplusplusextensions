@@ -13,4 +13,5 @@ int main() {
 	Utils::usleep(1000);
 	prnt.set("uptime: ", Utils::uptime(), '\n');
 	Utils::writestr(Utils::std_out, prnt);
+	Utils::puts(Utils::std_out, Utils::strlocerr(Utils::getlocerr()));
 }

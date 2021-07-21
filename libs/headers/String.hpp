@@ -116,7 +116,7 @@ namespace CPPExtensions {
 			constexpr Utils::size_t gettlen() const noexcept { return trulen; }
 			constexpr bool hasErr() const noexcept { return errbit; }
 			constexpr const char* data() const noexcept {
-				if (trulen > 0)
+				if ((trulen > 0) && (view.len > 0))
 					return view.read();
 				else
 					return nullptr;

@@ -1,29 +1,23 @@
 #include "headers/predefs.hpp"
-#include "headers/system.hpp"
+#include "headers/system_internals.hpp"
 #include "headers/types.hpp"
 #include <stdexcept>
 #include <cstdlib>
 #include <chrono>
 #include <thread>
-#include <cerrno>
-#include <cstring>
 #include "headers/GString.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	namespace Utils {
-		int geterr() noexcept { return errno; }
-		const char* strerror(int err) noexcept {
-			return std::strerror(err);
-		}
-		volatile void* ignore(volatile void*) noexcept {
+		DLL_PUBLIC volatile void* ignore(volatile void*) noexcept {
 			return nullptr;
 		}
-		unsigned epoch() noexcept {
+		DLL_PUBLIC unsigned epoch() noexcept {
 			using namespace std::chrono;
 			auto time = system_clock::now().time_since_epoch();
 			return duration_cast<milliseconds>(time).count();
 		}
-		int rand() noexcept {
+		DLL_PUBLIC int rand() noexcept {
 			static bool set = false;
 			if (!set) {
 				std::srand(Utils::epoch());
@@ -31,13 +25,13 @@ namespace CPPExtensions {
 			}
 			return std::rand();
 		}
-		void memcpy(void* dest, const void* src, size_t len) noexcept {
+		DLL_PUBLIC void memcpy(void* dest, const void* src, size_t len) noexcept {
 			char* cdest = downcast<char*>(dest);
 			const char* csrc = downcast<const char*>(src);
 			for (size_t i = 0; i < len; i++)
 				cdest[i] = csrc[i];
 		}
-		void memmove(void* dest, const void* src, size_t len) noexcept {
+		DLL_PUBLIC void memmove(void* dest, const void* src, size_t len) noexcept {
 			char* cdest = downcast<char*>(dest);
 			const char* csrc = downcast<const char*>(src);
 			if (cdest < csrc)
@@ -59,10 +53,16 @@ DLL_RESTORE
  #include <unistd.h>
  #include <fcntl.h>
 #endif
+#include <cerrno>
+#include <cstring>
 #include "headers/String.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	namespace Utils {
+		DLL_PUBLIC int geterrno() noexcept { return errno; }
+		DLL_PUBLIC const char* strerrno(int err) noexcept {
+			return std::strerror(err);
+		}
 #ifdef _MSC_VER
 		DLL_PUBLIC const desc std_in = GetStdHandle(STD_INPUT_HANDLE);
 		DLL_PUBLIC const desc std_out = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -70,6 +70,11 @@ namespace CPPExtensions {
 		DLL_PUBLIC const desc errdesc = HFILE_ERROR;
 #endif
 		DLL_PUBLIC ssize_t write(desc fd, const char* str, size_t len) noexcept {
+			_clrerr();
+			if (str == nullptr) {
+				_nullerr();
+				return -1;
+			}
 #ifdef _MSC_VER
 			int written = 0;
 			HANDLE file = RECAST(HANDLE, file);
@@ -124,30 +129,13 @@ namespace CPPExtensions {
 			return ::read(fd, str, len);
 #endif
 		}
-		DLL_PUBLIC desc open(const chtype* path, Flags flags) noexcept {
+		DLL_PUBLIC desc open(const chtype* path, FileFlags flags) noexcept {
+			int sysflags = _sysflags(flags);
 #ifdef _MSC_VER
-			int sysflags = 0;
-			int creator = OPEN_EXISTING;
-			if (flags & F_CREATE)
-				creator = OPEN_ALWAYS;
-			if (flags & F_READ)
-				sysflags = GENERIC_READ;
-			if (flags & F_WRITE)
-				sysflags |= GENERIC_WRITE;
 			return ::CreateFileA(path, sysflags,
 					FILE_SHARE_READ, nullptr,
 					sysflags, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-			int sysflags = 0;
-			if ((flags & F_READ) && (flags & F_WRITE)) {
-				sysflags = O_RDWR;
-			} else if (flags & F_READ) {
-				sysflags = O_RDONLY;
-			} else if (flags & F_WRITE) {
-				sysflags = O_WRONLY;
-			}
-			if (flags & F_CREATE)
-				sysflags |= O_CREAT;
 			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP;
 			return ::open(path, sysflags, mode);
 #endif
@@ -191,12 +179,12 @@ namespace CPPExtensions {
 #ifdef _MSC_VER
 			return GetTickCount64();
 #else
-			static desc file = open("/proc/uptime", F_READ);
+			static desc file = open("/proc/uptime", _readflag);
 			static char array[16];
 			static StringView view = { array, 16 };
 			if (file == errdesc)
 				return 0;
-			seek(file, 0, S_RES);
+			seek(file, 0, _setflag);
 			if (read(file, array, 16) != -1) {
 				return view.convert_double() * 1000;
 			} else {
@@ -213,7 +201,11 @@ namespace CPPExtensions {
 			return std::uncaught_exceptions();
 		}
 		DLL_PUBLIC void* malloc(size_t size) noexcept {
-			return ::operator new(size, std::nothrow_t {});
+			_clrerr();
+			void* alloc = ::operator new(size, std::nothrow_t {});
+			if (!alloc)
+				_memerr();
+			return alloc;
 		}
 		DLL_PUBLIC void free(void* ptr) noexcept { ::operator delete(ptr); }
 		[[noreturn]] DLL_PUBLIC void RunError(const char* str) {

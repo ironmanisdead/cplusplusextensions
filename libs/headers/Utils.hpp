@@ -1,6 +1,6 @@
 #pragma once
 #include "types.hpp"
-#include "system.hpp"
+#include "system_internals.hpp"
 #include <compare>
 namespace CPPExtensions {
 	namespace Utils {
