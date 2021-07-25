@@ -9,30 +9,45 @@ namespace CPPExtensions {
 		//std_in is the standard input descriptor/handle
 		//std_out is the standard output descriptor/handle
 		//std_err is the standard error descriptor/handle
-		enum FileFlags : unsigned;
-		enum SeekFlag : unsigned;
-		enum ErrFlag : unsigned;
+		//S_WORD is the system defined default flag type (internal use)
+		enum OpenFlags : unsigned; //Flags for opening file
+		enum ModeFlags : unsigned; //permissions granted if file is created during open
+		enum SeekFlag : unsigned; //Flags instructing seek how to traverse
+		enum ErrFlag : unsigned; //Error states
+		constexpr OpenFlags operator |(OpenFlags a, OpenFlags b) noexcept {
+			return (OpenFlags)((unsigned)a | (unsigned)b);
+		} //Allows merging file flags with or operator
+		constexpr ModeFlags operator |(ModeFlags a, ModeFlags b) noexcept {
+			return (ModeFlags)((unsigned)a | (unsigned)b);
+		} //Allows merging mode flags with or operator
 #ifdef _MSC_VER
-		using chtype = wchar_t;
+		using S_WORD = int32_t;
 		using desc = void*;
 		DLL_PUBLIC extern const desc std_in;
 		DLL_PUBLIC extern const desc std_out;
 		DLL_PUBLIC extern const desc std_err;
 		DLL_PUBLIC extern const desc errdesc;
 #else
-		using chtype = char;
+		using S_WORD = int;
 		using desc = int;
 		constexpr desc std_in = 0;
 		constexpr desc std_out = 1;
 		constexpr desc std_err = 2;
 		constexpr desc errdesc = -1;
-		DLL_LOCAL extern const FileFlags _readflag; //read flag for uptime() to open "/proc/uptime"(linux)(internal)
+		DLL_LOCAL extern const OpenFlags _readflag; //read flag for uptime() to open "/proc/uptime"(linux)(internal)
 		DLL_LOCAL extern const SeekFlag _setflag; //reset flag for uptime() to reset "/proc/uptime"(linux)(internal)
 #endif
+		struct _sysFlags { //system defined internal flags
+			S_WORD access;
+#ifdef _MSC_VER
+			S_WORD creation;
+#endif
+		};
 		DLL_LOCAL void _clrerr() noexcept; //clears local error code(internal)
 		DLL_LOCAL void _memerr() noexcept; //sets local error code to MEM_ERROR(internal)
 		DLL_LOCAL void _nullerr() noexcept; //sets local error code to NULL_ERROR(internal)
-		DLL_LOCAL int _sysflags(FileFlags) noexcept; //converts FileFlags into system specific flags(internal)
+		DLL_LOCAL _sysFlags _sys_oflags(OpenFlags) noexcept; //converts OpenFlags into system specific flags(internal)
+		DLL_LOCAL S_WORD _sys_mflags(ModeFlags) noexcept; //converts SeekFlags into system specific flags(internal)
 		DLL_PUBLIC int geterrno() noexcept; //returns current errno
 		DLL_PUBLIC const char* strerrno(int) noexcept; //returns string describing global(geterrno()) error code
 		DLL_PUBLIC ErrFlag getlocerr() noexcept; //gets local error code
@@ -51,10 +66,11 @@ namespace CPPExtensions {
 		DLL_PUBLIC ssize_t puts(desc, const char*) noexcept; //prints out string and newline
 		DLL_PUBLIC bool puts_alloc(size_t) noexcept; //allocates specific amount of memory beforehand for puts
 		DLL_PUBLIC void puts_free() noexcept; //frees all memory used by puts
-		DLL_PUBLIC desc open(const chtype*, FileFlags) noexcept; //opens file under descriptor with flags
+		DLL_PUBLIC desc open(const char*, OpenFlags) noexcept; //opens file under descriptor with flags
+		DLL_PUBLIC desc open(const char*, OpenFlags, ModeFlags) noexcept; //open() with settable mode flags
 		DLL_PUBLIC bool close(desc) noexcept; //closes open file descriptor
 		DLL_PUBLIC ssize_t seek(desc, ssize_t, SeekFlag) noexcept; //seeks with method
-		DLL_PUBLIC bool unlink(const chtype*) noexcept; //deletes (unlinks) a file
+		DLL_PUBLIC bool unlink(const char*) noexcept; //deletes (unlinks) a file
 		DLL_PUBLIC void usleep(ulong) noexcept; //sleeps for a specific number of milliseconds
 		DLL_PUBLIC int uncaught() noexcept; //number of uncaught exceptions
 		DLL_PUBLIC void* malloc(size_t) noexcept; //calls operator new with nothrow_t

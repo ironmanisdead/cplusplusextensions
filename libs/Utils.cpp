@@ -129,15 +129,26 @@ namespace CPPExtensions {
 			return ::read(fd, str, len);
 #endif
 		}
-		DLL_PUBLIC desc open(const chtype* path, FileFlags flags) noexcept {
-			int sysflags = _sysflags(flags);
+		DLL_PUBLIC desc open(const char* path, OpenFlags flags) noexcept {
+			_sysFlags sysflags = _sys_oflags(flags);
 #ifdef _MSC_VER
-			return ::CreateFileA(path, sysflags,
+			return ::CreateFileA(path, sysflags.access,
 					FILE_SHARE_READ, nullptr,
-					sysflags, FILE_ATTRIBUTE_NORMAL, nullptr);
+					sysflags.creation, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
 			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP;
-			return ::open(path, sysflags, mode);
+			return ::open(path, sysflags.access, mode);
+#endif
+		}
+		DLL_PUBLIC desc open(const char* path, OpenFlags flags, ModeFlags mode) noexcept {
+			_sysFlags sysflags = _sys_oflags(flags);
+			S_WORD sysmode = _sys_mflags(mode);
+#ifdef _MSC_VER
+			return ::CreateFileA(path, sysflags.access,
+					FILE_SHARE_READ, nullptr,
+					sysflags.creation, sysmode, nullptr);
+#else
+			return ::open(path, sysflags.access, sysmode);
 #endif
 		}
 		DLL_PUBLIC bool close(desc fd) noexcept {
@@ -165,7 +176,7 @@ namespace CPPExtensions {
 				return result;
 #endif
 		}
-		DLL_PUBLIC bool unlink(const chtype* name) noexcept {
+		DLL_PUBLIC bool unlink(const char* name) noexcept {
 #ifdef _MSC_VER
 			return ::DeleteFile(name);
 #else

@@ -264,6 +264,7 @@ namespace CPPExtensions {
 			}
 		constexpr char esc = '\x1b';
 #pragma push_macro("ESCAPE")
+#undef ESCAPE
 #define ESCAPE(name, code) constexpr const char name[] = "\x1b[" #code "m"
 		namespace codes {
 			ESCAPE(text_reset, 0);

@@ -6,29 +6,61 @@
 #endif
 namespace CPPExtensions {
 	namespace Utils {
-		const FileFlags _readflag = F_READ;
+		const OpenFlags _readflag = F_READ;
 		const SeekFlag _setflag = S_RES;
 		DLL_LOCAL thread_local ErrFlag _locerr = NO_ERROR;
-		DLL_LOCAL int _sysflags(FileFlags flags) noexcept {
+		DLL_LOCAL _sysFlags _sys_oflags(OpenFlags flags) noexcept {
 #ifdef DLL_OS_windows
-			int sysflags = OPEN_EXISTING;
-			if (flags & F_CREATE)
-				sysflags = OPEN_EXISTING;
+			_sysFlags sysflags = { OPEN_EXISTING, 0 };
+			if (flags & F_CREATE) {
+				if (flags & F_TRUNC)
+					sysflags = CREATE_ALWAYS;
+				else
+					sysflags = OPEN_ALWAYS;
+			}
 			if (flags & F_READ)
-				sysflags |= GENERIC_READ;
+				sysflags.creation |= GENERIC_READ;
 			if (flags & F_WRITE)
-				sysflags |= GENERIC_WRITE;
+				sysflags.creation |= GENERIC_WRITE;
 			return sysflags;
 #else
-			int sysflags = 0;
+			_sysFlags sysflags = { 0 };
 			if ((flags & F_READ) && (flags & F_WRITE)) {
-				sysflags = O_RDWR;
+				sysflags.access = O_RDWR;
 			} else if (flags & F_READ) {
-				sysflags = O_RDONLY;
+				sysflags.access = O_RDONLY;
 			} else if (flags & F_WRITE) {
-				sysflags = O_WRONLY;
+				sysflags.access = O_WRONLY;
 			}
+			if (flags & F_CREATE)
+				sysflags.access |= O_CREAT;
+			if (flags & F_APPEND)
+				sysflags.access |= O_APPEND;
 			return sysflags;
+#endif
+		}
+		DLL_LOCAL S_WORD _sys_mflags(ModeFlags flags) noexcept {
+#ifdef _MSC_WIN
+			S_WORD mode = 0;
+			if (flags & M_READ) {
+				mode = GENERIC_READ;
+			}
+			if (flags & M_WRITE) {
+				mode |= GENERIC_WRITE;
+			}
+			return mode;
+#else
+			S_WORD mode = S_IRUSR | S_IWUSR;
+			if (flags & M_READ) {
+				mode |= (S_IRGRP | S_IROTH);
+			}
+			if (flags & M_WRITE) {
+				mode |= (S_IWGRP | S_IWOTH);
+			}
+			if (flags & M_EXEC) {
+				mode |= (S_IXUSR | S_IXGRP | S_IXOTH);
+			}
+			return mode;
 #endif
 		}
 		DLL_PUBLIC ErrFlag getlocerr() noexcept { return _locerr; }
