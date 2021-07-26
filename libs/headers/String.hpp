@@ -8,8 +8,18 @@ namespace CPPExtensions {
 		class Vector;
 	template <class T>
 		void _viewput(T&, const StringView*);
+	template<bool>
+	struct _str_deprecate_op1 {
+		static inline void depr() noexcept {}
+	};
+	template <>
+	struct _str_deprecate_op1<true> {
+		DEPRECATE(static inline void depr() noexcept,
+				"operator << is deprecated for String, use Utils::writestr instead") {}
+	};
 	class String {
 		private:
+			struct privy {};
 			Utils::size_t trulen;
 			StringView view;
 			bool errbit;
@@ -113,6 +123,8 @@ namespace CPPExtensions {
 			}
 			DLL_PUBLIC StringView substr(Utils::size_t, Utils::size_t) const noexcept;
 			DLL_PUBLIC StringView substr(Utils::size_t) const noexcept;
+			DLL_PUBLIC bool encode(const StringView&) noexcept; //one-time pad to encode string
+			DLL_PUBLIC void encode(Utils::nullpt) = delete; //using a null pointer does nothing
 			constexpr Utils::size_t gettlen() const noexcept { return trulen; }
 			constexpr bool hasErr() const noexcept { return errbit; }
 			constexpr const char* data() const noexcept {
@@ -177,6 +189,9 @@ namespace CPPExtensions {
 				else
 					return nullptr;
 			}
+			inline operator const StringView&() const& noexcept {
+				return view;
+			}
 			operator const char*() && = delete;
 			DLL_PUBLIC bool allocate(Utils::size_t) noexcept;
 			DLL_PUBLIC ~String();
@@ -233,11 +248,13 @@ namespace CPPExtensions {
 	}
 	template <class T>
 	T& operator <<(T& os, const String& val) {
+		_str_deprecate_op1<!Utils::is_same<T, String::privy>>::depr();
 		_viewput(os, &val.view);
 		return os;
 	}
 	template <class T>
 	T& operator <<(T& os, const String* val) {
+		_str_deprecate_op1<!Utils::is_same<T, String::privy>>::depr();
 		_viewput(os, val ? &val->view : nullptr);
 		return os;
 	}

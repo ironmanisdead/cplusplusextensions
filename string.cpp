@@ -17,5 +17,10 @@ int main() {
 	test = "Strings can have substrings extracted";
 	std::cout << test << std::endl;
 	std::cout << test.substr(6, 8) << std::endl;
+	StringView pattern = "A pattern can be encoded atop the string.";
+	String oldstr = test;
+	test.encode(pattern);
+	test.encode(oldstr);
+	std::cout << test << std::endl;
 	std::cout << cons << std::endl;
 }

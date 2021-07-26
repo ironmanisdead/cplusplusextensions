@@ -43,6 +43,7 @@ namespace CPPExtensions {
 			S_WORD disp;
 #endif
 		};
+		DLL_PUBLIC volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
 		DLL_LOCAL void _clrerr() noexcept; //clears local error code(internal)
 		DLL_LOCAL void _memerr() noexcept; //sets local error code to MEM_ERROR(internal)
 		DLL_LOCAL void _nullerr() noexcept; //sets local error code to NULL_ERROR(internal)
@@ -52,7 +53,6 @@ namespace CPPExtensions {
 		DLL_PUBLIC const char* strerrno(int) noexcept; //returns string describing global(geterrno()) error code
 		DLL_PUBLIC ErrFlag getlocerr() noexcept; //gets local error code
 		DLL_PUBLIC const char* strlocerr(ErrFlag) noexcept; //returns string describing local(getlocerr()) error code
-		DLL_PUBLIC volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
 		DLL_PUBLIC unsigned epoch() noexcept; //high_resolution_clock since epoch
 		DLL_PUBLIC u64 uptime() noexcept; //gets the uptime of the system in milliseconds
 		DLL_PUBLIC int rand() noexcept; //random integer

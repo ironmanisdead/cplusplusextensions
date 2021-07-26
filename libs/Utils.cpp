@@ -204,9 +204,11 @@ namespace CPPExtensions {
 #endif
 		}
 		DLL_PUBLIC void sleep(ulong time) noexcept {
-			using namespace std::this_thread;
-			using namespace std::chrono;
-			sleep_for(milliseconds(time));
+#ifdef _MSC_VER
+			Sleep(time);
+#else
+			usleep(time);
+#endif
 		}
 		DLL_PUBLIC int uncaught() noexcept {
 			return std::uncaught_exceptions();

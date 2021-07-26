@@ -236,6 +236,25 @@ namespace CPPExtensions {
 		view.edit()[view.len] = '\0';
 		return true;
 	}
+	DLL_PUBLIC bool String::encode(const StringView& key) noexcept {
+		const char* str = key.read();
+		if (str == nullptr)
+			return false;
+		if (trulen > 0) {
+			char* edit = view.edit();
+			Utils::size_t r = 0; //read index
+			Utils::size_t w = 0; //write index
+			while (w < view.len) {
+				char ch = str[r++];
+				edit[w++] ^= ch;
+				if (r >= key.len)
+					r = 0;
+			}
+		} else {
+			return false;
+		}
+		return true;
+	}
 	DLL_PUBLIC Utils::strongcmp_t String::operator <=>(const String& val) const noexcept {
 		if ((trulen == 0) || (val.trulen == 0))
 			return (trulen <=> val.trulen);
