@@ -8,7 +8,7 @@ namespace CPPExtensions {
 	namespace Utils {
 		const OpenFlags _readflag = F_READ;
 		const SeekFlag _setflag = S_RES;
-		DLL_LOCAL thread_local ErrFlag _locerr = NO_ERROR;
+		DLL_LOCAL thread_local volatile ErrFlag _locerr = NO_ERROR;
 		DLL_LOCAL _sysFlags _sys_oflags(OpenFlags flags) noexcept {
 #ifdef DLL_OS_windows
 			_sysFlags sysflags = { OPEN_EXISTING, 0 };

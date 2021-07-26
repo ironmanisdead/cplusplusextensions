@@ -28,6 +28,6 @@ namespace CPPExtensions {
 			NULL_ERROR, //null pointer passed to function where it wasn't expected
 			TYPE_ERROR //type was set incorrectly
 		};
-		extern thread_local ErrFlag _locerr; //local error value
+		extern thread_local volatile ErrFlag _locerr; //local error value
 	}
 }
