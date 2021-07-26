@@ -14,14 +14,14 @@ namespace CPPExtensions {
 			_sysFlags sysflags = { OPEN_EXISTING, 0 };
 			if (flags & F_CREATE) {
 				if (flags & F_TRUNC)
-					sysflags = CREATE_ALWAYS;
+					sysflags.disp = CREATE_ALWAYS;
 				else
-					sysflags = OPEN_ALWAYS;
+					sysflags.disp = OPEN_ALWAYS;
 			}
 			if (flags & F_READ)
-				sysflags.creation |= GENERIC_READ;
+				sysflags.access = GENERIC_READ;
 			if (flags & F_WRITE)
-				sysflags.creation |= GENERIC_WRITE;
+				sysflags.access |= GENERIC_WRITE;
 			return sysflags;
 #else
 			_sysFlags sysflags = { 0 };
@@ -36,19 +36,17 @@ namespace CPPExtensions {
 				sysflags.access |= O_CREAT;
 			if (flags & F_APPEND)
 				sysflags.access |= O_APPEND;
+			if (flags & F_TRUNC)
+				sysflags.access |= O_TRUNC;
 			return sysflags;
 #endif
 		}
 		DLL_LOCAL S_WORD _sys_mflags(ModeFlags flags) noexcept {
 #ifdef _MSC_WIN
-			S_WORD mode = 0;
-			if (flags & M_READ) {
-				mode = GENERIC_READ;
-			}
 			if (flags & M_WRITE) {
-				mode |= GENERIC_WRITE;
-			}
-			return mode;
+				return FILE_ATTRIBUTE_NORMAL;
+			} else
+				return FILE_ATTRIBUTE_READONLY;
 #else
 			S_WORD mode = S_IRUSR | S_IWUSR;
 			if (flags & M_READ) {

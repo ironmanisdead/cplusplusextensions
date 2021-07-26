@@ -134,7 +134,7 @@ namespace CPPExtensions {
 #ifdef _MSC_VER
 			return ::CreateFileA(path, sysflags.access,
 					FILE_SHARE_READ, nullptr,
-					sysflags.creation, FILE_ATTRIBUTE_NORMAL, nullptr);
+					sysflags.disp, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
 			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP;
 			return ::open(path, sysflags.access, mode);

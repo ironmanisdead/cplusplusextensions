@@ -40,7 +40,7 @@ namespace CPPExtensions {
 		struct _sysFlags { //system defined internal flags
 			S_WORD access;
 #ifdef _MSC_VER
-			S_WORD creation;
+			S_WORD disp;
 #endif
 		};
 		DLL_LOCAL void _clrerr() noexcept; //clears local error code(internal)
