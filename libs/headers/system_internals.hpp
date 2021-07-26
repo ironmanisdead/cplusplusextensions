@@ -71,7 +71,7 @@ namespace CPPExtensions {
 		DLL_PUBLIC bool close(desc) noexcept; //closes open file descriptor
 		DLL_PUBLIC ssize_t seek(desc, ssize_t, SeekFlag) noexcept; //seeks with method
 		DLL_PUBLIC bool unlink(const char*) noexcept; //deletes (unlinks) a file
-		DLL_PUBLIC void usleep(ulong) noexcept; //sleeps for a specific number of milliseconds
+		DLL_PUBLIC void sleep(ulong) noexcept; //sleeps for a specific number of milliseconds
 		DLL_PUBLIC int uncaught() noexcept; //number of uncaught exceptions
 		DLL_PUBLIC void* malloc(size_t) noexcept; //calls operator new with nothrow_t
 		DLL_PUBLIC void free(void*) noexcept; //calls operator delete

@@ -10,7 +10,7 @@ int main() {
 	Utils::writestr(Utils::std_out, prnt);
 	prnt.set("uptime: ", Utils::uptime(), '\n');
 	Utils::writestr(Utils::std_out, prnt);
-	Utils::usleep(1000);
+	Utils::sleep(1000);
 	prnt.set("uptime: ", Utils::uptime(), '\n');
 	Utils::writestr(Utils::std_out, prnt);
 	Utils::puts(Utils::std_out, Utils::strlocerr(Utils::getlocerr()));

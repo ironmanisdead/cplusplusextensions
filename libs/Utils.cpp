@@ -203,7 +203,7 @@ namespace CPPExtensions {
 			}
 #endif
 		}
-		DLL_PUBLIC void usleep(ulong time) noexcept {
+		DLL_PUBLIC void sleep(ulong time) noexcept {
 			using namespace std::this_thread;
 			using namespace std::chrono;
 			sleep_for(milliseconds(time));
