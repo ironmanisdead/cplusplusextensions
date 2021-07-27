@@ -29,7 +29,7 @@ namespace CPPExtensions {
 		}
 		DLL_PUBLIC const String* demangle(const char* val) {
 			static BinMap<StringView, String> nametype = {};
-			StringView view = val;
+			StringView view { val };
 			String* find = nametype.find(view);
 			if (find) {
 				return find;
@@ -46,9 +46,8 @@ namespace CPPExtensions {
 		DLL_PUBLIC String hyperlink(const char* site, const char* display) noexcept {
 			return String("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");
 		}
-		DLL_PUBLIC bool hyperlink(const char* site, const char* display, String& out) noexcept {
+		DLL_PUBLIC void hyperlink(const char* site, const char* display, String& out) noexcept {
 			out.set("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");
-			return !(out.hasErr());
 		}
 		DLL_PUBLIC Utils::size_t _strlen(const String& val) noexcept {
 			return val.getlen();

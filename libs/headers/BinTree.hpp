@@ -27,8 +27,10 @@ namespace CPPExtensions {
 			BinEnt* right;
 		protected:
 			mutable State _status;
-			struct Imply {};
-			static constexpr Imply cons = {};
+			struct Complete {};
+			struct Minimal {};
+			static constexpr Complete listed = {};
+			static constexpr Minimal pair = {};
 			DLL_PUBLIC virtual void _rebalance() noexcept;
 			DLL_LOCAL virtual bool less(const void*) const = 0;
 			DLL_LOCAL virtual bool greater(const void*) const = 0;

@@ -1,7 +1,7 @@
 #include "headers/String.hpp"
 #include "headers/GString.hpp"
 #include "headers/StringView.hpp"
-#include "headers/system_internals.hpp"
+#include "headers/system.hpp"
 #include <iostream>
 #define BOOL_EXTERN(fun, ...) template DLL_PUBLIC String::setby<true> fun<true>(__VA_ARGS__); \
 	template DLL_PUBLIC String::setby<false> fun<false>(__VA_ARGS__)
@@ -11,7 +11,6 @@ namespace CPPExtensions {
 	DLL_LOCAL void String::finalize() noexcept {
 		if (trulen > 0)
 			Utils::free(view.edit());
-		errbit = false;
 		trulen = 0;
 		view.len = 0;
 	}
@@ -19,31 +18,32 @@ namespace CPPExtensions {
 		finalize();
 	}
 	DLL_PUBLIC bool String::_allocate(Utils::size_t n1) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		finalize();
 		if (n1 == 0)
 			return true;
-		char* temp = Utils::downcast<char*>(Utils::malloc(n1));
+		char* temp = Utils::downcast<char*>(Utils::malloc(n1 + 1));
 		if (!temp) {
-			return !(errbit = true);
+			return false;
 		}
 		view.set(temp, view.len);
 		trulen = n1;
 		return true;
 	}
 	DLL_PUBLIC bool String::resize(Utils::size_t n1) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if (trulen == 0)
 			return _allocate(n1);
 		else if (n1 == 0)
 			return finalize(), true;
 		else if (n1 < trulen)
 			return true;
-		errbit = false;
 		Utils::size_t ntru = trulen;
 		while (ntru < n1)
 			ntru *= 2;
 		char* temp = Utils::downcast<char*>(Utils::malloc(ntru));
 		if (!temp)
-			return !(errbit = true);
+			return false;
 		Utils::memcpy(temp, view.read(), view.len);
 		Utils::free(view.edit());
 		view.set(temp, view.len);
@@ -52,24 +52,28 @@ namespace CPPExtensions {
 		return true;
 	}
 	DLL_PUBLIC StringView String::substr(Utils::size_t n1, Utils::size_t len) const noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if ((trulen > 0) && (n1 < view.len)) {
 			const Utils::size_t cap = view.len - n1;
 			const Utils::size_t zlen = (len > cap) ? cap : len;
 			return StringView(&view.read()[n1], zlen);
 		} else {
+			Utils::_libErr = Utils::E_NULL;
 			return StringView(nullptr);
 		}
 	}
 	DLL_PUBLIC StringView String::substr(Utils::size_t n1) const noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if ((trulen > 0) && (n1 < view.len)) {
 			return StringView(&view.read()[n1], view.len - n1);
 		} else {
+			Utils::_libErr = Utils::E_NULL;
 			return StringView(nullptr);
 		}
 	}
 	template <bool reset>
 	String::setby<reset> String::byray(const char* val, Utils::size_t siz) noexcept {
-		errbit = false;
+		Utils::_libErr = Utils::E_NOERR;
 		Utils::size_t ntru, nlen;
 		if (val[siz - 1] == '\0') {
 			nlen = siz - 1;
@@ -88,6 +92,7 @@ namespace CPPExtensions {
 			return true;
 	}
 	DLL_PUBLIC void String::byval(String&& val) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		finalize();
 		trulen = val.trulen;
 		view = val.view;
@@ -95,6 +100,7 @@ namespace CPPExtensions {
 	}
 	template <bool reset>
 	String::setby<reset> String::byval(const StringView& val) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if (val.len == 0) {
 			finalize();
 			if constexpr (reset)
@@ -113,6 +119,7 @@ namespace CPPExtensions {
 	}
 	template <bool reset>
 	String::setby<reset> String::byval(const String& val) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if ((val.trulen == 0) || (val.view.len == 0)) {
 			finalize();
 			if constexpr (reset)
@@ -131,8 +138,10 @@ namespace CPPExtensions {
 	}
 	template <bool reset>
 	String::setby<reset> String::byval(const char* val) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if (val == nullptr) {
 			finalize();
+			Utils::_libErr = Utils::E_NULL;
 			if constexpr (reset)
 				return true;
 			else
@@ -149,6 +158,7 @@ namespace CPPExtensions {
 	}
 	template <bool reset>
 	String::setby<reset> String::byval(char ch) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if constexpr (reset)
 			if (!resize(2))
 				return false;
@@ -158,6 +168,7 @@ namespace CPPExtensions {
 	}
 	template <bool reset>
 	String::setby<reset> String::byval(Utils::u64 str) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if constexpr (reset)
 			if (!resize(GString::strlen(str) + 1))
 				return false;
@@ -167,6 +178,7 @@ namespace CPPExtensions {
 	}
 	template <bool reset>
 	String::setby<reset> String::byval(Utils::s64 str) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		if constexpr (reset)
 			if (!resize(GString::strlen(str) + 1))
 				return false;
@@ -175,6 +187,7 @@ namespace CPPExtensions {
 			return true;
 	}
 	DLL_PUBLIC void String::addray(const char* val, Utils::size_t siz) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		Utils::size_t nlen;
 		if (val[siz - 1] == '\0')
 			nlen = siz - 1;
@@ -217,7 +230,7 @@ namespace CPPExtensions {
 		view.edit()[view.len] = '\0';
 	}
 	DLL_PUBLIC bool String::allocate(Utils::size_t nsize) noexcept {
-		errbit = false;
+		Utils::_libErr = Utils::E_NOERR;
 		if (nsize > 0)
 			nsize++;
 		if (trulen == 0)
@@ -228,7 +241,7 @@ namespace CPPExtensions {
 			return true;
 		char* temp = Utils::downcast<char*>(Utils::malloc(nsize));
 		if (!temp)
-			return !(errbit = true);
+			return false;
 		Utils::memcpy(temp, view.read(), view.len);
 		Utils::free(view.edit());
 		view.set(temp, view.len);
@@ -237,9 +250,12 @@ namespace CPPExtensions {
 		return true;
 	}
 	DLL_PUBLIC bool String::encode(const StringView& key) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
 		const char* str = key.read();
-		if (str == nullptr)
+		if (str == nullptr) {
+			Utils::_libErr = Utils::E_NULL;
 			return false;
+		}
 		if (trulen > 0) {
 			char* edit = view.edit();
 			Utils::size_t r = 0; //read index
@@ -251,9 +267,40 @@ namespace CPPExtensions {
 					r = 0;
 			}
 		} else {
+			Utils::_libErr = Utils::E_NULL;
 			return false;
 		}
 		return true;
+	}
+	DLL_PUBLIC Utils::ssize_t StringView::write(Utils::f_desc id) const noexcept {
+		return Utils::write(id, read(), len);
+	}
+	DLL_PUBLIC Utils::size_t String::write(Utils::f_desc id) const noexcept {
+		Utils::_libErr = Utils::E_NOERR;
+		if (trulen > 0) {
+			return Utils::write(id, view.read(), view.len);
+		} else {
+			Utils::_libErr = Utils::E_NULL;
+			return -1;
+		}
+	}
+	DLL_PUBLIC Utils::ssize_t StringView::puts(Utils::f_desc id) const noexcept {
+		return Utils::_puts(id, read(), len);
+	}
+	DLL_PUBLIC Utils::size_t String::puts(Utils::f_desc id) const noexcept {
+		Utils::_libErr = Utils::E_NOERR;
+		if (trulen > 0) {
+			return Utils::_puts(id, view.read(), view.len);
+		} else {
+			Utils::_libErr = Utils::E_NULL;
+			return -1;
+		}
+	}
+	DLL_PUBLIC ssize_t Utils::writestr(Utils::f_desc id, const String& str) noexcept {
+		return str.write(id);
+	}
+	DLL_PUBLIC ssize_t Utils::writestr(Utils::f_desc id, const StringView& str) noexcept {
+		return str.write(id);
 	}
 	DLL_PUBLIC Utils::strongcmp_t String::operator <=>(const String& val) const noexcept {
 		if ((trulen == 0) || (val.trulen == 0))

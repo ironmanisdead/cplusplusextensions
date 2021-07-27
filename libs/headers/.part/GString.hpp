@@ -305,7 +305,7 @@ namespace CPPExtensions {
 		};
 #pragma pop_macro("ESCAPE")
 		DLL_PUBLIC String hyperlink(const char* site, const char* display) noexcept;
-		DLL_PUBLIC bool hyperlink(const char* site, const char* display, String& output) noexcept;
+		DLL_PUBLIC void hyperlink(const char* site, const char* display, String& output) noexcept;
 		using uchar = unsigned char;
 		constexpr auto gen_color(bool isfg, uchar col) noexcept {
 			Array<char, 5> code;

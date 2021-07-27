@@ -2,8 +2,11 @@
 #include <iostream>
 using namespace CPPExtensions;
 int main() {
+	String printer;
+	printer.allocate(100);
 	BinMap<int, int> map;
-	std::cout << "unsorted list:" << std::endl;
+	printer.set("unsorted list");
+	printer.write(Utils::std_out);
 	for (int i = 0; i < 20; i++) {
 		int key;
 		do
@@ -11,9 +14,12 @@ int main() {
 		while (map.find(key));
 		int val = Utils::rand() % 50;
 		map.insert(key, val);
-		std::cout << key << ' ' << val << std::endl;
+		printer.set(key, ' ', val, '\n');
+		printer.write(Utils::std_out);
 	}
-	std::cout << "\nsorted list:" << std::endl;
-	for (auto& node : map)
-		std::cout << node.getKey() << ' ' << node.getValue() << std::endl;
+	Utils::puts(Utils::std_out, "sorted list:");
+	for (auto& node : map) {
+		printer.set(node.getKey(), ' ', node.getValue(), '\n');
+		printer.write(Utils::std_out);
+	}
 }

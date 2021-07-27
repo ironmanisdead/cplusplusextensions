@@ -1,6 +1,6 @@
 #include "headers/UVector.hpp"
 #include <stdexcept>
-#include "headers/system_internals.hpp"
+#include "headers/system.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	DLL_PUBLIC UVector::UVector(const FullType* const type)
@@ -9,6 +9,7 @@ namespace CPPExtensions {
 	DLL_PUBLIC const char* UVector::id() noexcept { return typeinfo->text->id; }
 	DLL_PUBLIC bool UVector::_allocate(Utils::size_t siz) noexcept {
 		_status = NO_ERROR;
+		Utils::_libErr = Utils::E_NOERR;
 		void* temp =
 			Utils::downcast<char*>(Utils::malloc(siz));
 		if (!temp) {
@@ -33,8 +34,10 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC bool UVector::save(UVector& val) noexcept { 
 		_status = NO_ERROR;
+		Utils::_libErr = Utils::E_NOERR;
 		if (typeinfo != val.typeinfo) {
 			_status = TYPE_ERROR;
+			Utils::_libErr = Utils::E_TYPE;
 			return false;
 		}
 		finalize();
@@ -48,8 +51,10 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC bool UVector::save(UVector& val, void (*const mover)(void*, void*)) {
 		_status = NO_ERROR;
+		Utils::_libErr = Utils::E_NOERR;
 		if (mover == nullptr) {
 			_status = TYPE_ERROR;
+			Utils::_libErr = Utils::E_TYPE;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -65,8 +70,10 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC bool UVector::save(UVector& val, void (*const mover)(void*, void*) noexcept) noexcept {
 		_status = NO_ERROR;
+		Utils::_libErr = Utils::E_NOERR;
 		if (mover == nullptr) {
 			_status = TYPE_ERROR;
+			Utils::_libErr = Utils::E_TYPE;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -82,8 +89,10 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC bool UVector::copy(const UVector& val) {
 		_status = NO_ERROR;
+		Utils::_libErr = Utils::E_NOERR;
 		if (typeinfo->data->copier == nullptr) {
 			_status = TYPE_ERROR;
+			Utils::_libErr = Utils::E_TYPE;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -98,8 +107,10 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC bool UVector::copy(const UVector& val, void (*const mobilize)(void*, const void*)) {
 		_status = NO_ERROR;
+		Utils::_libErr = Utils::E_NOERR;
 		if (mobilize == nullptr) {
 			_status = TYPE_ERROR;
+			Utils::_libErr = Utils::E_TYPE;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -113,6 +124,8 @@ namespace CPPExtensions {
 			for (idx = 0; idx < target; idx++)
 				mobilize(&raw[idx * cur], &val.raw[idx * ot]);
 		} catch (...) {
+			_status = INIT_ERROR;
+			Utils::_libErr = Utils::E_INIT;
 			len = idx - 1;
 			deinit();
 			throw;
@@ -121,8 +134,11 @@ namespace CPPExtensions {
 		return true;
 	}
 	DLL_PUBLIC bool UVector::copy(const UVector& val, void (*const mobilize)(void*, const void*) noexcept) noexcept {
+		_status = NO_ERROR;
+		Utils::_libErr = Utils::E_NOERR;
 		if (mobilize == nullptr) {
 			_status = TYPE_ERROR;
+			Utils::_libErr = Utils::E_TYPE;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -150,6 +166,7 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC bool UVector::resize(Utils::size_t n1) noexcept {
 		_status = NO_ERROR;
+		Utils::_libErr = Utils::E_NOERR;
 		if (trulen == 0)
 			return _allocate(n1);
 		if (trulen > n1)

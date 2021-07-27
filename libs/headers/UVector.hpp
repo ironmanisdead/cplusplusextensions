@@ -12,7 +12,7 @@ namespace CPPExtensions {
 		DLL_PUBLIC void vecput(T&, const Vector<char>*);
 	class UVector {
 		public:
-			enum State { NO_ERROR, MEM_ERROR, TYPE_ERROR };
+			enum State { NO_ERROR, MEM_ERROR, TYPE_ERROR, INIT_ERROR };
 			DLL_PUBLIC const char* id() noexcept;
 			DLL_PUBLIC UVector(const UVector&) noexcept;
 			DLL_PUBLIC UVector(UVector&&) noexcept;

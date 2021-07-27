@@ -51,7 +51,7 @@ namespace CPPExtensions {
 				char temp[sizeof(Node)];
 				_status = NO_ERROR;
 				try {
-					new (temp) Node(Node::cons, false, BinEnt::out { nullptr }, nullptr,
+					new (temp) Node(Node::listed, false, BinEnt::out { nullptr }, nullptr,
 							nullptr, key, Utils::forward<L>(val)...);
 				} catch (...) {
 					_status = INIT_ERROR;

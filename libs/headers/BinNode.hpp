@@ -21,30 +21,35 @@ namespace CPPExtensions {
 			}
 			BinNode* _copy() const noexcept override {
 				if constexpr (keycop && valcop)
-					return new BinNode(cons, _root(), out { nullptr },
+					return new BinNode(listed, _root(), out { nullptr },
 							nullptr, nullptr, key, value);
 				else
 					return nullptr;
 			}
 			BinNode* _build() noexcept override {
 				if constexpr (keycop && valbil)
-					return new BinNode(cons, _root(), out { nullptr },
+					return new BinNode(listed, _root(), out { nullptr },
 							nullptr, nullptr, key, value);
 				else
 					return nullptr;
 			}
 		public:
+			template <class... L>
+			static BinNode create(const K& ke, L&&... val)
+			noexcept(noexcept( ( K(ke), V(Utils::forward<L>(val)...) ) )) {
+				return { pair, ke, Utils::forward<L>(val)... };
+			}
 			static inline const BinInfo info = {
 				Utils_offset(BinNode, key),
 				Utils_offset(BinNode, value),
 				sizeof(BinNode),
 			};
 			template <class... L>
-			BinNode(Imply, bool root, out up, BinNode* lef, BinNode* rig, const K& ke, L&&... val) :
+			BinNode(Complete, bool root, out up, BinNode* lef, BinNode* rig, const K& ke, L&&... val) :
 				BinEnt(&info, root, up, lef, rig), key(ke),
 				value(Utils::forward<L>(val)...) {}
 			template <class... L>
-			BinNode(const K& ke, L&&... val)
+			BinNode(Minimal, const K& ke, L&&... val)
 			noexcept(noexcept( ( K(ke), V(Utils::forward<L>(val)...) ) )) :
 				BinEnt(&info, false, out { nullptr }, nullptr, nullptr), key(ke),
 				value(Utils::forward<L>(val)...) {}

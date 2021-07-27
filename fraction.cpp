@@ -1,7 +1,6 @@
 #include <CPPExtensions/Fraction.hpp>
 #include <CPPExtensions/GString.hpp>
 #include <CPPExtensions/system.hpp>
-#include <CPPExtensions/predefs.hpp>
 
 using namespace CPPExtensions;
 

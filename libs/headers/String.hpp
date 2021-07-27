@@ -19,10 +19,10 @@ namespace CPPExtensions {
 	};
 	class String {
 		private:
+			static constexpr StringView nullview { nullptr };
 			struct privy {};
 			Utils::size_t trulen;
 			StringView view;
-			bool errbit;
 			DLL_PUBLIC bool _allocate(Utils::size_t) noexcept;
 			DLL_PUBLIC bool resize(Utils::size_t) noexcept;
 			DLL_LOCAL void finalize() noexcept;
@@ -107,10 +107,10 @@ namespace CPPExtensions {
 			}
 		public:
 			DLL_PUBLIC String() noexcept;
-			inline String(const String& val) noexcept : trulen(0), view(nullptr), errbit(false) {
+			inline String(const String& val) noexcept : trulen(0), view(nullptr) {
 				byval(val);
 			}
-			inline String(String&& val) noexcept : trulen(0), view(nullptr), errbit(false) {
+			inline String(String&& val) noexcept : trulen(0), view(nullptr) {
 				byval(Utils::forward<String>(val));
 			}
 			template <class T, class... V, bool isn = (sizeof...(V) == 0)>
@@ -124,14 +124,14 @@ namespace CPPExtensions {
 			DLL_PUBLIC StringView substr(Utils::size_t, Utils::size_t) const noexcept;
 			DLL_PUBLIC StringView substr(Utils::size_t) const noexcept;
 			DLL_PUBLIC bool encode(const StringView&) noexcept; //one-time pad to encode string
-			DLL_PUBLIC void encode(Utils::nullpt) = delete; //using a null pointer does nothing
+			void encode(Utils::nullpt) = delete; //using a null pointer is invalid
 			constexpr Utils::size_t gettlen() const noexcept { return trulen; }
-			constexpr bool hasErr() const noexcept { return errbit; }
 			constexpr const char* data() const noexcept {
-				if ((trulen > 0) && (view.len > 0))
+				if ((trulen > 0) && (view.len > 0)) {
 					return view.read();
-				else
+				} else {
 					return nullptr;
+				}
 			}
 			template <class T>
 			String operator +(const T& val) const noexcept {
@@ -162,6 +162,9 @@ namespace CPPExtensions {
 				byval(Utils::forward<String>(val));
 				return *this;
 			}
+			constexpr StringView viewer() const noexcept {
+				return view;
+			}
 			DLL_PUBLIC Utils::strongcmp_t operator <=>(const String&) const noexcept;
 			template <class T>
 			Utils::strongcmp_t operator <=>(const T& val) const noexcept {
@@ -184,17 +187,17 @@ namespace CPPExtensions {
 				return *this;
 			}
 			constexpr operator const char*() const& noexcept {
-				if (trulen > 0)
+				if (trulen > 0) {
 					return view.read();
-				else
+				} else {
 					return nullptr;
-			}
-			inline operator const StringView&() const& noexcept {
-				return view;
+				}
 			}
 			operator const char*() && = delete;
 			DLL_PUBLIC bool allocate(Utils::size_t) noexcept;
 			DLL_PUBLIC ~String();
+			DLL_PUBLIC Utils::size_t write(Utils::f_desc) const noexcept;
+			DLL_PUBLIC Utils::size_t puts(Utils::f_desc) const noexcept;
 			template <class T>
 			friend T& operator <<(T& os, const String& val);
 			template <class T>
@@ -228,7 +231,7 @@ namespace CPPExtensions {
 	}
 	template <class T, class... V, bool isn>
 	String::String(T&& val, const V&... rest) noexcept :
-	 trulen(0), view(nullptr), errbit(false) {
+	 trulen(0), view(nullptr) {
 		if constexpr (sizeof...(V) == 0) {
 			setup(Utils::forward<T>(val));
 		} else {

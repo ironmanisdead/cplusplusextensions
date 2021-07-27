@@ -27,22 +27,64 @@ namespace CPPExtensions {
 				else
 					return val.view;
 			};
+			constexpr void byray(char* val, Utils::size_t ln) noexcept {
+				len = ln;
+				buffer.modify = true;
+				buffer.edit = val;
+			}
+			constexpr void byray(const char* val, Utils::size_t ln) noexcept {
+				len = ln;
+				buffer.modify = false;
+				buffer.view = val;
+			}
+			constexpr void byval(const char* val) noexcept {
+				len = GString::strlen(val);
+				buffer.modify = false;
+				buffer.view = val;
+			}
+			constexpr void byval(char* val) noexcept {
+				len = GString::strlen(val);
+				buffer.modify = true;
+				buffer.edit = val;
+			}
+			constexpr void byval(const StringView& val) noexcept {
+				len = val.len;
+				buffer.modify = false;
+				buffer.view = viewer(val.buffer);
+			}
+			constexpr void byval(Utils::nullpt) noexcept {
+				len = 0;
+				buffer.modify = false;
+				buffer.view = nullptr;
+			}
+			constexpr void byval(const String&) noexcept;
+			void byval(String&&) = delete;
 		public:
-			constexpr StringView(const StringView& val) noexcept : len(val.len),
-				  buffer{ false, {.view = viewer(val.buffer)} } {}
-			constexpr StringView(Utils::nullpt) noexcept : len(0),
-				  buffer{ false, {nullptr} } {}
-			constexpr StringView(StringView& val) noexcept : len(val.len),
-				  buffer(val.buffer) {}
-			constexpr StringView(const char* val) noexcept : len(GString::strlen(val)),
-				  buffer{ false, {.view = val} } {}
-			constexpr StringView(const char* val, Utils::size_t ln) noexcept : len(ln),
-				  buffer{ false, {.view = val} } {}
-			constexpr StringView(char* val) noexcept : len(GString::strlen(val)),
-				  buffer{ true, {.edit = val} } {}
-			constexpr StringView(char* val, Utils::size_t ln) noexcept : len(ln),
-				  buffer{ true, {.edit = val} } {}
-			constexpr StringView(const String& val) noexcept;
+			DLL_PUBLIC Utils::ssize_t write(Utils::f_desc) const noexcept;
+			DLL_PUBLIC Utils::ssize_t puts(Utils::f_desc) const noexcept;
+			constexpr StringView(const StringView& val) noexcept :
+				len(val.len), buffer{ false, { .view = viewer(val.buffer) } } {}
+			constexpr StringView(StringView&& val) noexcept :
+				len(val.len), buffer(val.buffer) {}
+			constexpr StringView(StringView& val) noexcept :
+				len(val.len), buffer(val.buffer) {}
+			template <class T>
+			constexpr StringView(T&& val) noexcept :
+			len(0), buffer { false, { .view = nullptr } } {
+				using prop = Utils::array_prop<T>;
+				using util = Utils::array_util<T>;
+				if constexpr (prop::value) {
+					byray(val, prop::len);
+				} else if constexpr (util::value) {
+					byray(val.data, util::len);
+				} else {
+					byval(val);
+				}
+			}
+			constexpr StringView(char* val, Utils::size_t ln) noexcept :
+				len(ln), buffer { true, { .edit = val } } {}
+			constexpr StringView(const char* val, Utils::size_t ln) noexcept :
+				len(ln), buffer { false, { .view = val } } {}
 			constexpr const char* read() const noexcept { return viewer(buffer); }
 			constexpr char* edit() noexcept {
 				if (buffer.modify)
@@ -50,30 +92,19 @@ namespace CPPExtensions {
 				else
 					return nullptr;
 			}
-			constexpr StringView& operator =(const char* val) noexcept {
-				len = GString::strlen(val);
-				buffer.modify = false;
-				buffer.view = val;
+			template <class T>
+			constexpr StringView& operator =(T&& val) noexcept {
+				using prop = Utils::array_prop<T>;
+				using util = Utils::array_util<T>;
+				if constexpr (prop::value) {
+					byray(val, prop::len);
+				} else if constexpr (util::value) {
+					byray(val.data(), util::len);
+				} else {
+					byval(val);
+				}
 				return *this;
 			}
-			constexpr StringView& operator =(char* val) noexcept {
-				len = GString::strlen(val);
-				buffer.modify = true;
-				buffer.edit = val;
-				return *this;
-			}
-			constexpr StringView& operator =(const StringView& val) noexcept {
-				len = val.len;
-				buffer.modify = false;
-				buffer.view = viewer(val.buffer);
-				return *this;
-			}
-			constexpr StringView& operator =(StringView& val) noexcept {
-				len = val.len;
-				buffer = val.buffer;
-				return *this;
-			}
-			constexpr StringView& operator =(const String& val) noexcept;
 			constexpr void set(const char* val, Utils::size_t ln) noexcept {
 				buffer.modify = false;
 				buffer.view = val;

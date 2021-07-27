@@ -64,15 +64,15 @@ namespace CPPExtensions {
 			return std::strerror(err);
 		}
 #ifdef _MSC_VER
-		DLL_PUBLIC const desc std_in = GetStdHandle(STD_INPUT_HANDLE);
-		DLL_PUBLIC const desc std_out = GetStdHandle(STD_OUTPUT_HANDLE);
-		DLL_PUBLIC const desc std_err = GetStdHandle(STD_ERROR_HANDLE);
-		DLL_PUBLIC const desc errdesc = HFILE_ERROR;
+		DLL_PUBLIC const f_desc std_in = GetStdHandle(STD_INPUT_HANDLE);
+		DLL_PUBLIC const f_desc std_out = GetStdHandle(STD_OUTPUT_HANDLE);
+		DLL_PUBLIC const f_desc std_err = GetStdHandle(STD_ERROR_HANDLE);
+		DLL_PUBLIC const f_desc errdesc = HFILE_ERROR;
 #endif
-		DLL_PUBLIC ssize_t write(desc fd, const char* str, size_t len) noexcept {
-			_clrerr();
+		DLL_PUBLIC ssize_t write(f_desc fd, const char* str, size_t len) noexcept {
+			_libErr = _noerr;
 			if (str == nullptr) {
-				_nullerr();
+				_libErr = _nullerr;
 				return -1;
 			}
 #ifdef _MSC_VER
@@ -86,17 +86,11 @@ namespace CPPExtensions {
 			return ::write(fd, str, len);
 #endif
 		}
-		DLL_PUBLIC ssize_t writestr(desc fd, const String& val) noexcept {
-			if (val.gettlen() == 0)
-				return -1;
-			else
-				return write(fd, val.data(), val.getlen());
-		}
-		DLL_PUBLIC ssize_t print(desc fd, const char* str) noexcept {
+		DLL_PUBLIC ssize_t print(f_desc fd, const char* str) noexcept {
 			auto numbytes = GString::_strlen(str);
 			return write(fd, str, numbytes);
 		}
-		DLL_PUBLIC bool putchar(desc fd, char ch) noexcept {
+		DLL_PUBLIC bool putchar(f_desc fd, char ch) noexcept {
 			static char ray[1];
 			ray[0] = ch;
 			if (write(fd, ray, 1) > 0) {
@@ -106,8 +100,15 @@ namespace CPPExtensions {
 			}
 		}
 		static String _putstr = {};
-		DLL_PUBLIC ssize_t puts(desc fd, const char* str) noexcept {
+		DLL_PUBLIC ssize_t puts(f_desc fd, const char* str) noexcept {
 			_putstr.set(str, '\n');
+			if (_putstr.gettlen() > 0)
+				return write(fd, _putstr.data(), _putstr.getlen());
+			else
+				return -1;
+		}
+		DLL_LOCAL ssize_t _puts(f_desc fd, const char* str, Utils::size_t len) noexcept {
+			_putstr.set(StringView(str, len), '\n');
 			if (_putstr.gettlen() > 0)
 				return write(fd, _putstr.data(), _putstr.getlen());
 			else
@@ -117,7 +118,7 @@ namespace CPPExtensions {
 			return _putstr.allocate(siz);
 		}
 		DLL_PUBLIC void puts_free() noexcept { _putstr = nullptr; }
-		DLL_PUBLIC ssize_t read(desc fd, char* str, size_t len) noexcept {
+		DLL_PUBLIC ssize_t read(f_desc fd, char* str, size_t len) noexcept {
 #ifdef _MSC_VER
 			int written = 0;
 			HANDLE file = RECAST(HANDLE, file);
@@ -129,7 +130,7 @@ namespace CPPExtensions {
 			return ::read(fd, str, len);
 #endif
 		}
-		DLL_PUBLIC desc open(const char* path, OpenFlags flags) noexcept {
+		DLL_PUBLIC f_desc open(const char* path, OpenFlags flags) noexcept {
 			_sysFlags sysflags = _sys_oflags(flags);
 #ifdef _MSC_VER
 			return ::CreateFileA(path, sysflags.access,
@@ -140,7 +141,7 @@ namespace CPPExtensions {
 			return ::open(path, sysflags.access, mode);
 #endif
 		}
-		DLL_PUBLIC desc open(const char* path, OpenFlags flags, ModeFlags mode) noexcept {
+		DLL_PUBLIC f_desc open(const char* path, OpenFlags flags, ModeFlags mode) noexcept {
 			_sysFlags sysflags = _sys_oflags(flags);
 			S_WORD sysmode = _sys_mflags(mode);
 #ifdef _MSC_VER
@@ -151,7 +152,7 @@ namespace CPPExtensions {
 			return ::open(path, sysflags.access, sysmode);
 #endif
 		}
-		DLL_PUBLIC bool close(desc fd) noexcept {
+		DLL_PUBLIC bool close(f_desc fd) noexcept {
 #ifdef _MSC_VER
 			return ::CloseHandle(RECAST(HANDLE, file));
 #else
@@ -161,7 +162,7 @@ namespace CPPExtensions {
 				return false;
 #endif
 		}
-		DLL_PUBLIC ssize_t seek(desc fd, ssize_t pos, SeekFlag method) noexcept {
+		DLL_PUBLIC ssize_t seek(f_desc fd, ssize_t pos, SeekFlag method) noexcept {
 #ifdef _MSC_VER
 			auto result = ::SetFilePointer(fd, pos, nullptr, method);
 			if (result == INVALID_SET_FILE_POINTER)
@@ -190,7 +191,7 @@ namespace CPPExtensions {
 #ifdef _MSC_VER
 			return GetTickCount64();
 #else
-			static desc file = open("/proc/uptime", _readflag);
+			static f_desc file = open("/proc/uptime", _readflag);
 			static char array[16];
 			static StringView view = { array, 16 };
 			if (file == errdesc)
@@ -207,20 +208,27 @@ namespace CPPExtensions {
 #ifdef _MSC_VER
 			Sleep(time);
 #else
-			usleep(time);
+			usleep(time * 1000);
 #endif
 		}
 		DLL_PUBLIC int uncaught() noexcept {
 			return std::uncaught_exceptions();
 		}
 		DLL_PUBLIC void* malloc(size_t size) noexcept {
-			_clrerr();
+			_libErr = _noerr;
 			void* alloc = ::operator new(size, std::nothrow_t {});
 			if (!alloc)
-				_memerr();
+				_libErr = _memerr;
 			return alloc;
 		}
-		DLL_PUBLIC void free(void* ptr) noexcept { ::operator delete(ptr); }
+		DLL_PUBLIC bool free(void* ptr) noexcept { 
+			if (ptr) {
+				::operator delete(ptr);
+				return true;
+			} else {
+				return false;
+			}
+		}
 		[[noreturn]] DLL_PUBLIC void RunError(const char* str) {
 			throw std::runtime_error(str);
 		}

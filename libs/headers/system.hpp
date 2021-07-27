@@ -23,11 +23,14 @@ namespace CPPExtensions {
 			S_END //Seeks from end
 		};
 		enum ErrFlag : unsigned {
-			NO_ERROR, //there is no active local error
-			MEM_ERROR, //allocation failed in call
-			NULL_ERROR, //null pointer passed to function where it wasn't expected
-			TYPE_ERROR //type was set incorrectly
+			E_NOERR, //there is no active local error
+			E_UNKNOWN, //undefined error (no error captures the state of the program)
+			E_MEM, //allocation failed in call
+			E_INIT, //object initialization failed in call
+			E_NULL, //null pointer passed to function where it wasn't expected
+			E_TYPE, //undefined type error
+			E_CONV, //type conversion error
+			E_ATTR, //type attribute error (type had invalid functions, exception specifiers or otherwise)
 		};
-		extern thread_local volatile ErrFlag _locerr; //local error value
 	}
 }

@@ -8,7 +8,7 @@ namespace CPPExtensions {
 	namespace Utils {
 		const OpenFlags _readflag = F_READ;
 		const SeekFlag _setflag = S_RES;
-		DLL_LOCAL thread_local volatile ErrFlag _locerr = NO_ERROR;
+		DLL_LOCAL thread_local volatile ErrFlag _libErr = E_NOERR;
 		DLL_LOCAL _sysFlags _sys_oflags(OpenFlags flags) noexcept {
 #ifdef DLL_OS_windows
 			_sysFlags sysflags = { OPEN_EXISTING, 0 };
@@ -61,27 +61,29 @@ namespace CPPExtensions {
 			return mode;
 #endif
 		}
-		DLL_PUBLIC ErrFlag getlocerr() noexcept { return _locerr; }
+		DLL_PUBLIC ErrFlag getlocerr() noexcept { return _libErr; }
 		DLL_PUBLIC const char* strlocerr(ErrFlag flag) noexcept {
 			switch (flag) {
-				case NO_ERROR:
+				case E_NOERR:
 					return "Success.";
-				case MEM_ERROR:
+				case E_MEM:
 					return "Allocation failed.";
-				case NULL_ERROR:
+				case E_NULL:
 					return "Null pointer was passed to function.";
+				case E_TYPE:
+					return "Undefined type error occured.";
+				case E_CONV:
+					return "Type conversion error occured.";
+				case E_ATTR:
+					return "Type had invalid properties.";
+				case E_UNKNOWN:
+					[[fallthrough]];
 				default:
-					return "Undefined Error";
+					return "Unknown/undefined Error.";
 			}
 		}
-		DLL_LOCAL void _clrerr() noexcept {
-			_locerr = NO_ERROR;
-		}
-		DLL_LOCAL void _memerr() noexcept {
-			_locerr = MEM_ERROR;
-		}
-		DLL_LOCAL void _nullerr() noexcept {
-			_locerr = NULL_ERROR;
-		}
+		DLL_LOCAL ErrFlag _noerr = E_NOERR;
+		DLL_LOCAL ErrFlag _memerr = E_MEM;
+		DLL_LOCAL ErrFlag _nullerr = E_NULL;
 	}
 }
