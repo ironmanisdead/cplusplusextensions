@@ -195,6 +195,7 @@ namespace CPPExtensions {
 		constexpr Array<char, _s_len> numstr(u64 num) noexcept {
 			size_t len = _strlen(num);
 			Array<char, _s_len> result;
+			result[0] = '0';
 			size_t idx = len;
 			for (u64 cop = num; cop > 0; cop /= 10)
 				result[--idx] = (cop % 10) + '0';

@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <chrono>
 #include <thread>
+#include <iostream>
 #include "headers/GString.hpp"
 DLL_HIDE
 namespace CPPExtensions {

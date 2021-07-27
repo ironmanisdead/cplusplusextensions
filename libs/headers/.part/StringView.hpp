@@ -52,6 +52,10 @@ namespace CPPExtensions {
 				buffer.modify = false;
 				buffer.view = viewer(val.buffer);
 			}
+			constexpr void byval(StringView& val) noexcept {
+				len = val.len;
+				buffer = val.buffer;
+			}
 			constexpr void byval(Utils::nullpt) noexcept {
 				len = 0;
 				buffer.modify = false;

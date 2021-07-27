@@ -32,12 +32,13 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC bool String::resize(Utils::size_t n1) noexcept {
 		Utils::_libErr = Utils::E_NOERR;
-		if (trulen == 0)
+		if (trulen == 0) {
 			return _allocate(n1);
-		else if (n1 == 0)
+		} else if (n1 == 0) {
 			return finalize(), true;
-		else if (n1 < trulen)
+		} else if (n1 < trulen) {
 			return true;
+		}
 		Utils::size_t ntru = trulen;
 		while (ntru < n1)
 			ntru *= 2;
@@ -85,8 +86,8 @@ namespace CPPExtensions {
 		if constexpr (reset)
 			if (!resize(ntru))
 				return false;
+		Utils::memcpy(view.edit(), val, nlen);
 		view.len = nlen;
-		Utils::memcpy(view.edit(), val, siz);
 		view.edit()[view.len] = '\0';
 		if constexpr (reset)
 			return true;
