@@ -83,6 +83,7 @@ namespace CPPExtensions {
 			nlen = siz;
 			ntru = siz + 1;
 		}
+		view.len = 0;
 		if constexpr (reset)
 			if (!resize(ntru))
 				return false;
@@ -109,6 +110,7 @@ namespace CPPExtensions {
 			else
 				return;
 		}
+		view.len = 0;
 		if constexpr (reset)
 			if (!resize(val.len + 1))
 				return false;
@@ -128,6 +130,7 @@ namespace CPPExtensions {
 			else
 				return;
 		}
+		view.len = 0;
 		if constexpr (reset)
 			if (!resize(val.view.len + 1))
 				return false;
@@ -149,6 +152,7 @@ namespace CPPExtensions {
 				return;
 		}
 		Utils::size_t siz = GString::strlen(val);
+		view.len = 0;
 		if constexpr (reset)
 			if (!resize(siz + 1))
 				return false;
@@ -160,9 +164,11 @@ namespace CPPExtensions {
 	template <bool reset>
 	String::setby<reset> String::byval(char ch) noexcept {
 		Utils::_libErr = Utils::E_NOERR;
-		if constexpr (reset)
+		view.len = 0;
+		if constexpr (reset) {
 			if (!resize(2))
 				return false;
+		}
 		addval(ch);
 		if constexpr (reset)
 			return true;
@@ -170,9 +176,11 @@ namespace CPPExtensions {
 	template <bool reset>
 	String::setby<reset> String::byval(Utils::u64 str) noexcept {
 		Utils::_libErr = Utils::E_NOERR;
-		if constexpr (reset)
+		view.len = 0;
+		if constexpr (reset) {
 			if (!resize(GString::strlen(str) + 1))
 				return false;
+		}
 		addval(str);
 		if constexpr (reset)
 			return true;
@@ -180,9 +188,11 @@ namespace CPPExtensions {
 	template <bool reset>
 	String::setby<reset> String::byval(Utils::s64 str) noexcept {
 		Utils::_libErr = Utils::E_NOERR;
-		if constexpr (reset)
+		view.len = 0;
+		if constexpr (reset) {
 			if (!resize(GString::strlen(str) + 1))
 				return false;
+		}
 		addval(str);
 		if constexpr (reset)
 			return true;
