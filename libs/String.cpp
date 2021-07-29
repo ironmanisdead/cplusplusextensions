@@ -219,6 +219,13 @@ namespace CPPExtensions {
 			view.len += val.view.len;
 		}
 	}
+	DLL_PUBLIC void String::addval(const StringView& val) noexcept {
+		const char* str = val.read();
+		if (str) {
+			Utils::memcpy(&view.edit()[view.len], str, val.len);
+			view.len += val.len;
+		}
+	}
 	DLL_PUBLIC void String::addval(Utils::u64 str) noexcept {
 		view.edit()[view.len] = '0';
 		Utils::size_t siz = GString::strlen(str);

@@ -70,6 +70,7 @@ namespace CPPExtensions {
 			DLL_PUBLIC void byval(String&&) noexcept;
 			DLL_PUBLIC void addray(const char*, Utils::size_t) noexcept;
 			DLL_PUBLIC void addval(const String&) noexcept;
+			DLL_PUBLIC void addval(const StringView&) noexcept;
 			DLL_PUBLIC void addval(const char*) noexcept;
 			DLL_PUBLIC void addval(Utils::u64) noexcept;
 			inline void addval(Utils::ulong val) noexcept {

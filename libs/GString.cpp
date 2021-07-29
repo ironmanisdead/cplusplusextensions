@@ -52,6 +52,13 @@ namespace CPPExtensions {
 		DLL_PUBLIC Utils::size_t _strlen(const String& val) noexcept {
 			return val.getlen();
 		}
+		DLL_PUBLIC Utils::size_t _strlen(const StringView& val) noexcept {
+			if (val.read()) {
+				return val.len;
+			} else {
+				return 0;
+			}
+		}
 		DLL_PUBLIC Utils::size_t _strlen(const Vector<char>& val) noexcept {
 			return val.getlen();
 		}

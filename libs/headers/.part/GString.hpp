@@ -5,6 +5,7 @@
 DLL_HIDE
 namespace CPPExtensions {
 	class String;
+	class StringView;
 	template <class>
 		class Vector;
 	namespace GString {
@@ -62,6 +63,7 @@ namespace CPPExtensions {
 			return _strlen(s64(str));
 		}
 		DLL_PUBLIC size_t _strlen(const String&) noexcept;
+		DLL_PUBLIC size_t _strlen(const StringView&) noexcept;
 		DLL_PUBLIC size_t _strlen(const Vector<char>&) noexcept;
 		DLL_PUBLIC const String* demangle(const char*);
 		template <class T>
