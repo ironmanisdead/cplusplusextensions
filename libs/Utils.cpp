@@ -1,30 +1,12 @@
 #include "headers/predefs.hpp"
 #include "headers/system_internals.hpp"
 #include "headers/types.hpp"
-#include <stdexcept>
-#include <cstdlib>
-#include <chrono>
-#include <thread>
-#include <iostream>
 #include "headers/GString.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	namespace Utils {
 		DLL_PUBLIC volatile void* ignore(volatile void*) noexcept {
 			return nullptr;
-		}
-		DLL_PUBLIC unsigned epoch() noexcept {
-			using namespace std::chrono;
-			auto time = system_clock::now().time_since_epoch();
-			return duration_cast<milliseconds>(time).count();
-		}
-		DLL_PUBLIC int rand() noexcept {
-			static bool set = false;
-			if (!set) {
-				std::srand(Utils::epoch());
-				set = true;
-			}
-			return std::rand();
 		}
 		DLL_PUBLIC void memcpy(void* dest, const void* src, size_t len) noexcept {
 			char* cdest = downcast<char*>(dest);
@@ -229,12 +211,6 @@ namespace CPPExtensions {
 			} else {
 				return false;
 			}
-		}
-		[[noreturn]] DLL_PUBLIC void RunError(const char* str) {
-			throw std::runtime_error(str);
-		}
-		[[noreturn]] DLL_PUBLIC void RangeError(const char* str) {
-			throw std::out_of_range(str);
 		}
 	}
 }

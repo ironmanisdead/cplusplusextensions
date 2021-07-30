@@ -7,13 +7,31 @@ function genrule() {
 	genrule_base=
 	genrule_extr=
 	declare -- flags="-MP -M"
+	declare -i usable=1
 	case "$1" in
 		"+M")
 			flags="-MP -MM"
-			;&
+			shift
+			;;
 		"--")
+			usable=0
 			shift
 	esac
+	while ((usable)); do
+		case "$1" in
+			"--")
+				usable=0
+				shift
+				;;
+			"-"*)
+				flags+=" $1"
+				shift
+				;;
+			*)
+				usable=0
+				;;
+		esac
+	done
 	declare -- fname
 	if [[ "$1" =~ ^'/' ]]; then
 		fname="$1"

@@ -1,9 +1,12 @@
 #!/bin/bash
 set -e
-shopt -s dotglob
+shopt -s dotglob nullglob
 
 if [[ -d "${installabs}/include/CPPExtensions" ]]; then
-	echo "removing headers"
-	rm -r -f "${installabs}"/include/CPPExtensions/*
+	declare -a headers=("${installabs}"/include/CPPExtensions/*)
+	if ((${#headers[@]})); then
+		echo "removing headers"
+		rm -r "${headers[@]}"
+	fi
 	rmdir -v "${installabs}/include/CPPExtensions"
 fi

@@ -37,7 +37,7 @@ namespace CPPExtensions {
 		Utils::_libErr = Utils::E_NOERR;
 		if (typeinfo != val.typeinfo) {
 			_status = TYPE_ERROR;
-			Utils::_libErr = Utils::E_TYPE;
+			Utils::_libErr = Utils::E_ATTR;
 			return false;
 		}
 		finalize();
@@ -54,7 +54,7 @@ namespace CPPExtensions {
 		Utils::_libErr = Utils::E_NOERR;
 		if (mover == nullptr) {
 			_status = TYPE_ERROR;
-			Utils::_libErr = Utils::E_TYPE;
+			Utils::_libErr = Utils::E_ATTR;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -73,7 +73,7 @@ namespace CPPExtensions {
 		Utils::_libErr = Utils::E_NOERR;
 		if (mover == nullptr) {
 			_status = TYPE_ERROR;
-			Utils::_libErr = Utils::E_TYPE;
+			Utils::_libErr = Utils::E_ATTR;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -92,7 +92,7 @@ namespace CPPExtensions {
 		Utils::_libErr = Utils::E_NOERR;
 		if (typeinfo->data->copier == nullptr) {
 			_status = TYPE_ERROR;
-			Utils::_libErr = Utils::E_TYPE;
+			Utils::_libErr = Utils::E_ATTR;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -110,7 +110,7 @@ namespace CPPExtensions {
 		Utils::_libErr = Utils::E_NOERR;
 		if (mobilize == nullptr) {
 			_status = TYPE_ERROR;
-			Utils::_libErr = Utils::E_TYPE;
+			Utils::_libErr = Utils::E_ATTR;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -138,7 +138,7 @@ namespace CPPExtensions {
 		Utils::_libErr = Utils::E_NOERR;
 		if (mobilize == nullptr) {
 			_status = TYPE_ERROR;
-			Utils::_libErr = Utils::E_TYPE;
+			Utils::_libErr = Utils::E_ATTR;
 			return false;
 		}
 		Utils::size_t target = val.len;
@@ -233,7 +233,6 @@ namespace CPPExtensions {
 }
 DLL_RESTORE
 #include "headers/Vector.hpp"
-#include <iostream>
 DLL_HIDE
 namespace CPPExtensions {
 	template <>
@@ -249,11 +248,6 @@ namespace CPPExtensions {
 			return false;
 		Utils::memcpy(raw, val.view.read(), len = val.view.len);
 		return true;
-	}
-	template <>
-	DLL_PUBLIC void vecput(std::ostream& os, const Vector<char>* val) {
-		if (val && (val->trulen > 0))
-			return static_cast<void>(os.write(val->raw, val->len));
 	}
 }
 DLL_RESTORE

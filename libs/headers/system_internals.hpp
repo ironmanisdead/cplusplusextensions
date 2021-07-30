@@ -56,7 +56,7 @@ namespace CPPExtensions {
 		DLL_PUBLIC const char* strerrno(int) noexcept; //returns string describing global(geterrno()) error code
 		DLL_PUBLIC ErrFlag getlocerr() noexcept; //gets local error code
 		DLL_PUBLIC const char* strlocerr(ErrFlag) noexcept; //returns string describing local(getlocerr()) error code
-		DLL_PUBLIC unsigned epoch() noexcept; //high_resolution_clock since epoch
+		DLL_PUBLIC u64 epoch() noexcept; //high_resolution_clock since epoch
 		DLL_PUBLIC u64 uptime() noexcept; //gets the uptime of the system in milliseconds
 		DLL_PUBLIC int rand() noexcept; //random integer
 		//memcpy copies memory from one location (2nd parameter) to another location (1st parameter)

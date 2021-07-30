@@ -2,6 +2,7 @@
 #include "BinNode.hpp"
 #include "BinNodeI.hpp"
 #include "String.hpp"
+#include <new>
 DLL_HIDE
 namespace CPPExtensions {
 	template <class K, class V>

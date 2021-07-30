@@ -7,6 +7,8 @@ fi
 
 echo "making include directory"
 mkdir -p -v "${installabs}/include/CPPExtensions/.part"
+mkdir -p -v "${installabs}/include/CPPExtensions/.c_extern"
 echo "installing header files"
 cp --preserve=timestamps -u -t "${installabs}/include/CPPExtensions" headers/*.hpp
 cp --preserve=timestamps -u -t "${installabs}/include/CPPExtensions/.part" headers/.part/*.hpp
+cp --preserve=timestamps -u -t "${installabs}/include/CPPExtensions/.c_extern" headers/.c_extern/*.h

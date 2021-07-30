@@ -10,9 +10,12 @@ if [[ -f "$installabs"/lib64/libcppextensions.so ]]; then
 	rm -v "$installabs"/lib64/libcppextensions.so
 	declare -a rules=(.*.mk)
 	files=(*.o)
-	if ((${#files[@]})); then
-		echo "removing pre-made test rules and objects as they would now be invalidated"
+	if ((${#rules[@]})); then
+		echo "removing pre-made test rules as they would now be invalidated"
 		rm -v -- "${rules[@]}"
+	fi
+	if ((${#files[@]})); then
+		echo "removing pre-made test objects as they would now be invalidated"
 		rm -v -- "${files[@]}"
 	fi
 fi

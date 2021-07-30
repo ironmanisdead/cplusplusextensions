@@ -1,5 +1,4 @@
 #include <CPPExtensions/BinMap.hpp>
-#include <iostream>
 using namespace CPPExtensions;
 int main() {
 	String printer;

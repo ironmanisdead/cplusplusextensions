@@ -19,7 +19,7 @@ IFS= read -d '' info <<'EOF'
 EOF
 set -e
 declare -- rulestr ruleend trail
-genrule rulestr ruleend -- "$targetfile" libs/include
+genrule rulestr ruleend $CFLAGS -- "$targetfile" libs/include
 if test -f "${installabs}/lib64/libcppextensions.so"; then
 	trail="-I ${shpath}/include/ -L ${shpath}/lib64/ -Wl,-rpath,${shpath}/lib64/ -Wl,-lcppextensions"
 else

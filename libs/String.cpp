@@ -2,7 +2,6 @@
 #include "headers/GString.hpp"
 #include "headers/StringView.hpp"
 #include "headers/system.hpp"
-#include <iostream>
 #define BOOL_EXTERN(fun, ...) template DLL_PUBLIC String::setby<true> fun<true>(__VA_ARGS__); \
 	template DLL_PUBLIC String::setby<false> fun<false>(__VA_ARGS__)
 DLL_HIDE
@@ -314,10 +313,10 @@ namespace CPPExtensions {
 			return -1;
 		}
 	}
-	DLL_PUBLIC ssize_t Utils::writestr(Utils::f_desc id, const String& str) noexcept {
+	DLL_PUBLIC Utils::ssize_t Utils::writestr(Utils::f_desc id, const String& str) noexcept {
 		return str.write(id);
 	}
-	DLL_PUBLIC ssize_t Utils::writestr(Utils::f_desc id, const StringView& str) noexcept {
+	DLL_PUBLIC Utils::ssize_t Utils::writestr(Utils::f_desc id, const StringView& str) noexcept {
 		return str.write(id);
 	}
 	DLL_PUBLIC Utils::strongcmp_t String::operator <=>(const String& val) const noexcept {
@@ -327,11 +326,6 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC Utils::strongcmp_t String::valcmp(const StringView& val) const noexcept {
 		return StringView(*this) <=> val;
-	}
-	template <>
-	DLL_PUBLIC void _viewput(std::ostream& os, const StringView* val) {
-		if (val && val->read() && (val->len > 0))
-			return static_cast<void>(os.write(val->read(), val->len));
 	}
 	BOOL_EXTERN(String::byval, const StringView&);
 	BOOL_EXTERN(String::byval, const String&);

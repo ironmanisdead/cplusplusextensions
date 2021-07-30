@@ -1,22 +1,22 @@
 #!/bin/bash
 set -e
+shopt -s nullglob
 
 declare -- item included
-for included in "${installabs}"/include/CPPExtensions/*.hpp; do
-	if [[ ! -f "${included}" ]]; then
-		continue
-	fi
-	item="${included#"${installabs}/include/CPPExtensions/"}"
-	if [[ ! -f "$item" ]]; then
-		rm -v "$included"
-	fi
-done
-for included in "${installabs}"/include/CPPExtensions/.part/*.hpp; do
-	if [[ ! -f "${included}" ]]; then
-		continue
-	fi
-	item="${included#"${installabs}/include/CPPExtensions/"}"
-	if [[ ! -f "$item" ]]; then
-		rm -v "$included"
-	fi
-done
+function depremove() {
+	local origin="${installabs}${1}"
+	local wildcard="${origin}${2}"
+	local item
+	for included in $wildcard; do
+		if [[ ! -f "${included}" ]]; then
+			continue
+		fi
+		item="${included#"${origin}"}"
+		if [[ ! -f "$item" ]]; then
+			rm -v "$included"
+		fi
+	done
+}
+depremove "/include/CPPExtensions/" "*.hpp"
+depremove "/include/CPPExtensions/.part/" "*.hpp"
+depremove "/include/CPPExtensions/.c_extern/" "*.h"

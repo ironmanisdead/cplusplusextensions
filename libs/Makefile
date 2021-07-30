@@ -12,7 +12,7 @@ endif
 
 headers:
 	.extra/depcheck
-	$(if $(filter-out nodown,$(MAKECMDGOALS)),,cd headers && make)
+	$(if $(filter nodown,$(MAKECMDGOALS)),,cd headers && make All.hpp)
 
 .PHONY: all nodep nodown $(PHON)
 
@@ -29,7 +29,7 @@ install: headers
 uninstall:
 	.extra/uninstall
 
-.%.mk: %.cpp
+.%.mk: %.cpp | headers
 	.extra/depgen $*
 
 .shared.so: $(patsubst %.cpp,.%.o,$(sources))

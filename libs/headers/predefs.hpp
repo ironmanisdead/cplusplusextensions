@@ -1,4 +1,9 @@
 #pragma once
+#define XSTR(x) STR(x)
+#define STR(x) #x
+#if (__cplusplus <= 201703L)
+ #error "incorrect compiler"
+#endif
 namespace CPPExtensions {
 	namespace Utils {
 		namespace {
@@ -67,5 +72,5 @@ namespace CPPExtensions {
 }
 #pragma push_macro("DLL_EXPORTED")
 #define DLL_EXPORTED DLL_EXPORT_LIB_cppextensions
-#include ".extra/internal-macros.h"
+#include ".c_extern/internal-macros.h"
 #pragma pop_macro("DLL_EXPORTED")
