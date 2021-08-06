@@ -44,8 +44,10 @@ namespace CPPExtensions {
 			S_WORD disp;
 #endif
 		};
-		struct f_type;
-		DLL_LOCAL extern thread_local volatile ErrFlag _libErr; //error code storage (internal)
+#ifdef DLL_EXPORT_LIB_cppextensions
+		DLL_LOCAL extern volatile ErrFlag& _getLibErr() noexcept; //support for funky compilers
+		DLL_LOCAL thread_local volatile inline ErrFlag& _libErr = _getLibErr();
+#endif
 		DLL_PUBLIC volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
 		DLL_LOCAL extern ErrFlag _noerr; //empty error code(internal use)
 		DLL_LOCAL extern ErrFlag _memerr; //memory error code(internal use)

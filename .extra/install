@@ -12,6 +12,7 @@ cp --preserve=timestamps -u -v -- libs/.static.a "$installabs"/lib64/libcppexten
 ln -snfv "${installabs}/include" libs/include
 shopt -s nullglob
 declare -a rules=(.*.mk)
+declare -a files=(*.o)
 if ((indep)); then
 	if ((${#rules[@]})); then
 		echo "removing test .*.mk files, as installation modifies dependency sources"
@@ -22,7 +23,6 @@ if ((indep)); then
 		rm -v -- "${files[@]}"
 	fi
 fi
-declare -a files=(*.o)
 if ((${#files[@]})); then
 	echo "re-making test *.o files, as the installation directory has been potentially updated"
 	MAKELEVEL=$((MAKELEVEL - 1)) make -- "${files[@]}"

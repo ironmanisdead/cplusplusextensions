@@ -16,7 +16,8 @@ int main() {
 		printer.write(Utils::std_out);
 		map.insert(key, val);
 	}
-	Utils::puts(Utils::std_out, "sorted list:");
+	printer.set("sorted list:\n");
+	printer.write(Utils::std_out);
 	for (auto& node : map) {
 		printer.set(node.getKey(), ' ', node.getValue(), '\n');
 		printer.write(Utils::std_out);

@@ -8,7 +8,10 @@ namespace CPPExtensions {
 	namespace Utils {
 		const OpenFlags _readflag = F_READ;
 		const SeekFlag _setflag = S_RES;
-		DLL_LOCAL thread_local volatile ErrFlag _libErr = E_NOERR;
+		DLL_LOCAL thread_local volatile ErrFlag _libErrInt = E_NOERR; //where _libErr is initialized
+		DLL_LOCAL volatile ErrFlag& _getLibErr() noexcept { //support for funky compilers
+			return _libErrInt;
+		}
 		DLL_LOCAL _sysFlags _sys_oflags(OpenFlags flags) noexcept {
 #ifdef DLL_OS_windows
 			_sysFlags sysflags = { OPEN_EXISTING, 0 };
@@ -61,7 +64,7 @@ namespace CPPExtensions {
 			return mode;
 #endif
 		}
-		DLL_PUBLIC ErrFlag getlocerr() noexcept { return _libErr; }
+		DLL_PUBLIC ErrFlag getlocerr() noexcept { return _libErrInt; }
 		DLL_PUBLIC const char* strlocerr(ErrFlag flag) noexcept {
 			switch (flag) {
 				case E_NOERR:
