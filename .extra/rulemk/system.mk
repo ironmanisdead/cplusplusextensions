@@ -13,3 +13,6 @@ endif
 ifneq ($(call isundef,current_lib),)
  current_lib:=cppextensions
 endif
+ifneq ($(call isundef,current_head),)
+ current_head:=CPPExtensions
+endif

@@ -25,6 +25,7 @@ export installdir
 export installabs
 export targetfile
 export current_lib
+export current_head
 export CC
 export LDFLAGS
 export LDLIBS

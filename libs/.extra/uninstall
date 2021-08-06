@@ -2,11 +2,11 @@
 set -e
 shopt -s dotglob nullglob
 
-if [[ -d "${installabs}/include/CPPExtensions" ]]; then
-	declare -a headers=("${installabs}"/include/CPPExtensions/*)
+if [[ -d "${installabs}/include/${current_head}" ]]; then
+	declare -a headers=("${installabs}"/include/${current_head}/*)
 	if ((${#headers[@]})); then
 		echo "removing headers"
 		rm -r "${headers[@]}"
 	fi
-	rmdir -v "${installabs}/include/CPPExtensions"
+	rmdir -v "${installabs}/include/${current_head}"
 fi

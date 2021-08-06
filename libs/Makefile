@@ -22,6 +22,9 @@ nodep: #means makefile won't generate dependencies for objects
 
 nodown: #means makefile won't descend into another directory
 
+include: #makes include symlink
+	.extra/symmake
+
 install: headers
 	.extra/install
 	MAKELEVEL=$(MAKELEVEL) make nodown all

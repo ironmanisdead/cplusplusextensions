@@ -17,6 +17,6 @@ function depremove() {
 		fi
 	done
 }
-depremove "/include/CPPExtensions/" "*.$H_EXT"
-depremove "/include/CPPExtensions/.part/" "*.$H_EXT"
-depremove "/include/CPPExtensions/.c_extern/" "*.h"
+depremove "/include/${current_head}/" "*.$H_EXT"
+depremove "/include/${current_head}/.part/" "*.$H_EXT"
+depremove "/include/${current_head}/.c_extern/" "*.h"
