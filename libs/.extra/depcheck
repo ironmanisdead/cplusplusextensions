@@ -5,8 +5,8 @@ declare -- base
 for item in .*.mk; do
 	base="${item%'.mk'}"
 	base="${base#'.'}"
-	if [[ ! -e "${base}.cpp" ]]; then
-		echo "removing ${base}.cpp from dependencies"
+	if [[ ! -e "${base}.$C_EXT" ]]; then
+		echo "removing ${base}.$C_EXT from dependencies"
 		rm -f .${base}.mk .${base}.o
 		flag=true
 	fi

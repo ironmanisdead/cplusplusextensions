@@ -40,9 +40,9 @@ function genrule() {
 	fi
 	declare -- prerule
 	if [[ "$#" -gt 1 ]]; then
-		prerule="$(cc $flags -I "$2" "$fname.cpp")" || return $?
+		prerule="$(cc $flags -I "$2" "$fname.$C_EXT")" || return $?
 	else
-		prerule="$(cc $flags "$fname.cpp")" || return $?
+		prerule="$(cc $flags "$fname.$C_EXT")" || return $?
 	fi
 	declare -- line
 	declare -i decision=1
@@ -64,5 +64,5 @@ function genrule() {
 			fi
 		fi
 	done < <(printf "%s\n" "$prerule")
-	genrule_extr="${genrule_extr/"$1.cpp"/"$name.cpp"}"
+	genrule_extr="${genrule_extr/"$1.$C_EXT"/"$name.$C_EXT"}"
 }

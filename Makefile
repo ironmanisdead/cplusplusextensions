@@ -3,14 +3,14 @@ not=$(if $(1),,true)
 targetfile=$*
 include .extra/rulemk/helper.mk
 ifneq ($(findstring /$(shell pwd),/$(installabs)),)
- $(error cannot install libcppextensions inside source directory)
+ $(error cannot install lib$(current_lib) inside source directory)
 endif
 
 PHON:=libs remake unmake scrape clean reset install uninstall deps
 .PHONY:tests nodep nodown $(PHON)
-SOURCES:=$(wildcard *.cpp)
-RULES:=$(patsubst %.cpp,.%.mk,$(SOURCES))
-OBJECTS:=$(patsubst %.cpp,%.o,$(SOURCES))
+SOURCES:=$(wildcard *.$(C_EXT))
+RULES:=$(patsubst %.$(C_EXT),.%.mk,$(SOURCES))
+OBJECTS:=$(patsubst %.$(C_EXT),%.o,$(SOURCES))
 isdep:=$(call not,$(filter nodep,$(MAKECMDGOALS)))
 
 ifneq ($(and $(filter-out $(PHON),$(MAKECMDGOALS)),$(isdep)),)

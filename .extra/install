@@ -3,12 +3,12 @@ set -e
 echo "running subinstalls" >&2
 (cd libs && make install)
 declare -i indep=0
-test -f "$installabs/lib64/libcppextensions.so" || indep=1
+test -f "$installabs/lib64/lib$current_lib.so" || indep=1
 echo "ensuring ${installdir}/lib64 exists"
 mkdir -p -v "$installabs"/lib64
-echo "creating -lcppextensions inside ${installdir}/lib64"
-cp --preserve=timestamps -u -v -- libs/.shared.so "$installabs"/lib64/libcppextensions.so
-cp --preserve=timestamps -u -v -- libs/.static.a "$installabs"/lib64/libcppextensions.a
+echo "creating -l$current_lib inside ${installdir}/lib64"
+cp --preserve=timestamps -u -v -- libs/.shared.so "$installabs"/lib64/lib$current_lib.so
+cp --preserve=timestamps -u -v -- libs/.static.a "$installabs"/lib64/lib$current_lib.a
 ln -snfv "${installabs}/include" libs/include
 shopt -s nullglob
 declare -a rules=(.*.mk)

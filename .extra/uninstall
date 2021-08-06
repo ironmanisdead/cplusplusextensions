@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-if [[ -f "$installabs"/lib64/libcppextensions.a ]]; then
-	rm -v "$installabs"/lib64/libcppextensions.a
+if [[ -f "$installabs"/lib64/lib$install_dir.a ]]; then
+	rm -v "$installabs"/lib64/lib$current_lib.a
 fi
 shopt -s nullglob
 declare -a files
-if [[ -f "$installabs"/lib64/libcppextensions.so ]]; then
-	rm -v "$installabs"/lib64/libcppextensions.so
+if [[ -f "$installabs"/lib64/lib$current_lib.so ]]; then
+	rm -v "$installabs"/lib64/lib$current_lib.so
 	declare -a rules=(.*.mk)
 	files=(*.o)
 	if ((${#rules[@]})); then
