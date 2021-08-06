@@ -32,7 +32,7 @@ install: headers
 uninstall:
 	.extra/uninstall
 
-.%.mk: %.$(C_EXT) | headers
+.%.mk: %.$(C_EXT) | headers include
 	.extra/depgen $*
 
 .shared.so: $(patsubst %.$(C_EXT),.%.o,$(sources))

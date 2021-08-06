@@ -25,6 +25,9 @@ libs:
 	.extra/depcheck
 	$(if $(filter nodown,$(MAKECMDGOALS)),,cd libs && make)
 
+libs/include:
+	cd libs && make nodown include
+
 install:
 	.extra/install
 
@@ -37,7 +40,7 @@ nodep: #means make will not generate dependencies
 
 nodown: #means make will not descend into subdirectories to remake things
 
-.%.mk:
+.%.mk: | libs/include
 	.extra/depgen
 
 unmake: #removes all test object files
