@@ -16,7 +16,7 @@ int main() {
 	test.write(Utils::std_out);
 	test.set("The String class also allows to have (indexed) substrings extracted.\n");
 	test.write(Utils::std_out);
-	test.substr(22, 47).write(Utils::std_out);
+	test.substr(-22).write(Utils::std_out);
 	StringView pattern = "The String supports X-OR encoding.\n";
 	String oldstr = test;
 	test.encode(pattern);
