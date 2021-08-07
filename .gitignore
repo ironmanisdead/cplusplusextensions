@@ -5,7 +5,7 @@
 /libs/*.mk
 /libs/headers/*.mk
 *.mk.2
-/libs/headers/All.hpp
+/libs/headers/All.*
 /libs/headers/.dirhash
 /libs/include
 #next line is discardable in your own forks

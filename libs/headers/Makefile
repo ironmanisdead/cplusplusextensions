@@ -1,10 +1,10 @@
-.PHONY: All.hpp clean reset
+.PHONY: All.$(H_EXT) clean reset
 
-All.hpp:
+All.$(H_EXT):
 	.extra/depcheck
 
 clean:
-	$(if $(wildcard All.$(H_EXT)),rm All.hpp)
+	$(if $(wildcard All.$(H_EXT)),rm All.$(H_EXT))
 	$(if $(wildcard .dirhash),rm .dirhash)
 
-reset: clean All.hpp
+reset: clean All.$(H_EXT)
