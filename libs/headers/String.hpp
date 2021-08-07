@@ -123,7 +123,7 @@ namespace CPPExtensions {
 					return 0;
 			}
 			DLL_PUBLIC StringView substr(Utils::size_t, Utils::size_t) const noexcept;
-			DLL_PUBLIC StringView substr(Utils::size_t) const noexcept;
+			DLL_PUBLIC StringView substr(Utils::ssize_t) const noexcept;
 			DLL_PUBLIC bool encode(const StringView&) noexcept; //one-time pad to encode string
 			void encode(Utils::nullpt) = delete; //using a null pointer is invalid
 			constexpr Utils::size_t gettlen() const noexcept { return trulen; }

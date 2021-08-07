@@ -53,7 +53,11 @@ namespace CPPExtensions {
 	}
 	DLL_PUBLIC StringView String::substr(Utils::size_t n1, Utils::size_t len) const noexcept {
 		Utils::_libErr = Utils::E_NOERR;
-		if ((trulen > 0) && (n1 < view.len)) {
+		if (trulen > 0) {
+			if (n1 > view.len) {
+				Utils::_libErr = Utils::E_RANGE;
+				return StringView(nullptr);
+			}
 			const Utils::size_t cap = view.len - n1;
 			const Utils::size_t zlen = (len > cap) ? cap : len;
 			return StringView(&view.read()[n1], zlen);
@@ -62,10 +66,18 @@ namespace CPPExtensions {
 			return StringView(nullptr);
 		}
 	}
-	DLL_PUBLIC StringView String::substr(Utils::size_t n1) const noexcept {
+	DLL_PUBLIC StringView String::substr(Utils::ssize_t n) const noexcept {
 		Utils::_libErr = Utils::E_NOERR;
-		if ((trulen > 0) && (n1 < view.len)) {
-			return StringView(&view.read()[n1], view.len - n1);
+		if (trulen) {
+			if (n >= 0) {
+				const Utils::size_t n1 = n; //avoiding compiler warnings by casting to like-signed integer
+				return StringView(view.read(), (n1 > view.len) ? view.len : n1);
+			} else {
+				const Utils::size_t n1 = -n;
+				const Utils::size_t len = view.len;
+				const Utils::size_t diff = (n1 > len) ? 0 : (len - n1);
+				return StringView(&view.read()[diff], len - diff);
+			}
 		} else {
 			Utils::_libErr = Utils::E_NULL;
 			return StringView(nullptr);

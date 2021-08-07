@@ -73,6 +73,8 @@ namespace CPPExtensions {
 					return "Allocation failed.";
 				case E_NULL:
 					return "Null pointer was passed to function.";
+				case E_RANGE:
+					return "Range violation error.";
 				case E_TYPE:
 					return "Undefined type error occured.";
 				case E_CONV:

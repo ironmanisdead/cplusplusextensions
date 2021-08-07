@@ -28,6 +28,7 @@ namespace CPPExtensions {
 			E_MEM, //allocation failed in call
 			E_INIT, //object initialization failed in call
 			E_NULL, //null pointer passed to function where it wasn't expected
+			E_RANGE, //out of bounds for array
 			E_TYPE, //undefined type error
 			E_CONV, //type conversion error
 			E_ATTR, //type attribute error (type had invalid functions, exception specifiers or otherwise)
