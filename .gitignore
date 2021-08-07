@@ -2,8 +2,8 @@
 *.so
 *.dll
 *.exe
-/libs/*.mk
-/libs/headers/*.mk
+/libs/.*.mk
+/libs/headers/.*.mk
 *.mk.2
 /libs/headers/All.*
 /libs/headers/.dirhash
