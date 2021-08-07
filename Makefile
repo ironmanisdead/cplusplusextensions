@@ -26,7 +26,7 @@ libs:
 	$(if $(filter nodown,$(MAKECMDGOALS)),,cd libs && make)
 
 libs/include:
-	cd libs && make nodown include
+	cd libs && make include
 
 install:
 	.extra/install
