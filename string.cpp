@@ -21,6 +21,6 @@ int main() {
 	String oldstr = test;
 	test.encode(pattern);
 	test.encode(oldstr.viewer());
-	test.substr(0, 35).write(Utils::std_out);
+	test.substr(35).write(Utils::std_out);
 	cons.write(Utils::std_out);
 }
