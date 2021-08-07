@@ -6,6 +6,9 @@ if [[ -f "$installabs"/lib64/lib$install_dir.a ]]; then
 fi
 shopt -s nullglob
 declare -a files
+if [[ -f "$installabs/lib64/lib$current_lib.a" ]]; then
+	rm -v "$installabs/lib64/lib$current_lib.a"
+fi
 if [[ -f "$installabs"/lib64/lib$current_lib.so ]]; then
 	rm -v "$installabs"/lib64/lib$current_lib.so
 	declare -a rules=(.*.mk)
