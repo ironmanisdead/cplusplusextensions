@@ -2,6 +2,8 @@
 *.so
 *.dll
 *.exe
+#next line is for your own tests that aren't supposed to be used by git
+/*.ex.cpp
 /.*.mk
 /libs/.*.mk
 /libs/headers/.*.mk
