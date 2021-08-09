@@ -3,8 +3,8 @@
 *.so
 *.dll
 *.exe
-#next line is for your own tests that aren't supposed to be used by git
-/*.ex.cpp
+#next line is for your own tests, and extensions that aren't supposed to be used by git
+*.ex.cpp
 #lines after this are mostly for auto-generated files that help make
 /.*.mk
 /libs/.*.mk
