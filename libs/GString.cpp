@@ -43,10 +43,10 @@ namespace CPPExtensions {
 				}
 			}
 		}
-		DLL_PUBLIC String hyperlink(const char* site, const char* display) noexcept {
+		DLL_PUBLIC String hyperlink(const char* site, StringView display) noexcept {
 			return String("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");
 		}
-		DLL_PUBLIC void hyperlink(const char* site, const char* display, String& out) noexcept {
+		DLL_PUBLIC void hyperlink(const char* site, StringView display, String& out) noexcept {
 			out.set("\x1b]8;;", site, "\x1b\\", display, "\x1b]8;;\x1b\\");
 		}
 		DLL_PUBLIC Utils::size_t _strlen(const String& val) noexcept {

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Utils.hpp"
-#include "../GString.hpp"
+#include "GString.hpp"
 DLL_HIDE
 namespace CPPExtensions {
 	class String;

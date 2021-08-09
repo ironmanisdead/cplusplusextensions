@@ -307,8 +307,16 @@ namespace CPPExtensions {
 			ESCAPE(bg_reset, 49);
 		};
 #pragma pop_macro("ESCAPE")
-		DLL_PUBLIC String hyperlink(const char* site, const char* display) noexcept;
-		DLL_PUBLIC void hyperlink(const char* site, const char* display, String& output) noexcept;
+		//String hyperlink() creates a hyperlinked String from a url, and a display string
+		DLL_PUBLIC String hyperlink(const char* site, StringView display) noexcept;
+		//void hyperlink() does the same, but pushes the output into the String parameter
+		DLL_PUBLIC void hyperlink(const char* site, StringView display, String& output) noexcept;
+		//size_t escsize() gives the length of the escape code located at the pointer it's given,
+		//or returns 0 if there is no valid ascii escape at that pointer
+		DLL_PUBLIC size_t escsize(const char*) noexcept;
+		//ssize_t nextesc() gives the distance until the first escape character,
+		//or -1 if there is none.
+		DLL_PUBLIC ssize_t nextesc(StringView) noexcept;
 		using uchar = unsigned char;
 		constexpr auto gen_color(bool isfg, uchar col) noexcept {
 			Array<char, 5> code;
