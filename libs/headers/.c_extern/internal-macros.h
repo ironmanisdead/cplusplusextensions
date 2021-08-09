@@ -2,6 +2,10 @@
 #undef DLL_LOCAL
 #undef DLL_HIDE
 #undef DLL_RESTORE
+#undef DLL_OS_unix
+#undef DLL_OS_windows
+#undef DLL_CC_clang
+#undef DLL_CC_gcc
 #if defined(__unix__)
  #ifndef DLL_OS_unix
   #define DLL_OS_unix 1
