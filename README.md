@@ -37,9 +37,3 @@ This project is not yet completely stable, but it is deprecating features rather
 removing them. This doesn't yet mean that all types from my library are 100% safe.
 Just don't use too many types from the Utils namespace, if at all possible.
 At the moment, my project is mostly stable.
-
-## Secondary Notice:
-(this notice is itself deprecated)
-If you have downloaded and installed this under the "<i>main</i>" branch and are planning to update it,
-please run "<i>make uninstall</i>" before updating. The old "<i>main</i>" is now in "<i>deprecated</i>",
-should you need to uninstall
