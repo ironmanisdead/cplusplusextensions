@@ -5,6 +5,9 @@
 #include <cstdlib>
 DLL_HIDE
 namespace CPPExtensions {
+	DLL_LOCAL [[noreturn]] void Utils::_abort() noexcept {
+		std::abort();
+	}
 	template <>
 	DLL_PUBLIC void _viewput(std::ostream& os, const StringView* val) {
 		if (val && val->read() && (val->len > 0))

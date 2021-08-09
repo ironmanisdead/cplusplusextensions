@@ -2,11 +2,41 @@
 #include "headers/system_internals.hpp"
 #include "headers/types.hpp"
 #include "headers/GString.hpp"
+#include <signal.h>
+#include <setjmp.h>
 DLL_HIDE
 namespace CPPExtensions {
 	namespace Utils {
 		DLL_PUBLIC volatile void* ignore(volatile void*) noexcept {
 			return nullptr;
+		}
+		static volatile void* _ignore(char) noexcept {
+			return nullptr;
+		}
+		static thread_local jmp_buf savepoint; //keeps track of state
+		static void _onError(int) noexcept {
+#ifdef DLL_OS_unix
+			sigset_t signal_set;
+			sigemptyset(&signal_set);
+			sigaddset(&signal_set, SIGSEGV);
+			sigprocmask(SIG_UNBLOCK, &signal_set, nullptr);
+#endif
+			longjmp(savepoint, 2);
+		}
+		DLL_PUBLIC bool isvalid(const volatile void* read) noexcept {
+			if (read == nullptr)
+				return false;
+			switch (setjmp(savepoint)) {
+				case 0:
+					signal(SIGSEGV, _onError);
+					_ignore(*reinterpret_cast<const volatile char*>(read));
+					longjmp(savepoint, 1); //longjmp should (theoretically) restore the signal handler
+				case 1:
+					return true;
+				case 2:
+					return false;
+			}
+			_abort();
 		}
 		DLL_PUBLIC void memcpy(void* dest, const void* src, size_t len) noexcept {
 			char* cdest = downcast<char*>(dest);

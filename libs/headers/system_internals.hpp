@@ -11,6 +11,8 @@ namespace CPPExtensions {
 		//std_out is the standard output descriptor/handle
 		//std_err is the standard error descriptor/handle
 		//S_WORD is the system defined default flag type (internal use)
+		//_abort() wraps around std::abort() (internal use)
+		[[noreturn]] DLL_LOCAL void _abort() noexcept;
 		enum OpenFlags : unsigned; //Flags for opening file
 		enum ModeFlags : unsigned; //permissions granted if file is created during open
 		enum SeekFlag : unsigned; //Flags instructing seek how to traverse
@@ -49,6 +51,8 @@ namespace CPPExtensions {
 		DLL_LOCAL thread_local volatile inline ErrFlag& _libErr = _getLibErr();
 #endif
 		DLL_PUBLIC volatile void* ignore(volatile void*) noexcept; //no-op for avoiding optimizations
+		//isvalid() determines if address is in readable memory (might not work for memory free'd asynchronously)
+		DLL_PUBLIC bool isvalid(const volatile void*) noexcept;
 		DLL_LOCAL extern ErrFlag _noerr; //empty error code(internal use)
 		DLL_LOCAL extern ErrFlag _memerr; //memory error code(internal use)
 		DLL_LOCAL extern ErrFlag _nullerr; //null error code(internal use)
