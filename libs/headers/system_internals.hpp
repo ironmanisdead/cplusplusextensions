@@ -21,7 +21,7 @@ namespace CPPExtensions {
 		constexpr ModeFlags operator |(ModeFlags a, ModeFlags b) noexcept {
 			return (ModeFlags)((unsigned)a | (unsigned)b);
 		} //Allows merging mode flags with or operator
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 		using S_WORD = int32_t;
 		using f_desc = void*;
 		DLL_PUBLIC extern const f_desc std_in;
@@ -40,7 +40,7 @@ namespace CPPExtensions {
 #endif
 		struct _sysFlags { //system defined internal flags
 			S_WORD access;
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			S_WORD disp;
 #endif
 		};

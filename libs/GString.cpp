@@ -6,7 +6,7 @@
 #include "headers/BinMap.hpp"
 #include <stdexcept>
 #include <cstdlib>
-#ifndef _MSC_VER
+#ifndef DLL_OS_windows
 #include <cxxabi.h>
 #endif
 DLL_HIDE
@@ -18,7 +18,7 @@ namespace CPPExtensions {
 			throw std::overflow_error(msg);
 		}
 		inline String _demangle(const char* src) noexcept {
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			return String(src);
 #else
 			int status;

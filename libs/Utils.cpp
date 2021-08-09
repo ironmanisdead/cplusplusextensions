@@ -26,7 +26,7 @@ namespace CPPExtensions {
 	}
 }
 DLL_RESTORE
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
  #include <windows.h>
  #include <fileapi.h>
  #include <winbase.h>
@@ -46,7 +46,7 @@ namespace CPPExtensions {
 		DLL_PUBLIC const char* strerrno(int err) noexcept {
 			return std::strerror(err);
 		}
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 		DLL_PUBLIC const f_desc std_in = GetStdHandle(STD_INPUT_HANDLE);
 		DLL_PUBLIC const f_desc std_out = GetStdHandle(STD_OUTPUT_HANDLE);
 		DLL_PUBLIC const f_desc std_err = GetStdHandle(STD_ERROR_HANDLE);
@@ -58,7 +58,7 @@ namespace CPPExtensions {
 				_libErr = _nullerr;
 				return -1;
 			}
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			int written = 0;
 			HANDLE file = RECAST(HANDLE, file);
 			if (::WriteFile(file, str, len, &written, nullptr))
@@ -102,7 +102,7 @@ namespace CPPExtensions {
 		}
 		DLL_PUBLIC void puts_free() noexcept { _putstr = nullptr; }
 		DLL_PUBLIC ssize_t read(f_desc fd, char* str, size_t len) noexcept {
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			int written = 0;
 			HANDLE file = RECAST(HANDLE, file);
 			if (::ReadFile(file, str, len, &written, nullptr))
@@ -115,7 +115,7 @@ namespace CPPExtensions {
 		}
 		DLL_PUBLIC f_desc open(const char* path, OpenFlags flags) noexcept {
 			_sysFlags sysflags = _sys_oflags(flags);
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			return ::CreateFileA(path, sysflags.access,
 					FILE_SHARE_READ, nullptr,
 					sysflags.disp, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -127,7 +127,7 @@ namespace CPPExtensions {
 		DLL_PUBLIC f_desc open(const char* path, OpenFlags flags, ModeFlags mode) noexcept {
 			_sysFlags sysflags = _sys_oflags(flags);
 			S_WORD sysmode = _sys_mflags(mode);
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			return ::CreateFileA(path, sysflags.access,
 					FILE_SHARE_READ, nullptr,
 					sysflags.creation, sysmode, nullptr);
@@ -136,7 +136,7 @@ namespace CPPExtensions {
 #endif
 		}
 		DLL_PUBLIC bool close(f_desc fd) noexcept {
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			return ::CloseHandle(RECAST(HANDLE, file));
 #else
 			if (::close(fd) == 0)
@@ -146,7 +146,7 @@ namespace CPPExtensions {
 #endif
 		}
 		DLL_PUBLIC ssize_t seek(f_desc fd, ssize_t pos, SeekFlag method) noexcept {
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			auto result = ::SetFilePointer(fd, pos, nullptr, method);
 			if (result == INVALID_SET_FILE_POINTER)
 				return -1;
@@ -161,7 +161,7 @@ namespace CPPExtensions {
 #endif
 		}
 		DLL_PUBLIC bool unlink(const char* name) noexcept {
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			return ::DeleteFile(name);
 #else
 			if (::unlink(name) == 0)
@@ -171,7 +171,7 @@ namespace CPPExtensions {
 #endif
 		}
 		DLL_PUBLIC u64 uptime() noexcept {
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			return GetTickCount64();
 #else
 			static f_desc file = open("/proc/uptime", _readflag);
@@ -188,7 +188,7 @@ namespace CPPExtensions {
 #endif
 		}
 		DLL_PUBLIC void sleep(ulong time) noexcept {
-#ifdef _MSC_VER
+#ifdef DLL_OS_windows
 			Sleep(time);
 #else
 			usleep(time * 1000);

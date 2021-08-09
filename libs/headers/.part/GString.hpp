@@ -175,12 +175,12 @@ namespace CPPExtensions {
 				 constexpr const char prefix[] = "[T = ";
 				#elif defined(__GNUC__)
 				 constexpr const char prefix[] = "[with T = ";
-				#elif defined(_MSC_VER)
+				#elif defined(DLL_OS_windows)
 				 constexpr const char prefix[] = "type_name_array<";
 				 constexpr const char suffix[] = ">(void)";
 				 constexpr const char* name = __FUNCSIG__;
 				#endif
-				#if !defined(_MSC_VER)
+				#if !defined(DLL_OS_windows)
 				 constexpr const char suffix[] = "]";
 				 constexpr const char* name = __PRETTY_FUNCTION__;
 				#endif
