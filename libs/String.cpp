@@ -83,6 +83,107 @@ namespace CPPExtensions {
 			return StringView(nullptr);
 		}
 	}
+	DLL_PUBLIC bool String::remove(Utils::ssize_t n) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
+		if (trulen) {
+			char* str = view.edit();
+			if (n >= 0) {
+				const Utils::size_t n1 = n;
+				if (n1 >= view.len) {
+					Utils::_libErr = Utils::E_RANGE;
+					return false;
+				}
+				Utils::memmove(str, &str[n1], view.len - n1);
+				view.len = n1;
+			} else {
+				const Utils::size_t n1 = n;
+				if (n1 >= view.len) {
+					Utils::_libErr = Utils::E_RANGE;
+					return false;
+				}
+				view.len -= n1;
+			}
+			return true;
+		} else {
+			Utils::_libErr = Utils::E_NULL;
+			return false;
+		}
+	}
+	DLL_PUBLIC bool String::remove(Utils::size_t n1, Utils::size_t n2) noexcept {
+		if (n2 == 0) {
+			Utils::_libErr = Utils::E_INVAL;
+			return false;
+		}
+		Utils::_libErr = Utils::E_NOERR;
+		if (trulen) {
+			if (n1 >= view.len) {
+				Utils::_libErr = Utils::E_RANGE;
+				return false;
+			}
+			if (n1 + n2 >= view.len) {
+				view.len = n1;
+			} else {
+				char* str = view.edit();
+				Utils::memmove(&str[n1], &str[n1 + n2], view.len - n1 - n2);
+				view.len -= n2;
+			}
+			return true;
+		} else {
+			Utils::_libErr = Utils::E_NULL;
+			return false;
+		}
+	}
+	DLL_PUBLIC bool String::paste(Utils::ssize_t idx, StringView part) noexcept {
+		Utils::_libErr = Utils::E_NOERR;
+		if (trulen) {
+			if (idx >= 0) {
+				Utils::size_t abs = idx;
+				if (abs > view.len) {
+					Utils::_libErr = Utils::E_RANGE;
+					return false;
+				}
+				const char* other = part.read();
+				if (!other) {
+					Utils::_libErr = Utils::E_NULL;
+					return false;
+				}
+				if (!resize(view.len + part.len)) {
+					return false;
+				}
+				if (abs == view.len) {
+					addval(part);
+					return true;
+				}
+				char* current = view.edit();
+				Utils::memmove(&current[abs + part.len], &current[abs], view.len - abs);
+				Utils::memcpy(&current[abs], other, part.len);
+				view.len += part.len;
+				current[view.len] = '\0';
+			} else {
+				Utils::size_t abs = -idx - 1;
+				if (abs == 0) {
+					const char* other = part.read();
+					if (!other) {
+						Utils::_libErr = Utils::E_NULL;
+						return false;
+					}
+					if (!resize(view.len + part.len)) {
+						return false;
+					}
+					addval(part);
+					return false;
+				}
+				if (abs >= view.len) {
+					return paste(0, part);
+				}
+				return paste(view.len - abs, part);
+			}
+			return true;
+		} else {
+			Utils::_libErr = Utils::E_NULL;
+			return false;
+		}
+	}
 	template <bool reset>
 	String::setby<reset> String::byray(const char* val, Utils::size_t siz) noexcept {
 		Utils::_libErr = Utils::E_NOERR;

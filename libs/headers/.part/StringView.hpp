@@ -119,6 +119,29 @@ namespace CPPExtensions {
 				buffer.edit = val;
 				len = ln;
 			}
+			constexpr StringView substr(Utils::ssize_t ln) const noexcept {
+				const char* str = viewer(buffer);
+				if (!str)
+					return StringView(nullptr);
+				if (ln > 0) {
+					Utils::size_t abs = ln;
+					if (abs >= len)
+						return StringView(nullptr);
+					return StringView(&str[abs], len - abs);
+				}
+				Utils::size_t abs = -ln;
+				if (abs >= len)
+					return StringView(nullptr);
+				return StringView(str, len - abs);
+			}
+			constexpr StringView substr(Utils::size_t n1, Utils::size_t n2) const noexcept {
+				const char* str = viewer(buffer);
+				if ((!n2) || (!str) || (n1 >= len))
+					return StringView(nullptr);
+				if (n1 + n2 > len)
+					return StringView(&str[n1], len - n1);
+				return StringView(&str[n1], n2);
+			}
 			constexpr Utils::strongcmp_t operator <=>(const StringView& val) const noexcept {
 				const char* see = read();
 				const char* valsee = val.read();

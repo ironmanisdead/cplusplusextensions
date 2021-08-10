@@ -81,6 +81,8 @@ namespace CPPExtensions {
 					return "Type conversion error occured.";
 				case E_ATTR:
 					return "Type had invalid properties.";
+				case E_INVAL:
+					return "Invalid argument to function.";
 				case E_UNKNOWN:
 					[[fallthrough]];
 				default:

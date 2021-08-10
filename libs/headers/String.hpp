@@ -122,8 +122,13 @@ namespace CPPExtensions {
 				else
 					return 0;
 			}
+			//substr() isolates part of a string, note that the value in substr() becomes invalid
+			//as soon as the string is modified after the substring is created
 			DLL_PUBLIC StringView substr(Utils::size_t, Utils::size_t) const noexcept;
 			DLL_PUBLIC StringView substr(Utils::ssize_t) const noexcept;
+			DLL_PUBLIC bool paste(Utils::ssize_t, StringView) noexcept; //adds string in after length
+			DLL_PUBLIC bool remove(Utils::size_t, Utils::size_t) noexcept; //removes characters between two points
+			DLL_PUBLIC bool remove(Utils::ssize_t) noexcept; //removes characters before or after a point
 			DLL_PUBLIC bool encode(const StringView&) noexcept; //one-time pad to encode string
 			void encode(Utils::nullpt) = delete; //using a null pointer is invalid
 			constexpr Utils::size_t gettlen() const noexcept { return trulen; }
