@@ -96,7 +96,7 @@ namespace CPPExtensions {
 				Utils::memmove(str, &str[n1], view.len - n1);
 				view.len = n1;
 			} else {
-				const Utils::size_t n1 = n;
+				const Utils::size_t n1 = -n;
 				if (n1 >= view.len) {
 					Utils::_libErr = Utils::E_RANGE;
 					return false;
