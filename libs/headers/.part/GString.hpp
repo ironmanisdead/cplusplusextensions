@@ -270,6 +270,7 @@ namespace CPPExtensions {
 #undef ESCAPE
 #define ESCAPE(name, code) constexpr const char name[] = "\x1b[" #code "m"
 		namespace codes {
+			//text_reset sets all font/colors back to default
 			ESCAPE(text_reset, 0);
 			//main font settings
 			ESCAPE(bold, 1);
@@ -313,11 +314,69 @@ namespace CPPExtensions {
 		DLL_PUBLIC void hyperlink(const char* site, StringView display, String& output) noexcept;
 		//size_t escsize() gives the length of the escape code located at the pointer it's given,
 		//or returns 0 if there is no valid ascii escape at that pointer
-		DLL_PUBLIC size_t escsize(const char*) noexcept;
+		constexpr size_t escsize(const char*) noexcept;
 		//ssize_t nextesc() gives the distance until the first escape character,
 		//or -1 if there is none.
-		DLL_PUBLIC ssize_t nextesc(StringView) noexcept;
+		constexpr ssize_t nextesc(StringView) noexcept;
 		using uchar = unsigned char;
+		enum CurSeek { //Cursor seek mode
+			CUR_UP, //moves cursor up
+			CUR_UP_B, //moves cursor up and to the start of the line
+			CUR_DOWN, //moves cursor down
+			CUR_DOWN_B, //moves cursor down and to the start of the line
+			CUR_LEFT, //moves cursor left
+			CUR_RIGHT, //moves cursor right
+			CUR_ROW, //moves cursor to a row
+		};
+		enum TextRend { //manipulating existing text
+			TXT_LINE_CLR, //erase entire current line of text
+			TXT_LINE_CLR_F, //erases to the end of the current line
+			TXT_LINE_CLR_B, //erases to the beginning of current line
+			TXT_TERM_CLR, //clears terminal screen
+			TXT_TERM_CLR_A, //clears scrollback and entire terminal screen
+			TXT_TERM_CLR_F, //clears everything past the cursor
+			TXT_TERM_CLR_B, //clears everything before the cursor
+		};
+		constexpr short _s2_len = sizeof(_numberify<(uint)0 - (uint)1>::value);
+		constexpr auto gen_seek(CurSeek flag, uint pos) noexcept {
+			Array<char, _s2_len + 2> code;
+			short len = _strlen(u64(pos));
+			unsigned poscop = pos;
+			for (short i = 1; i <= len; i++) {
+				code[len - i] = (poscop % 10) + '0';
+				poscop /= 10;
+			}
+			bool invalid = false;
+			switch (flag) {
+				case CUR_UP:
+					code[len] = 'A';
+					break;
+				case CUR_UP_B:
+					code[len] = 'F';
+					break;
+				case CUR_DOWN:
+					code[len] = 'B';
+					break;
+				case CUR_DOWN_B:
+					code[len] = 'E';
+					break;
+				case CUR_LEFT:
+					code[len] = 'D';
+					break;
+				case CUR_RIGHT:
+					code[len] = 'C';
+					break;
+				case CUR_ROW:
+					code[len] = 'G';
+					break;
+				default:
+					invalid = true;
+			}
+			auto result = strcat("\x1b[", code.data);
+			if (invalid)
+				result = Utils::remove_reference<decltype(result)> {};
+			return result;
+		}
 		constexpr auto gen_color(bool isfg, uchar col) noexcept {
 			Array<char, 5> code;
 			uchar colcop = col;
