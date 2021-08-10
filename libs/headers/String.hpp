@@ -129,6 +129,7 @@ namespace CPPExtensions {
 			DLL_PUBLIC bool insert(Utils::ssize_t, StringView) noexcept; //adds string in after length
 			DLL_PUBLIC bool remove(Utils::size_t, Utils::size_t) noexcept; //removes characters between two points
 			DLL_PUBLIC bool remove(Utils::ssize_t) noexcept; //removes characters before or after a point
+			DLL_PUBLIC bool remove_esc() noexcept; //removes all ansii escapes inside string
 			DLL_PUBLIC bool encode(const StringView&) noexcept; //one-time pad to encode string
 			void encode(Utils::nullpt) = delete; //using a null pointer is invalid
 			constexpr Utils::size_t gettlen() const noexcept { return trulen; }

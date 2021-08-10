@@ -10,7 +10,7 @@ constexpr auto gencyan = GString::raycat(fg_black,
 constexpr auto trublue = GString::truecolor_temp<false, 40, 177, 249>;
 constexpr const char addr[] = "https://github.com/ironmanisdead/cplusplusextensions";
 constexpr const char display[] = "this is a link";
-constexpr auto linkcolor = GString::strcat(fg_magenta, display);
+constexpr auto linkcolor = GString::strcat(fg_magenta, display, text_reset);
 
 int main() {
 	String print;
@@ -18,6 +18,9 @@ int main() {
 	GString::hyperlink(addr, linkcolor.data, print);
 	print.puts(Utils::std_out);
 	print.set(bold, "this is bold", text_reset);
+	print.puts(Utils::std_out);
+	print.insert(-9, "not ");
+	print.remove_esc();
 	print.puts(Utils::std_out);
 	print.set(italics, "this is in italics", text_reset);
 	print.puts(Utils::std_out);

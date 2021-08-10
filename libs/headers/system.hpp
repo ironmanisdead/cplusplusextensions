@@ -33,6 +33,7 @@ namespace CPPExtensions {
 			E_CONV, //type conversion error
 			E_ATTR, //type attribute error (type had invalid functions, exception specifiers or otherwise)
 			E_INVAL, //invalid parameter error
+			E_EMPTY, //object was empty
 		};
 	}
 }

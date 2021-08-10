@@ -133,6 +133,31 @@ namespace CPPExtensions {
 			return false;
 		}
 	}
+	DLL_PUBLIC bool String::remove_esc() noexcept {
+		if (trulen) {
+			if (view.len == 0) {
+				Utils::_libErr = Utils::E_EMPTY;
+				return false;
+			}
+			Utils::size_t idx = 0;
+			char* str = view.edit();
+			while (idx < view.len) {
+				Utils::size_t diff = GString::escsize(&str[idx]);
+				if (diff > 0) {
+					if (!remove(idx, diff)) {
+						return false;
+					}
+				}
+				StringView current = StringView(&str[idx], view.len - idx);
+				Utils::ssize_t next = GString::nextesc(current);
+				if (next == -1) {
+					return true;
+				}
+				idx += next;
+			}
+		}
+		return false;
+	}
 	DLL_PUBLIC bool String::insert(Utils::ssize_t idx, StringView part) noexcept {
 		Utils::_libErr = Utils::E_NOERR;
 		if (trulen) {

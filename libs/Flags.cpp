@@ -83,6 +83,8 @@ namespace CPPExtensions {
 					return "Type had invalid properties.";
 				case E_INVAL:
 					return "Invalid argument to function.";
+				case E_EMPTY:
+					return "Object was empty.";
 				case E_UNKNOWN:
 					[[fallthrough]];
 				default:

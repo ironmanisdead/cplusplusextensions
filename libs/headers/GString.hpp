@@ -17,9 +17,9 @@ namespace CPPExtensions {
 		int i = 2;
 		for (char ch = str[i]; ch; ch = str[++i]) {
 			if ((ch >= 'A') && (ch <= 'Z'))
-				return i;
+				return i + 1;
 			if ((ch >= 'a') && (ch <= 'z'))
-				return i;
+				return i + 1;
 		}
 		return 0;
 	}
