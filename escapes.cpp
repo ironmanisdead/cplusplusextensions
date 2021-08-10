@@ -19,8 +19,8 @@ int main() {
 	print.puts(Utils::std_out);
 	print.set(bold, "this is bold", text_reset);
 	print.puts(Utils::std_out);
-	print.insert(-9, "not ");
 	print.remove_esc();
+	print.insert(-5, "not ");
 	print.puts(Utils::std_out);
 	print.set(italics, "this is in italics", text_reset);
 	print.puts(Utils::std_out);
