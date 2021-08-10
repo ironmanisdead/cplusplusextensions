@@ -133,7 +133,7 @@ namespace CPPExtensions {
 			return false;
 		}
 	}
-	DLL_PUBLIC bool String::paste(Utils::ssize_t idx, StringView part) noexcept {
+	DLL_PUBLIC bool String::insert(Utils::ssize_t idx, StringView part) noexcept {
 		Utils::_libErr = Utils::E_NOERR;
 		if (trulen) {
 			if (idx >= 0) {
@@ -174,9 +174,9 @@ namespace CPPExtensions {
 					return false;
 				}
 				if (abs >= view.len) {
-					return paste(0, part);
+					return insert(0, part);
 				}
-				return paste(view.len - abs, part);
+				return insert(view.len - abs, part);
 			}
 			return true;
 		} else {
