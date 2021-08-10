@@ -5,7 +5,7 @@
 #include <cstdlib>
 DLL_HIDE
 namespace CPPExtensions {
-	DLL_LOCAL [[noreturn]] void Utils::_abort() noexcept {
+	DLL_LOCAL void Utils::_abort() noexcept {
 		std::abort();
 	}
 	template <>
@@ -22,25 +22,23 @@ namespace CPPExtensions {
 		if (val && (val->trulen > 0))
 			return static_cast<void>(os.write(val->raw, val->len));
 	}
-	namespace Utils {
-		DLL_PUBLIC u64 epoch() noexcept {
-			using namespace std::chrono;
-			return system_clock::now().time_since_epoch() / milliseconds(1);
+	DLL_PUBLIC Utils::u64 Utils::epoch() noexcept {
+		using namespace std::chrono;
+		return system_clock::now().time_since_epoch() / milliseconds(1);
+	}
+	DLL_PUBLIC int Utils::rand() noexcept {
+		static bool set = false;
+		if (!set) {
+			std::srand(Utils::epoch());
+			set = true;
 		}
-		DLL_PUBLIC int rand() noexcept {
-			static bool set = false;
-			if (!set) {
-				std::srand(Utils::epoch());
-				set = true;
-			}
-			return std::rand();
-		}
-		[[noreturn]] DLL_PUBLIC void RunError(const char* str) {
-			throw std::runtime_error(str);
-		}
-		[[noreturn]] DLL_PUBLIC void RangeError(const char* str) {
-			throw std::out_of_range(str);
-		}
+		return std::rand();
+	}
+	DLL_PUBLIC void Utils::RunError(const char* str) {
+		throw std::runtime_error(str);
+	}
+	DLL_PUBLIC void Utils::RangeError(const char* str) {
+		throw std::out_of_range(str);
 	}
 }
 DLL_RESTORE
