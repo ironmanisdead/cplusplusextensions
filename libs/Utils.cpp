@@ -14,13 +14,15 @@ namespace CPPExtensions {
 			return nullptr;
 		}
 		static thread_local jmp_buf savepoint; //keeps track of state
-		static void _onError(int) noexcept {
-#ifdef DLL_OS_unix
+		static void _unBlockSegV() noexcept { //removes SIGSEGV block
+#if DLL_OS_unix
 			sigset_t signal_set;
 			sigemptyset(&signal_set);
 			sigaddset(&signal_set, SIGSEGV);
 			sigprocmask(SIG_UNBLOCK, &signal_set, nullptr);
 #endif
+		}
+		static void _onError(int) noexcept {
 			longjmp(savepoint, 2);
 		}
 		DLL_PUBLIC bool isvalid(const volatile void* read) noexcept {
@@ -28,6 +30,7 @@ namespace CPPExtensions {
 				return false;
 			switch (setjmp(savepoint)) {
 				case 0:
+					_unBlockSegV();
 					signal(SIGSEGV, _onError);
 					_ignore(*reinterpret_cast<const volatile char*>(read));
 					longjmp(savepoint, 1); //longjmp should (theoretically) restore the signal handler
@@ -177,13 +180,13 @@ namespace CPPExtensions {
 		}
 		DLL_PUBLIC ssize_t seek(f_desc fd, ssize_t pos, SeekFlag method) noexcept {
 #ifdef DLL_OS_windows
-			auto result = ::SetFilePointer(fd, pos, nullptr, method);
+			auto result = ::SetFilePointer(fd, pos, nullptr, _sys_seek(method));
 			if (result == INVALID_SET_FILE_POINTER)
 				return -1;
 			else
 				return result;
 #else
-			auto result = ::lseek(fd, pos, method);
+			auto result = ::lseek(fd, pos, _sys_seek(method));
 			if (result == -1)
 				return -1;
 			else

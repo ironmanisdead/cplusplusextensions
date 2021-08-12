@@ -57,7 +57,8 @@ namespace CPPExtensions {
 		DLL_LOCAL extern ErrFlag _memerr; //memory error code(internal use)
 		DLL_LOCAL extern ErrFlag _nullerr; //null error code(internal use)
 		DLL_LOCAL _sysFlags _sys_oflags(OpenFlags) noexcept; //converts OpenFlags into system specific flags(internal)
-		DLL_LOCAL S_WORD _sys_mflags(ModeFlags) noexcept; //converts SeekFlags into system specific flags(internal)
+		DLL_LOCAL S_WORD _sys_mflags(ModeFlags) noexcept; //converts ModeFlags into system specific flags(internal)
+		DLL_LOCAL S_WORD _sys_seek(SeekFlag) noexcept; //converts SeekFlag into system specific integral(internal)
 		DLL_PUBLIC int geterrno() noexcept; //returns current errno
 		DLL_PUBLIC const char* strerrno(int) noexcept; //returns string describing global(geterrno()) error code
 		DLL_PUBLIC ErrFlag getlocerr() noexcept; //gets local error code

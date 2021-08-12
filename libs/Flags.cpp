@@ -64,6 +64,28 @@ namespace CPPExtensions {
 			return mode;
 #endif
 		}
+		DLL_LOCAL S_WORD _sys_seek(SeekFlag seek) noexcept {
+			switch (seek) {
+				case S_RES:
+#ifdef DLL_OS_unix
+					return SEEK_SET;
+#else
+					return FILE_BEGIN;
+#endif
+				case S_CUR:
+#ifdef DLL_OS_unix
+					return SEEK_CUR;
+#else
+					return FILE_CURRENT;
+#endif
+				case S_END:
+#ifdef DLL_OS_unix
+					return SEEK_END;
+#else
+					return FILE_END;
+#endif
+			}
+		}
 		DLL_PUBLIC ErrFlag getlocerr() noexcept { return _libErrInt; }
 		DLL_PUBLIC const char* strlocerr(ErrFlag flag) noexcept {
 			switch (flag) {
