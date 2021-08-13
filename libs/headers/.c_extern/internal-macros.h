@@ -60,26 +60,26 @@
  #endif
 #endif
 #ifdef __cplusplus
-	#define INITIALIZER(f) \
-		static void f(void); \
+	#define INITIALIZER(f, attr) \
+		static void f(void) attr; \
 		struct f##_t_ { f##_t_(void) { f(); } }; static f##_t_ f##_; \
-		static void f(void)
+		static void f(void) attr
 #elif defined(_MSC_VER)
 	#pragma section(".CRT$XCU",read)
-	#define INITIALIZER2_(f,p) \
+	#define INITIALIZER2_(f, p) \
 		static void f(void); \
 		__declspec(allocate(".CRT$XCU")) void (*f##_)(void) = f; \
 		__pragma(comment(linker,"/include:" p #f "_")) \
 		static void f(void)
 	#ifdef _WIN64
-		#define INITIALIZER(f) INITIALIZER2_(f,"")
+		#define INITIALIZER(f) INITIALIZER2_(f, "")
 	#else
-		#define INITIALIZER(f) INITIALIZER2_(f,"_")
+		#define INITIALIZER(f) INITIALIZER2_(f, "_")
 	#endif
 #else
 	#define INITIALIZER(f) \
-	static void f(void) __attribute__((constructor)); \
-	static void f(void)
+		static void f(void) __attribute__((constructor)); \
+		static void f(void)
 #endif
 #ifndef Utils_offset
  #define Utils_offset(type, field) ((decltype(sizeof 0))(&((type*)0)->field))
