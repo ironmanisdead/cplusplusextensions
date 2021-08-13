@@ -107,7 +107,7 @@ namespace CPPExtensions {
 			return write(fd, str, numbytes);
 		}
 		DLL_PUBLIC bool putchar(f_desc fd, char ch) noexcept {
-			static char ray[1];
+			static thread_local char ray[1];
 			ray[0] = ch;
 			if (write(fd, ray, 1) > 0) {
 				return true;
@@ -179,14 +179,18 @@ namespace CPPExtensions {
 #endif
 		}
 		DLL_PUBLIC ssize_t seek(f_desc fd, ssize_t pos, SeekFlag method) noexcept {
+			_libErr = _noerr;
+			S_WORD flags = _sys_seek(method);
+			if (_libErr != _noerr)
+				return -1;
 #ifdef DLL_OS_windows
-			auto result = ::SetFilePointer(fd, pos, nullptr, _sys_seek(method));
+			auto result = ::SetFilePointer(fd, pos, nullptr, flags);
 			if (result == INVALID_SET_FILE_POINTER)
 				return -1;
 			else
 				return result;
 #else
-			auto result = ::lseek(fd, pos, _sys_seek(method));
+			auto result = ::lseek(fd, pos, flags);
 			if (result == -1)
 				return -1;
 			else
@@ -208,7 +212,7 @@ namespace CPPExtensions {
 			return GetTickCount64();
 #else
 			static f_desc file = open("/proc/uptime", _readflag);
-			static char array[16];
+			static thread_local char array[16];
 			static StringView view = { array, 16 };
 			if (file == errdesc)
 				return 0;

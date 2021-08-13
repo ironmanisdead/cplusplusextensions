@@ -5,7 +5,6 @@ namespace CPPExtensions {
 	class String;
 	class StringView;
 	namespace Utils {
-		//chtype is the type of character that the OS supports in filenames
 		//f_desc is the OS-defined file descriptor or handle
 		//std_in is the standard input descriptor/handle
 		//std_out is the standard output descriptor/handle

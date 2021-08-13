@@ -84,6 +84,9 @@ namespace CPPExtensions {
 #else
 					return FILE_END;
 #endif
+				default:
+					_libErr = E_INVAL;
+					return 0;
 			}
 		}
 		DLL_PUBLIC ErrFlag getlocerr() noexcept { return _libErrInt; }
